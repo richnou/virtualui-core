@@ -20,4 +20,6 @@ trait SGNode[T] {
    */
   def revalidate
   
+  //def apply[NT <: SGNode[T]](cl : (NT => Unit)) 
+  
 }

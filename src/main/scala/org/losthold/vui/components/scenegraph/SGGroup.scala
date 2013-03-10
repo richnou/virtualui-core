@@ -23,7 +23,7 @@ trait SGGroup[T] extends SGContainerNode[T] {
   
   
   def apply(cl: SGGroup[T] => Unit) {
-    
+    cl(this)
   }
   
   

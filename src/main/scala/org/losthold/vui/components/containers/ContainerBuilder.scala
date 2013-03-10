@@ -24,7 +24,7 @@ trait ContainerBuilder[T] {
   /**
    * Creates a tabpane component to store nodes into panes
    */
-  def tabpane(cl: VUITabPane[T] => Unit) : VUITabPane[T]
+  def tabpane : VUITabPane[T]
   
   /**
    * Creates a Tab to be inserted inside a tabpane
@@ -32,7 +32,7 @@ trait ContainerBuilder[T] {
   //def tab : VUITab[T] 
   
 
-  def panel(cl: VUIPanel[T] => Unit) : VUIPanel[T]
+  def panel : VUIPanel[T]
   
   
 }

@@ -22,7 +22,7 @@ trait ControlsBuilder[T] {
   /**
    * Constructs a simple button
    */
-  def button(text: String)(cl: VUIButton[T] => Unit) : VUIButton[T]
+  def button(text: String) : VUIButton[T]
   
   
 }

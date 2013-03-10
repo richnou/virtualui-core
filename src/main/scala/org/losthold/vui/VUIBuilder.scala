@@ -10,6 +10,7 @@ import org.losthold.vui.swing.SwingVUIImpl
 import org.losthold.vui.components.main.MainBuilder
 import org.losthold.vui.components.scenegraph.SceneGraphBuilder
 import org.losthold.vui.components.layout.LayoutBuilder
+import org.losthold.vui.components.form.FormBuilder
 
 /**
  * @author rleys
@@ -19,7 +20,8 @@ abstract class VUIBuilder[T] extends  ContainerBuilder[T]
 							with ControlsBuilder[T] 
 							with LayoutBuilder[T]
 							with SceneGraphBuilder[T]
-							with MainBuilder[T] {
+							with MainBuilder[T]
+							with FormBuilder[T]{
 
 }
 
@@ -31,13 +33,15 @@ object VUIBuilder {
    */
   def selectedImplementation[T] : VUIBuilder[T] = {
     
-    return SwingVUIImpl.asInstanceOf[VUIBuilder[T]]
+    return VUIBuilder.findImplementations.head.asInstanceOf[VUIBuilder[T]]
+    
+    //return SwingVUIImpl.asInstanceOf[VUIBuilder[T]]
     
   }
   
   def findImplementations : Set[VUIBuilder[_]] = {
     
-    return Set(SwingVUIImpl)
+    return Set(new SwingVUIImpl)
     
     
   }

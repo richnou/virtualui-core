@@ -28,11 +28,13 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
   /**
    * Creates a tabpane component to store nodes into panes
    */
-  def createTabPane : VUITabPane[Component] = {
+  def tabpane : VUITabPane[Component] = {
     
     new JTabbedPane() with VUITabPane[Component] {
       
       def base : Container = this
+      
+
       
       // Node
       //------------
@@ -62,7 +64,7 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
     
   }
   
-  def createPanel : VUIPanel[Component] = {
+  def panel : VUIPanel[Component] = {
     
     new JPanel() with VUIPanel[Component] with SwingStylableTrait {
 

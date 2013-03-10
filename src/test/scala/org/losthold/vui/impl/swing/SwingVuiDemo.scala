@@ -21,7 +21,9 @@ object SwingVuiDemo extends App {
           g layout vbox
 
           g <= label("Hello1")
-          g <= label("Hello1")
+          g <= label("Hello1") {
+             l => 
+          }
           g <= label("Hello1")
 
           var hello2Group = g node group { 

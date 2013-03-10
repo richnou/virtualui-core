@@ -21,7 +21,7 @@ trait SwingSceneGraphBuilder extends SceneGraphBuilder[Component] {
    * Return group as JPanel:
    *  
    */
-  def group(cl: SGGroup[Component] => Unit): SGGroup[Component] = {
+  def group(): SGGroup[Component] = {
 
     var group = new JPanel() with SGGroup[Component] {
 
@@ -55,9 +55,6 @@ trait SwingSceneGraphBuilder extends SceneGraphBuilder[Component] {
       }
 
     }
-
-    // Apply content
-    cl(group)
 
     group
 

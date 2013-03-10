@@ -10,6 +10,6 @@ package org.losthold.vui.components.scenegraph
 trait SceneGraphBuilder[T] {
 
   
-  def group(cl : SGGroup[T] => Unit ) : SGGroup[T]
+  def group( ) : SGGroup[T]
   
 }

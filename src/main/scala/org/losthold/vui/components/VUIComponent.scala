@@ -36,7 +36,9 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
    */
   def onDrag(action: VUIMouseEvent => Unit) = {}
 
-  
+  //---------------------------------
+  //-- Keyboard listener
+  def onEnter( action : => Unit) = {}
    
   //----------------------
   //-- Geometry listeners

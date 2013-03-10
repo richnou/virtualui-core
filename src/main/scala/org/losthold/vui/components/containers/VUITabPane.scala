@@ -38,20 +38,10 @@ trait VUITabPane[T] extends VUIComponent[T] with SGContainerNode[T] with VBuilde
   /**
    * Add a titled tab
    */
-  /*def <= (title:String) : SGGroup[T] = {
-    
-    // Create  group
-    this <=(title,group{g => })
-    
-  }*/
-  
-  def <= (title:String)(cl: SGGroup[T] => Unit) : SGGroup[T] = {
+  def <= (title:String)(ct: SGGroup[T] ) : SGGroup[T] = {
     
     // Create  group
     var tabgroup  =  this <=(title,group{g => })
-    
-    // Apply content
-    cl(tabgroup)
     
     tabgroup
     

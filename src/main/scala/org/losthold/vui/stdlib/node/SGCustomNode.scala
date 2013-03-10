@@ -1,7 +1,9 @@
 /**
  *
  */
-package org.losthold.vui.components.scenegraph
+package org.losthold.vui.stdlib.node
+
+import org.losthold.vui.components.scenegraph.SGNode
 
 /**
  * This class is a convinience class to implement a user specific class
@@ -22,7 +24,7 @@ package org.losthold.vui.components.scenegraph
  * @author rleys
  *
  */
-abstract class SGNodeWrapper[T] extends SGNode[T] {
+abstract class SGCustomNode[T] extends SGNode[T] {
 
   /**
    * ui result will be stored here
@@ -50,8 +52,8 @@ abstract class SGNodeWrapper[T] extends SGNode[T] {
   protected def createUI : SGNode[T]
    
 }
-object SGNodeWrapper {
+object SGCustomNode {
   
-  implicit def convertSGNodeWrapperToSGNode[T](wrapper: SGNodeWrapper[T]): SGNode[T] = wrapper.uiNode
+  implicit def convertSGCustomNodeToSGNode[T](wrapper: SGCustomNode[T]): SGNode[T] = wrapper.uiNode
   
 }

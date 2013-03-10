@@ -3,37 +3,37 @@
  */
 package org.losthold.vui.swing
 
-import org.losthold.vui.impl.VUIPreImpl
-import javax.swing.JFrame
-import org.losthold.vui.components.layout.VUIVBoxLayout
-import javax.swing.Box
 import java.awt.Component
-import org.losthold.vui.impl.VuiTypeWrapper
-import javax.swing.WindowConstants
-import java.awt.Dimension
-import org.losthold.vui.components.main.VuiFrame
-import org.losthold.vui.components.scenegraph.SGNode
 import java.awt.Container
-import org.losthold.vui.swing.builders.SwingContainerBuilder
-import org.losthold.vui.swing.builders.SwingSceneGraphBuilder
-import org.losthold.vui.swing.builders.SwingLayoutBuilder
+import java.awt.Dimension
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import org.losthold.vui.components.main.VuiFrame
+import org.losthold.vui.components.scenegraph.SGNode
+import org.losthold.vui.impl.VuiTypeWrapper
+import org.losthold.vui.swing.builders.SwingContainerBuilder
+import org.losthold.vui.swing.builders.SwingLayoutBuilder
+import org.losthold.vui.swing.builders.SwingSceneGraphBuilder
+import javax.swing.JFrame
+import javax.swing.WindowConstants
+import org.losthold.vui.VUIBuilder
 
 /**
  * @author rleys
  *
  */
-class SwingVUIImpl extends VUIPreImpl[Component] 
+class SwingVUIImpl 
+					extends VUIBuilder[Component]
 					with SwingControlsBuilder
 					with SwingContainerBuilder
 					with SwingLayoutBuilder
-					with SwingSceneGraphBuilder {
+					with SwingSceneGraphBuilder
+					with SwingFormBuilder {
  
   /**
    * From PreImpl
    */
-  def createFrame(): VuiFrame[Component] = {
+  def frame(): VuiFrame[Component] = {
 
     //- -Create Frame
     val swingFrame = new JFrame()
@@ -92,6 +92,6 @@ class SwingVUIImpl extends VUIPreImpl[Component]
   }
 
 }
-object SwingVUIImpl extends SwingVUIImpl {
+object SwingVUIImpl  {
 
 }

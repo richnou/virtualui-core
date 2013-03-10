@@ -12,9 +12,21 @@ import org.losthold.vui.VUIBuilder
 trait MainBuilder[T] {
 
   
+  def frame( ) : VuiFrame[T]
   
-  def frame( content : VuiFrame[T] => Unit) : VuiFrame[T]  = VUIBuilder.selectedImplementation.frame(content)
-  
+  /*= {
+    
+    //-- Create Frame
+    var frame = createFrame()
+    
+    //-- Execute content
+    content(frame)
+    
+    //-- Return
+    return frame
+    
+    
+  }*/
   
   
 }

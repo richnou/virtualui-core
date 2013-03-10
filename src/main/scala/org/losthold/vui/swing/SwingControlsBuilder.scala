@@ -20,24 +20,27 @@ import org.losthold.vui.components.scenegraph.SGNode
 import javax.swing.JButton
 import javax.swing.JLabel
 
+trait NodeCommon extends SGNode[Component] {
+    
+    //override def revalidate = base.revalidate()
+  
+  
+  }
+
 /**
  * @author rleys
  *
  */
 trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
-  trait NodeCommon extends SGNode[Component] {
-    
-    //override def revalidate = base.revalidate()
-    
-  }
+  
   
   /**
    * Implements returning a label
    */
   override def label(text:String) : VUILabel[Component] = {
     
-    new JLabel(text) with VUILabel[Component] with SGNode[Component] with NodeCommon {
+    new JLabel(text) with VUILabel[Component] with SGNode[Component] {
       
       // Node
       //---------
@@ -100,7 +103,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
   /**
    * Implements returning a button
    */
-  def createButton(text: String) : VUIButton[Component] = {
+  def button(text: String) : VUIButton[Component] = {
     
     // Create Button
     //-------------------
