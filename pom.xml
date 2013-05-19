@@ -6,8 +6,8 @@
   <name>VUI Library</name>
   <parent>
         <groupId>com.idyria.osi</groupId>
-        <artifactId>superpom</artifactId>
-        <version>2.1.2</version>
+        <artifactId>superpom-scala</artifactId>
+        <version>2.10.1.r4</version>
     </parent>
     <build>
     	<sourceDirectory>src/main/scala</sourceDirectory>
