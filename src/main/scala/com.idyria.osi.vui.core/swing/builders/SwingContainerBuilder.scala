@@ -93,8 +93,8 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
 
       def layout(l: VUILayout[Component]) = {
 
-    	this.definedLayout = l
-        l.setTargetGroup(this)
+    	   this.definedLayout = l
+         l.setTargetGroup(this)
 
       }
 

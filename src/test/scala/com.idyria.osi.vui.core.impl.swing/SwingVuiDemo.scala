@@ -1,8 +1,8 @@
-package org.losthold.vui.impl.swing
+package com.idyria.osi.vui.core.impl.swing
 
-import org.losthold.vui.VBuilder
-import org.losthold.vui.components.controls.VUILabel
-import org.losthold.vui.generic.diagram.DiagramBuilder
+import com.idyria.osi.vui.core.VBuilder
+import com.idyria.osi.vui.core.components.controls.VUILabel
+import com.idyria.osi.vui.core.generic.diagram.DiagramBuilder
 
 object SwingVuiDemo extends App {
 
@@ -22,11 +22,11 @@ object SwingVuiDemo extends App {
 
           g <= label("Hello1")
           g <= label("Hello1") {
-             l => 
+             l =>
           }
           g <= label("Hello1")
 
-          var hello2Group = g node group { 
+          var hello2Group = g node group {
             g =>
 	            g layout vbox
 	            g node label("Hello2")

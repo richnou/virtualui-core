@@ -18,6 +18,8 @@ import javax.swing.JFrame
 import javax.swing.WindowConstants
 import com.idyria.osi.vui.core.VUIBuilder
 
+import com.idyria.osi.vui.core.components.layout.VUILayout
+
 /**
  * @author rleys
  *
@@ -30,64 +32,84 @@ class SwingVUIImpl
 					with SwingSceneGraphBuilder
 					with SwingFormBuilder {
 
+
   /**
    * From PreImpl
    */
   def frame(): VuiFrame[Component] = {
 
-    //- -Create Frame
-    val swingFrame = new JFrame()
+      //- -Create Frame
+      val swingFrame = new JFrame()
 
-    //-- Return FrameView Container
-    new VuiTypeWrapper[JFrame](swingFrame) with SwingContainerTrait with VuiFrame[Component] {
+      //-- Return FrameView Container
+      new VuiTypeWrapper[JFrame](swingFrame) with SwingContainerTrait with VuiFrame[Component] {
 
-      // Node
-      //---------------
-      override def revalidate = base.revalidate
+        // Node
+        //---------------
+        override def revalidate = base.revalidate
 
-      // Per default dispose
-      base.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+        // Per default dispose
+        base.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+
+        // Add A Container node per default
+        //----------
+        var topNode =  SwingVUIImpl.this.panel
+        this.node(topNode)
+
+        //-----------------
+        // VuiFrame
+
+        //-------------------
+        //-- Layout
+
+        var definedLayout : VUILayout[Component] = null
+
+        def layout(l: VUILayout[Component]) = {
+
+            topNode layout(l)
+
+        }
+
+        //------------------
+        //-- Events
+
+        /**
+         * Register closure in swing listener
+         */
+        override def onClose(cl : => Unit) =  this.base.addWindowListener(new WindowAdapter(){
+            override def  windowClosed( e: WindowEvent) = cl
+          })
 
 
-      //-----------------
-      // VuiFrame
+        //------------------
+        //-- Control
+        def title(title: String) = base.setTitle(title)
 
-      //------------------
-      //-- Events
+        def size(width: Int, height: Int) = {
+          base.setSize(width, height)
+        }
+        def width(width: Int) = base.setSize(new Dimension(width, base.getSize().height))
+        def height(height: Int) = base.setSize(new Dimension(base.getSize().width, height))
 
-      /**
-       * Register closure in swing listener
-       */
-      override def onClose(cl : => Unit) =  this.base.addWindowListener(new WindowAdapter(){
-          override def  windowClosed( e: WindowEvent) = cl
-        })
+        def show() {
+          base.setVisible(true)
+        }
 
+        /**
+         * Add a node to this node container
+         */
+        def node[NT <: SGNode[Component]](ndef: NT) : NT = {
 
-      //------------------
-      //-- Control
-      def title(title: String) = base.setTitle(title)
+      	  //println("Setting content pane to: "+ndef.base)
+          if (topNode == ndef)
+            base.setContentPane(ndef.base.asInstanceOf[Container])
+          else
+            topNode.node(ndef)
 
-      def size(width: Int, height: Int) = {
-        base.setSize(width, height)
+          ndef
+        }
+
       }
-      def width(width: Int) = base.setSize(new Dimension(width, base.getSize().height))
-      def height(height: Int) = base.setSize(new Dimension(base.getSize().width, height))
-
-      def show() {
-        base.setVisible(true)
-      }
-
-      /**
-       * Add a node to this node container
-       */
-      def node[NT <: SGNode[Component]](ndef: NT) : NT = {
-
-    	println("Setting content pane to: "+ndef.base)
-        base.setContentPane(ndef.base.asInstanceOf[Container])
-        ndef
-      }
-
-    }
 
   }
 
