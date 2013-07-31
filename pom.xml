@@ -100,5 +100,12 @@
         </repository>
     </repositories>
 
+    <dependencies>
+        <dependency>
+          <groupId>com.idyria.osi.tea</groupId>
+          <artifactId>tea</artifactId>
+          <version>3.0.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
 
 </project>

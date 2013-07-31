@@ -3,15 +3,22 @@
   */
 package com.idyria.osi.vui.core.swing
 
+import com.idyria.osi.vui.core.swing.model._
+
 import java.awt.Component
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
-import com.idyria.osi.vui.core.components.form.FormBuilder
-import com.idyria.osi.vui.core.components.form.VUIInputText
-import com.idyria.osi.vui.core.components.form.VUIList
 import javax.swing.JTextField
 import javax.swing.JList
 import javax.swing.DefaultListModel
+
+import javax.swing.text._
+
+import com.idyria.osi.vui.core.components.form.FormBuilder
+import com.idyria.osi.vui.core.components.form.VUIInputText
+import com.idyria.osi.vui.core.components.form.VUIList
+
+import com.idyria.osi.vui.core.components.model._
 
 /**
   * @author rleys
@@ -53,7 +60,7 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 
   def textInput(): VUIInputText[Component] = {
 
-    var textField = new JTextField with VUIInputText[Component]  with NodeCommon {
+    var textField = new JTextField with VUIInputText[Component]  with NodeCommon with SwingTextModelSupport {
 
     		def base : Component = this
     		override def revalidate = super.revalidate
@@ -82,6 +89,8 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 	      override def getX: Int = getPosition._1
 	      override def setY(y:Int) = super.setY(y)
 	      override def getY: Int = getPosition._2
+
+
 
     }
 
