@@ -3,6 +3,9 @@
  */
 package com.idyria.osi.vui.core.components.scenegraph
 
+import com.idyria.osi.tea.listeners.ListeningSupport
+
+
 /**
  *
  * Base Node for all Scene Graph Nodes
@@ -10,7 +13,7 @@ package com.idyria.osi.vui.core.components.scenegraph
  * @author rleys
  *
  */
-trait SGNode[T] {
+trait SGNode[T] extends ListeningSupport {
 
   def base : T
 

@@ -46,6 +46,11 @@ trait SwingSceneGraphBuilder extends SceneGraphBuilder[Component] {
 
       }
 
+      def clear = {
+        this.removeAll
+        this.revalidate
+      }
+
       def layout(l: VUILayout[Component]) = {
 
     	this.definedLayout = l

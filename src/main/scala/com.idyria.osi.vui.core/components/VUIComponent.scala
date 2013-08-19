@@ -29,7 +29,7 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
   /**
    * The provided closure is to be executed on the click event
    */
-  def onClicked(action: => Unit) = {}
+  def onClicked(action: => Any) = {}
 
   /**
    * The drag event is triggered when the mouse is hold and moved on the object

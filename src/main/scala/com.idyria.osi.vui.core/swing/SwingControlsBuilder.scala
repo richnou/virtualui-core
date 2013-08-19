@@ -17,6 +17,7 @@ import com.idyria.osi.vui.core.components.controls.VUIButton
 import com.idyria.osi.vui.core.components.controls.VUILabel
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 
+import javax.swing._
 import javax.swing.JButton
 import javax.swing.JLabel
 
@@ -81,8 +82,11 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
       }
 
-      override def onClicked(action: => Unit) =  this.addMouseListener(new MouseAdapter() {
-        override def  mouseClicked(e : MouseEvent) = action
+      override def onClicked(action: => Any) =  this.addMouseListener(new MouseAdapter() {
+        override def  mouseClicked(e : MouseEvent) = SwingUtilities.invokeLater(new Runnable {
+
+            override def run() = action
+          })
         })
 
 
@@ -130,7 +134,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       override def setY(y:Int) = super.setY(y)
       override def getY: Int = getPosition._2
 
-      override def onClicked(action: => Unit) = {
+      override def onClicked(action: => Any) = {
 
         this.addActionListener(new ActionListener() {
 

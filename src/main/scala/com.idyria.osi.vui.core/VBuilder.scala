@@ -52,7 +52,7 @@ trait VBuilderBase[T]  {
   // Scene Graph
   //--------------------------
 
-  def group(cl : SGGroup[T] => Unit ) : SGGroup[T] = apply(VUIBuilder.selectedImplementation[T].group(),cl)
+  def group(implicit cl : SGGroup[T] => Unit ) : SGGroup[T] = apply(VUIBuilder.selectedImplementation[T].group(),cl)
 
   // Layouts
   //-------------------

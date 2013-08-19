@@ -48,6 +48,11 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
         content
       }
 
+      def clear = {
+        this.removeAll
+        this.revalidate
+      }
+
       // Positioning
       //---------------------
       def setPosition(x:Int,y:Int) = super.setLocation(x, y)
@@ -58,6 +63,8 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
       override def getX: Int = getPosition._1
       override def setY(y:Int) = super.setY(y)
       override def getY: Int = getPosition._2
+
+
 
     }
 
@@ -89,6 +96,11 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
 
         nd
 
+      }
+
+      def clear = {
+        this.removeAll
+        this.revalidate
       }
 
       def layout(l: VUILayout[Component]) = {

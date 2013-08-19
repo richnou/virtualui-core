@@ -25,6 +25,10 @@ abstract trait SGContainerNode[T] extends SGNode[T]  {
   def <=[NT <: SGNode[T]](n: NT) : NT = this.node(n)
 
 
+  /**
+    Clear Children components
+  */
+  def clear
 
 
 }

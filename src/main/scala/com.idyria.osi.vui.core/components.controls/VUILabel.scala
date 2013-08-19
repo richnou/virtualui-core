@@ -15,4 +15,9 @@ trait VUILabel[T] extends VUIComponent[T] {
 
    def apply( content: VUILabel[T] => Unit) : VUILabel[T] = {content(this);this}
 
+   /**
+        Change the text of this label
+   */
+   def setText(str: String)
+
 }

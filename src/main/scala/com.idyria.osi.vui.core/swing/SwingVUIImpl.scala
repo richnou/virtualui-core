@@ -106,7 +106,21 @@ class SwingVUIImpl
           else
             topNode.node(ndef)
 
+          revalidate
+
           ndef
+        }
+
+        /**
+          Clear Content of this Pane and reset a default panel
+        */
+        def clear = {
+
+          //base.setContentPane(null)
+          topNode =  SwingVUIImpl.this.panel
+          this.node(topNode)
+          
+          revalidate
         }
 
       }
