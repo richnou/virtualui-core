@@ -89,22 +89,36 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
         var cstr = new GridBagConstraints
 
+        // Row / Column
         var row = constraints.get("row").asInstanceOf[Integer]
         var column = constraints.get("column").asInstanceOf[Integer]
 
+        println(s"Applying GridBagLayout Constraints $row:$column")
+
+        // Anchor
+        try {
+          
+          constraints.get("align") match {
+            case "right" => 
+                println(s"---------> Align right")
+                cstr.anchor = GridBagConstraints.EAST
+          }
+
+        } catch {
+          case e: Throwable =>
+        }
+        // Expand
         try {
             var expand = constraints.get("expand")
             cstr.weightx = 1
             cstr.weighty = 1
+            cstr.fill = GridBagConstraints.BOTH
 
         } catch {
           case e: Throwable =>
-
-
-
         }
 
-        println(s"Applying GridBagLayout Constraints $row:$column")
+        
 
         
         cstr.gridy  = row

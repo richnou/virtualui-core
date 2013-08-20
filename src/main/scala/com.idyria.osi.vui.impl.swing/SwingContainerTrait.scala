@@ -1,6 +1,6 @@
 /**
  *
- */
+ */ 
 package com.idyria.osi.vui.core.swing
 
 import com.idyria.osi.vui.core.components.containers.ContainerTrait

@@ -1,5 +1,6 @@
 
 
+
 import com.idyria.osi.ooxoo.model.out.scala._
 
 @producers(Array(
@@ -16,13 +17,15 @@ object ViewModel extends ModelBuilder {
     "ViewProcessTrait" is {
 
         //withTrait("com.idyria.osi.vui.lib.view.ViewProcessTrait")
-
+        isTrait
     }
+
 
     // View
     //-------------------
 
     var view = "ViewTrait" is {
+        isTrait
 
         attribute("id")
         attribute("name")
@@ -33,7 +36,8 @@ object ViewModel extends ModelBuilder {
 
 
     "ViewGroupTrait" is {
-
+        isTrait
+        
         "View" multiple(view)
 
        // withTrait("com.idyria.osi.vui.lib.view.ViewGroupTrait")

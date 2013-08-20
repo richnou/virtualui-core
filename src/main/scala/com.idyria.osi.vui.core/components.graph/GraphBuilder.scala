@@ -5,6 +5,8 @@ import com.idyria.osi.vui.core.components.layout._
 
 import com.idyria.osi.vui.core.components.scenegraph._
 
+import scala.language.implicitConversions
+
 trait GraphBuilder extends VBuilder {
 
     var groupsStack = scala.collection.mutable.Stack[SGGroup[Any]]()
@@ -12,6 +14,56 @@ trait GraphBuilder extends VBuilder {
     var currentRow = 0 
 
     var currentColumn = 0
+
+    var currentConstraints : LayoutConstraints = null
+
+    // Language
+    //---------------------------
+    class RowLanguageWrapper(var left: String) {
+
+        def row(cl: => Unit) = {
+            GraphBuilder.this.row(left)(cl)
+        }
+        
+        def row(node: SGNode[Any]) = {
+            GraphBuilder.this.row(node)
+        }
+
+        def expandRow(node: SGNode[Any]) = {
+            GraphBuilder.this.row(node, ("expand" -> true))
+        }
+
+        def row(wrapper: AlignRightFunction) = {
+
+            println(s"Adding row with right constraints $left")
+
+
+
+            GraphBuilder.this.currentConstraints = LayoutConstraints("align"->"right")
+            GraphBuilder.this.row(left) {
+                wrapper.cl()
+            }
+            
+            GraphBuilder.this.currentConstraints = null
+
+            //GraphBuilder.this.row(left, ("expand" -> true))
+
+        }
+
+    }
+    implicit def convertStringToRow(str:String) = new RowLanguageWrapper(str)
+
+    class AlignRightFunction(var cl : ( () => Unit) )    {
+
+    }
+
+    def alignRight (cl: => Unit) :  AlignRightFunction = {
+
+        var clwrapper = { () =>
+            cl
+        }
+        return new AlignRightFunction(clwrapper)
+    }
 
     def graph(cl: => Unit) : SGGroup[Any] = {
 
@@ -60,7 +112,7 @@ trait GraphBuilder extends VBuilder {
 
     }
 
-    def row(node:SGNode[Any],constraintsBase: Seq[Tuple2[String,Any]]) : Unit = {
+    def row(node:SGNode[Any],constraintsBase: Tuple2[String,Any]*) : Unit = {
 
         // Add 
         groupsStack.head <= node
@@ -83,7 +135,7 @@ trait GraphBuilder extends VBuilder {
         //groupsStack.head.layout.applyConstraints(node,constraints)
     }
 
-    def row(node:SGNode[Any])  : Unit = {
+   /* def row(node:SGNode[Any])  : Unit = {
 
         this.row(node,Seq[Tuple2[String,Any]]())
         
@@ -92,7 +144,7 @@ trait GraphBuilder extends VBuilder {
         // Just add to head
         /*groupsStack.head <= node*/
      
-    }
+    }*/
 
     def |(nodes:SGNode[Any]*) = {
 
@@ -103,7 +155,11 @@ trait GraphBuilder extends VBuilder {
                 groupsStack.head <= node
 
                 // Apply Constraints
-                groupsStack.head.layout.applyConstraints(node,LayoutConstraints( "row" -> currentRow , "column" -> currentColumn ))
+                var constraints = LayoutConstraints( "row" -> currentRow , "column" -> currentColumn )
+                if (this.currentConstraints!=null) {
+                    constraints(this.currentConstraints)
+                }
+                groupsStack.head.layout.applyConstraints(node,constraints)
 
                 // Increment Column
                 this.currentColumn+=1

@@ -5,6 +5,16 @@ class LayoutConstraints {
 
     var constraints = Map[String,Any]()
 
+    def apply(lc: LayoutConstraints) = {
+
+        this.constraints = this.constraints ++ lc.constraints
+        /*lc.constraints.foreach {
+            (key,value) => 
+                this.constraints = this.constraints + (key -> value)
+        }*/
+
+    }
+
     def get(str: String) : Any = {
 
         this.constraints.get(str) match {

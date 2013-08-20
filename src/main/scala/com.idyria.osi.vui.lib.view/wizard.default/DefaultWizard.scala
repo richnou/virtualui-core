@@ -13,7 +13,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GraphBuilde
     //------------------------
     override def changeView (view:View) = {
 
-        //place("middle")(view.content)
+        place("middle")(view.content)
 
     }
 
@@ -23,6 +23,8 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GraphBuilde
 
     override def initDialog() = {
 
+        var expandConstraint = new Tuple2("expand",true)
+
         println("Preparing default wizard")
         this.dialog {
             dialog => 
@@ -31,7 +33,19 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GraphBuilde
 
                 dialog <= graph {
 
-                    row("top") {
+                    "top" row {
+                        |(label("Top"))
+                    }
+                    "middle" expandRow placeHolder("middle")
+
+                    "bottom" row alignRight {
+
+                        println("In bottom row")
+
+                        |(button("Ok") , button("Finish") ,button("Cancel"))
+                    }
+
+                    /*row("top") {
                         |(label("Top"))
                     }
                     row(placeHolder("middle"),Seq[Tuple2[String,Any]](new Tuple2("expand",true)) ) 
@@ -41,7 +55,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GraphBuilde
                         |(button("Ok") , button("Finish") ,button("Cancel"))
                        // ->(  button("Ok") , button("Finish") ,button("Cancel") )
 
-                    }
+                    }*/
 
                 }
                 /*dialog <= group {
