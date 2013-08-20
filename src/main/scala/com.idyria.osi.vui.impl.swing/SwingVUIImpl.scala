@@ -11,9 +11,8 @@ import java.awt.event.WindowEvent
 import com.idyria.osi.vui.core.components.main.VuiFrame
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.impl.VuiTypeWrapper
-import com.idyria.osi.vui.core.swing.builders.SwingContainerBuilder
-import com.idyria.osi.vui.core.swing.builders.SwingLayoutBuilder
-import com.idyria.osi.vui.core.swing.builders.SwingSceneGraphBuilder
+import com.idyria.osi.vui.core.swing.builders._
+
 import javax.swing.JFrame
 import javax.swing.WindowConstants
 import com.idyria.osi.vui.core.VUIBuilder
@@ -59,16 +58,7 @@ class SwingVUIImpl
         //-----------------
         // VuiFrame
 
-        //-------------------
-        //-- Layout
-
-        var definedLayout : VUILayout[Component] = null
-
-        def layout(l: VUILayout[Component]) = {
-
-            topNode layout(l)
-
-        }
+        
 
         //------------------
         //-- Events
@@ -100,17 +90,38 @@ class SwingVUIImpl
          */
         def node[NT <: SGNode[Component]](ndef: NT) : NT = {
 
-      	  //println("Setting content pane to: "+ndef.base)
-          if (topNode == ndef)
-            base.setContentPane(ndef.base.asInstanceOf[Container])
-          else
-            topNode.node(ndef)
+          (topNode == ndef) match {
 
-          revalidate
+            case true => 
+            
+                println("Setting content pane to: "+ndef.base)
+                base.setContentPane(ndef.base.asInstanceOf[Container])
+                revalidate
+            case false =>
 
+                println("Adding node to top pane: "+ndef.base)
+                topNode.node(ndef)
+                topNode.revalidate
+          }
+      	  
           ndef
         }
 
+        //-------------------
+        //-- Layout
+
+        var definedLayout : VUILayout[Component] = null
+
+        def layout(l: VUILayout[Component]) = {
+
+
+            topNode.layout(l)
+            println("Setting Layout to: "+topNode.base)
+
+        }
+
+        def layout : VUILayout[Component] = this.definedLayout
+        
         /**
           Clear Content of this Pane and reset a default panel
         */

@@ -23,4 +23,8 @@ trait VUILayout[T] {
 
   def nodeAdded(node : SGNode[T])
 
+  def applyConstraints(node: SGNode[T], constraints: LayoutConstraints) = {
+    
+  }
+
 }

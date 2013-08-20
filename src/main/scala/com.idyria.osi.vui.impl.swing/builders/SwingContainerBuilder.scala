@@ -4,25 +4,29 @@
 package com.idyria.osi.vui.core.swing.builders
 
 import com.idyria.osi.vui.core.components.containers.ContainerBuilder
-import java.awt.Component
 import com.idyria.osi.vui.core.components.layout.VuiSwitchLayout
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import com.idyria.osi.vui.core.components.containers.VUITab
 import com.idyria.osi.vui.core.components.containers.VUITabPane
-import java.awt.Container
-import javax.swing.JTabbedPane
 import com.idyria.osi.vui.core.components.scenegraph.SGContainerNode
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
-import javax.swing.JPanel
 import com.idyria.osi.vui.core.components.layout.VUILayout
+import com.idyria.osi.vui.core.components.layout.LayoutContainer
 import com.idyria.osi.vui.core.components.containers.VUIPanel
+
+import com.idyria.osi.vui.core.components.scenegraph._
+
 import com.idyria.osi.vui.core.swing.style.SwingStylableTrait
 
+import java.awt.Component
+import java.awt.Container
+import javax.swing.JTabbedPane
+import javax.swing.JPanel
 /**
  * @author rleys
  *
  */
-trait SwingContainerBuilder extends ContainerBuilder[Component] {
+trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphBuilder[Component] {
 
 
   /**
@@ -30,7 +34,27 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
    */
   def tabpane : VUITabPane[Component] = {
 
-    new JTabbedPane() with VUITabPane[Component] {
+    return new SwingJComponentCommonDelegate[JTabbedPane](new JTabbedPane) with VUITabPane[Component]  {
+
+        /**
+         * Node method override to add components as tabs
+         */
+        def node[NT <: SGNode[Component]](title:String)(content:NT) : NT = {
+
+          delegate.addTab(title,content.base)
+          content
+        }
+
+        /**
+          Returns nothing
+        */
+        def layout : VUILayout[Component] = null
+
+
+    }
+
+    //return null
+   /* new JTabbedPane() with VUITabPane[Component] {
 
       def base : Container = this
 
@@ -66,13 +90,65 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
 
 
 
-    }
+    }*/
 
 
   }
 
+  /**
+   * Return group as JPanel:
+   *
+   */
+  def group(): SGGroup[Component] = panel
+
+  /**
+    Build panel
+  */
   def panel : VUIPanel[Component] = {
 
+      return new SwingJComponentCommonDelegate[JPanel](new JPanel) with VUIPanel[Component] {
+
+        //-----------------------------
+        // Scene Graph
+
+        var definedLayout : VUILayout[Component] = null
+  
+
+        /**
+         * Add The node to the jpanel
+         */
+        def node[NT <: SGNode[Component]](nd: NT): NT = {
+
+          // Add to group
+          delegate.add(nd.base)
+
+          // If we have a layout, notify it
+          if (definedLayout!=null) {
+            definedLayout nodeAdded nd
+          }
+
+          nd
+
+        }
+
+        /*def clear = {
+          delegate.removeAll
+          delegate.revalidate
+        }*/
+
+        def layout(l: VUILayout[Component]) = {
+
+           this.definedLayout = l
+           l.setTargetGroup(this)
+
+        }
+
+        def layout : VUILayout[Component] = this.definedLayout
+
+      }
+
+    
+/*
     new JPanel() with VUIPanel[Component] with SwingStylableTrait {
 
       //-----------------------------
@@ -123,7 +199,7 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] {
 
     }
 
-
+*/
 
   }
 

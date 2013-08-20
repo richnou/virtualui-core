@@ -1,7 +1,7 @@
 /**
   *
   */
-package com.idyria.osi.vui.core.swing
+package com.idyria.osi.vui.core.swing.builders
 
 import com.idyria.osi.vui.core.swing.model._
 
@@ -28,10 +28,21 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 
   def list() : VUIList[Component] = {
 
-		  new JList[Object] with VUIList[Component] {
+      return new SwingJComponentCommonDelegate[JList[Object]](new JList[Object]()) with VUIList[Component] {
 
-			  val model = new DefaultListModel[Object]
-			  this.setModel(model)
+          var model = new DefaultListModel[Object]
+          delegate.setModel(model)
+
+          // Implementation
+          //----------------------------------
+          def add(obj : AnyRef)  = {
+            model.addElement(obj)
+          }
+      }.asInstanceOf[VUIList[Component]]
+
+		 /* new JList[Object] with VUIList[Component] {
+
+			  
 
 			  // Basic OVerrides for all JComponents
 		      //--------------------------
@@ -47,19 +58,39 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 		      override def setY(y:Int) = super.setY(y)
 		      override def getY: Int = getPosition._2
 
-		      // Implementation
-		      //----------------------------------
-		      def add(obj : AnyRef)  = {
-		    	  model.addElement(obj)
-			  }
+		      
 
 		  }
+      */
 
   }
 
 
   def textInput(): VUIInputText[Component] = {
 
+
+    return new SwingJComponentCommonDelegate[JTextField](new JTextField) with VUIInputText[Component] with SwingTextModelSupport {
+
+          // Events
+          //---------------------
+          override def onEnter( action : => Unit) = {
+              delegate.addActionListener(new ActionListener() {
+                def actionPerformed(ev: ActionEvent) {
+                  action
+                }
+              })
+          }
+
+          // Text and Model
+          //--------------
+          def getDocument : Document = delegate.getDocument
+          def setText(str: String) = delegate.setText(str)
+
+          // Text Return
+          //----------------------
+          override def toString:String = delegate.getText()
+      }
+      /*
     var textField = new JTextField with VUIInputText[Component]  with NodeCommon with SwingTextModelSupport {
 
     		def base : Component = this
@@ -95,6 +126,7 @@ trait SwingFormBuilder extends FormBuilder[Component]{
     }
 
     return textField
+    */
 
   }
 

@@ -10,6 +10,6 @@ import com.idyria.osi.vui.core.components.scenegraph.SGGroup
  * @author rleys
  *
  */
-trait VUITab[T] extends VUIComponent[T] with SGGroup[T] {
+trait VUITab[T] extends VUIComponent[T]  with SGGroup[T] {
 
 }

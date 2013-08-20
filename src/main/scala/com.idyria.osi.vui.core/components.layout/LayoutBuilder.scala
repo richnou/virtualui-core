@@ -20,9 +20,15 @@ trait LayoutBuilder[T] {
   def hbox : VUIHBoxLayout[T]
 
   /**
+    Creates a Layout to organise elements based on a grid
+  */
+  def grid : VUIGridLayout[T]
+
+  /**
    * Creates a layout to organise nodes depending on each specified position
    */
   def none : VUIFreeLayout[T]
+
 
 
 }

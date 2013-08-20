@@ -4,7 +4,7 @@
 package com.idyria.osi.vui.core.components.containers
 
 import com.idyria.osi.vui.core.components.VUIComponent
-import com.idyria.osi.vui.core.components.scenegraph.SGGroup
+import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.VBuilder
 import com.idyria.osi.vui.core.components.controls.ControlsBuilder
 import com.idyria.osi.vui.core.VBuilderBase
@@ -16,7 +16,7 @@ import com.idyria.osi.vui.core.stdlib.form.VUIStdlibFormBuilder
  * @author rleys
  *
  */
-trait VUIPanel[T] extends VUIComponent[T] with SGGroup[T]  with VBuilderBase[T] {
+trait VUIPanel[T] extends VUIComponent[T] with SGGroup[T]  {
 
 
   // Embedded Builder Interface

@@ -44,6 +44,9 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
     }
 
     // Process
+    //--------------------------
+
+    // View Change and Progress
     //------------------
 
     /**
@@ -63,6 +66,7 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
         }
 
     }
+    def ->(nextView: String) = this.progressTo(nextView)
 
     /**
         Progress to first view
@@ -106,9 +110,6 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
 
 
     
-    implicit def actionConvert( act : => Unit) : ActionWrapper = new ActionWrapper(act)
+    
 }
-class ActionWrapper(left: => Unit) {
 
-
-}

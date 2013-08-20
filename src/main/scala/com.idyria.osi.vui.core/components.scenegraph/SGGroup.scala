@@ -15,14 +15,14 @@ import com.idyria.osi.vui.core.components.layout.VUILayout
 trait SGGroup[T] extends SGContainerNode[T] {
 
 
-  def apply(g : SGGroup[T]) = {
+  def apply[NT <: SGNode[T]](g : SGGroup[T]) = {
 
     this.node(g)
 
   }
 
 
-  def apply(cl: SGGroup[T] => Unit) {
+  def apply[NT <: SGNode[T]](cl: SGGroup[T] => Unit) {
     cl(this)
   }
 
@@ -32,6 +32,6 @@ trait SGGroup[T] extends SGContainerNode[T] {
    */
   def layout(layout: VUILayout[T])
 
-
+  def layout : VUILayout[T]
 
 }

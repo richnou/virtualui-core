@@ -3,8 +3,12 @@
  */
 package com.idyria.osi.vui.core.components
 
+import com.idyria.osi.vui.core.components.events._
+
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.styling.StylableTrait
+
+import com.idyria.osi.vui.core._
 
 /**
  *
@@ -16,10 +20,21 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
 
 
   //----------------------
-  // Actions
+  // General Control
+  //----------------------
+
+  /**
+    To be overriden is the component can be disabled
+  */
+  def disable : Unit 
+
+  //----------------------
+  // Actions  
+  //----------------------
 
   //----------------------
   //--  Mouse Listeners
+
 
   /**
    * When the mouse is pressed, but not released already
@@ -50,7 +65,7 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
 
   //----------------------
   // Positioning
-
+  //----------------------
   /**
    * Set the position of the component
    */

@@ -15,10 +15,7 @@ class WizardDialog extends Wizard {
     //--------------------
     var dialog =  frame 
 
-    /*
-        Prepare the Dialog With the first View
-    */
-    def showDialog = {
+    def initDialog() = {
 
         dialog {
             f =>
@@ -26,6 +23,13 @@ class WizardDialog extends Wizard {
                 f <= this.view.head.content 
 
         }
+
+    }
+
+    /*
+        Prepare the Dialog With the first View
+    */
+    def showDialog = {
 
         dialog.show
 

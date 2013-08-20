@@ -3,15 +3,15 @@
  */
 package com.idyria.osi.vui.core.swing.builders
 
-import com.idyria.osi.vui.core.components.layout.LayoutBuilder
-import com.idyria.osi.vui.core.components.layout.VUIVBoxLayout
+
 import java.awt.Component
 import javax.swing.BoxLayout
-import com.idyria.osi.vui.core.components.layout.VUIVBoxLayout
-import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import java.awt.Container
-import com.idyria.osi.vui.core.components.layout.VUIHBoxLayout
-import com.idyria.osi.vui.core.components.layout.VUIFreeLayout
+import java.awt.GridBagLayout
+import java.awt.GridBagConstraints
+
+import com.idyria.osi.vui.core.components.scenegraph.SGGroup
+import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 
 /**
@@ -57,6 +57,61 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
       // No need to do anything
       def nodeAdded(node : SGNode[Component]) = {
+
+          
+
+      }
+
+    }
+
+  }
+
+  def grid : VUIGridLayout[Component] = {
+
+    return new VUIGridLayout[Component] {
+
+      var layout = new GridBagLayout
+
+      def setTargetGroup(group : SGGroup[Component]) = {
+
+        group.base.asInstanceOf[Container].setLayout(layout)
+        
+        group.revalidate
+        
+      }
+
+      // No need to do anything
+      def nodeAdded(node : SGNode[Component]) = {
+
+      }
+
+      override def applyConstraints(node: SGNode[Component],constraints:LayoutConstraints) = {
+
+        var cstr = new GridBagConstraints
+
+        var row = constraints.get("row").asInstanceOf[Integer]
+        var column = constraints.get("column").asInstanceOf[Integer]
+
+        try {
+            var expand = constraints.get("expand")
+            cstr.weightx = 1
+            cstr.weighty = 1
+
+        } catch {
+          case e: Throwable =>
+
+
+
+        }
+
+        println(s"Applying GridBagLayout Constraints $row:$column")
+
+        
+        cstr.gridy  = row
+        cstr.gridx = column
+
+        this.layout.setConstraints(node.base, cstr)
+
       }
 
     }

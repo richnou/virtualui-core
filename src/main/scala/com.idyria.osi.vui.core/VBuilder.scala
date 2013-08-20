@@ -13,7 +13,7 @@ import com.idyria.osi.vui.core.components.layout.LayoutBuilder
 import com.idyria.osi.vui.core.components.layout.VUIVBoxLayout
 import com.idyria.osi.vui.core.components.controls.VUIButton
 import com.idyria.osi.vui.core.components.controls.VUILabel
-import com.idyria.osi.vui.core.components.layout.VUIHBoxLayout
+import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.core.components.layout.VUIFreeLayout
 import com.idyria.osi.vui.core.components.containers.VUITabPane
 import com.idyria.osi.vui.core.components.containers.VUIPanel
@@ -42,7 +42,7 @@ trait VBuilderBase[T]  {
   // Controls
   //--------------------
   def button(text: String)(implicit cl: VUIButton[T] => Unit) : VUIButton[T] = apply(VUIBuilder.selectedImplementation[T].button(text),cl);
-   def label(text:String)(implicit cl: VUILabel[T] => Unit) : VUILabel[T] = apply(VUIBuilder.selectedImplementation[T].label(text),cl);
+  def label(text:String)(implicit cl: VUILabel[T] => Unit) : VUILabel[T] = apply(VUIBuilder.selectedImplementation[T].label(text),cl);
 
   // Form
   //------------------
@@ -58,6 +58,7 @@ trait VBuilderBase[T]  {
   //-------------------
   def vbox : VUIVBoxLayout[T] = VUIBuilder.selectedImplementation[T].vbox
   def hbox : VUIHBoxLayout[T] = VUIBuilder.selectedImplementation[T].hbox
+  def grid : VUIGridLayout[T] = VUIBuilder.selectedImplementation[T].grid
   def none : VUIFreeLayout[T] = VUIBuilder.selectedImplementation[T].none
 
   // Containers

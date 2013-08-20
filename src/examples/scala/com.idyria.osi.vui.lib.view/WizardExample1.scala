@@ -43,9 +43,9 @@ object WizardExample1 extends App {
             node => 
 
 
-                node layout vbox
+               node layout vbox
 
-                node <= label("View B")
+               // node <= label("View B")
                 node <= button("Go to C") {
                     button => button.onClicked {
 
@@ -54,7 +54,9 @@ object WizardExample1 extends App {
                     }
                 }
                 node <= button("Produce an error") {
-                    button => button.onClicked {
+                    button => 
+                    button.disable
+                    button.onClicked {
 
                        throw new RuntimeException("Reached here through exception")
 
@@ -70,7 +72,7 @@ object WizardExample1 extends App {
 
                 node layout vbox
 
-                node <= label("View C grats!")
+               // node <= label("View C grats!")
                 node <= button("Reset") {
                     button => button.onClicked {
 
@@ -86,7 +88,7 @@ object WizardExample1 extends App {
 
                 node layout vbox
 
-                var msg = node <= label("Error View")
+               // var msg = node <= label("Error View")
                 node <= button("Reset") {
                     button => button.onClicked {
 
@@ -99,7 +101,7 @@ object WizardExample1 extends App {
                 node.onWith("error") {
                     e : Throwable => 
 
-                    msg.setText(s"Error: ${e}")
+                    //msg.setText(s"Error: ${e}")
                 }
         }
 

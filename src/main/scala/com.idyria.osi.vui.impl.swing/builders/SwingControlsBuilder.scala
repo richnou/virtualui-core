@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing
+package com.idyria.osi.vui.core.swing.builders
 
 import java.awt.Component
 import java.awt.event.ActionEvent
@@ -10,8 +10,8 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 
-import com.idyria.osi.vui.core.components.VUIDragEvent
-import com.idyria.osi.vui.core.components.VUIMouseEvent
+import com.idyria.osi.vui.core.components.events._
+
 import com.idyria.osi.vui.core.components.controls.ControlsBuilder
 import com.idyria.osi.vui.core.components.controls.VUIButton
 import com.idyria.osi.vui.core.components.controls.VUILabel
@@ -23,12 +23,6 @@ import javax.swing.JLabel
 
 import scala.language.implicitConversions
 
-trait NodeCommon extends SGNode[Component] {
-
-    //override def revalidate = base.revalidate()
-
-
-  }
 
 /**
  * @author rleys
@@ -43,6 +37,15 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
    */
   override def label(text:String) : VUILabel[Component] = {
 
+    return new SwingJComponentCommonDelegate[JLabel](new JLabel(text)) with VUILabel[Component] {
+
+        // Text
+        //--------------
+        def setText(str: String) = delegate.setText(str)
+
+    }
+
+    /*
     new JLabel(text) with VUILabel[Component] with SGNode[Component] {
 
       // Node
@@ -51,8 +54,14 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       def base : Component = this
       override def revalidate = super.revalidate
 
+      //---------------------------------------
+      // General
+      //---------------------------------------
+      override def disable = base.setEnabled(false)
+
+      //---------------------------------------
       // Actions
-      //------------------
+      //---------------------------------------
 
       override def onMousePressed(action: VUIMouseEvent => Unit) = {
 
@@ -103,6 +112,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       override def getY: Int = getPosition._2
 
     }
+    */
 
   }
 
@@ -113,18 +123,58 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
     // Create Button
     //-------------------
+    return new SwingJComponentCommonDelegate[JButton](new JButton(text)) with VUIButton[Component] {
 
+        override def disable = super.disable
+
+        //---------------------------------------
+        // Actions
+        //---------------------------------------
+        /*override def onClicked(action: => Any) = {
+
+          delegate.addActionListener(new ActionListener() {
+
+            def actionPerformed(ev: ActionEvent) = {
+              action
+            }
+
+          })
+
+        }*/
+
+        //---------------------------------------
+        // Positioning
+        //---------------------------------------
+        //def setPosition(x:Int,y:Int) = {delegate.setLocation(x, y); delegate.setBounds(x,y,delegate.getBounds().width,delegate.getBounds().height)}
+        //def getPosition : Pair[Int,Int] = Pair[Int,Int](delegate.getLocation().x,delegate.getLocation().y)
+
+        // Dummy Overrides for JComponent compatibility
+        /*override def setX(x:Int) = delegate.setX(x)
+        override def getX: Int = getPosition._1
+        override def setY(y:Int) = delegate.setY(y)
+        override def getY: Int = getPosition._2*/
+
+        
+    }
+
+    /*
     return new JButton(text) with VUIButton[Component] {
 
+      //---------------------------------------
       // Node
-      //--------------
+      //---------------------------------------
 
       def base : Component = this
       override def revalidate = super.revalidate
 
+      //---------------------------------------
+      // General
+      //---------------------------------------
+      //override def disable 
 
+      //---------------------------------------
       // Positioning
-      //---------------------
+      //---------------------------------------
       def setPosition(x:Int,y:Int) = {super.setLocation(x, y); super.setBounds(x,y,super.getBounds().width,super.getBounds().height)}
       def getPosition : Pair[Int,Int] = Pair[Int,Int](super.getLocation().x,super.getLocation().y)
 
@@ -147,28 +197,11 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       }
 
     }
-
+    */
   }
 
 
-  // Conversions
-  //-----------------------
-
-  //-- Convert component events
-  def convertMouseEventToVUIDragEvent(ev: MouseEvent) : VUIDragEvent = {
-    this.populateVUIMouseEvent[VUIDragEvent](ev, new VUIDragEvent)
-  }
-  implicit def convertMouseEventToVUIMouseEvent(ev: MouseEvent) : VUIMouseEvent = {
-    this.populateVUIMouseEvent[VUIMouseEvent](ev, new VUIMouseEvent)
-  }
-  private def populateVUIMouseEvent[ET <: VUIMouseEvent](srcEvent:MouseEvent,targetEvent: ET) : ET = {
-
-    // Fill in positions
-    targetEvent.actualX = srcEvent.getX()
-    targetEvent.actualY = srcEvent.getY()
-
-    targetEvent
-  }
+  
 
 
 }

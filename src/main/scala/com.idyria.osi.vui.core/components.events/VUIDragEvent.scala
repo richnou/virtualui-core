@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.components
+package com.idyria.osi.vui.core.components.events
 
 /**
  * @author rleys

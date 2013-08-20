@@ -4,6 +4,7 @@
 package com.idyria.osi.vui.core.components.layout
 
 import com.idyria.osi.vui.core.components.containers.ContainerTrait
+import com.idyria.osi.vui.core.components.scenegraph._
 
 /**
  *
@@ -11,10 +12,33 @@ import com.idyria.osi.vui.core.components.containers.ContainerTrait
  * @author rleys
  *
  */
-trait LayoutContainer[T] extends ContainerTrait {
+trait LayoutContainer[T] extends SGGroup[T] {
 
 
+    var definedLayout : VUILayout[T] = null
 
+    /**
+     * Add The node to the jpanel
+     */
+    def node[NT <: SGNode[T]](nd: NT): NT = {
+
+      // If we have a layout, notify it
+      if (definedLayout!=null) {
+        definedLayout nodeAdded nd
+      }
+
+      nd
+
+    }
+
+    def layout(l: VUILayout[T]) = {
+
+       this.definedLayout = l
+       l.setTargetGroup(this)
+
+    }
+
+    def layout : VUILayout[T] = this.definedLayout
 
   /**
    * Main interface to trigger a layout operation

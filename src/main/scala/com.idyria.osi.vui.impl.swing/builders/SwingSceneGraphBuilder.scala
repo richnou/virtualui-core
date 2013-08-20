@@ -11,6 +11,8 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.layout.VUILayout
 import java.awt.LayoutManager
 
+import  com.idyria.osi.vui.core.swing._
+
 /**
  * @author rleys
  *
@@ -21,8 +23,10 @@ trait SwingSceneGraphBuilder extends SceneGraphBuilder[Component] {
    * Return group as JPanel:
    *
    */
-  def group(): SGGroup[Component] = {
+ /*  def group(): SGGroup[Component] = {
 
+    SwingVUIImpl.panel()
+   
     var group = new JPanel() with SGGroup[Component] {
 
       var definedLayout : VUILayout[Component] = null
@@ -64,5 +68,5 @@ trait SwingSceneGraphBuilder extends SceneGraphBuilder[Component] {
     group
 
   }
-
+*/
 }

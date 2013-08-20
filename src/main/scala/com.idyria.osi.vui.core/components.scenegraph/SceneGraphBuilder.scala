@@ -11,5 +11,10 @@ trait SceneGraphBuilder[T] {
 
 
   def group( ) : SGGroup[T]
+  def group( cl: SGGroup[T] => Unit ) : SGGroup[T] = {
+        var group = this.group;
+        cl(group)
+        group
+    }
 
 }

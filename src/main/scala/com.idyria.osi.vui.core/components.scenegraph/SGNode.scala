@@ -15,14 +15,19 @@ import com.idyria.osi.tea.listeners.ListeningSupport
  */
 trait SGNode[T] extends ListeningSupport {
 
-  def base : T
+    /**
+        Optional ID for the Node
+    */
+    var id : String = ""
 
-  /**
-   * This method is a high level call to ask the underlying implementation
-   * to make sure the node has been redrawn
-   */
-  def revalidate
+    def base : T
 
-  //def apply[NT <: SGNode[T]](cl : (NT => Unit))
+    /**
+    * This method is a high level call to ask the underlying implementation
+    * to make sure the node has been redrawn
+    */
+    def revalidate
+
+    //def apply[NT <: SGNode[T]](cl : (NT => Unit))
 
 }
