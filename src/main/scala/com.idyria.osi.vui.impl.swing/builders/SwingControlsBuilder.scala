@@ -1,25 +1,23 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing.builders
+package com.idyria.osi.vui.impl.swing.builders
 
-import java.awt.Component
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
+import java.awt._
+import java.awt.event._
+
+import java.awt.image._
+import javax.imageio._
 
 import com.idyria.osi.vui.core.components.events._
-
-import com.idyria.osi.vui.core.components.controls.ControlsBuilder
-import com.idyria.osi.vui.core.components.controls.VUIButton
-import com.idyria.osi.vui.core.components.controls.VUILabel
-import com.idyria.osi.vui.core.components.scenegraph.SGNode
+import com.idyria.osi.vui.core.components.controls._
+import com.idyria.osi.vui.core.components.scenegraph._
 
 import javax.swing._
 import javax.swing.JButton
 import javax.swing.JLabel
+
+import java.net._
 
 import scala.language.implicitConversions
 
@@ -39,80 +37,87 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
     return new SwingJComponentCommonDelegate[JLabel](new JLabel(text)) with VUILabel[Component] {
 
+        this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+
         // Text
         //--------------
         def setText(str: String) = delegate.setText(str)
 
     }
 
-    /*
-    new JLabel(text) with VUILabel[Component] with SGNode[Component] {
+  
 
-      // Node
-      //---------
+  }
 
-      def base : Component = this
-      override def revalidate = super.revalidate
+  /**
+    Implements Image
+  */
+  def image(path: URL) : VUIImage[Component] = {
 
-      //---------------------------------------
-      // General
-      //---------------------------------------
-      override def disable = base.setEnabled(false)
+    new SwingJComponentCommonDelegate[JLabel](new JLabel) with VUIImage[Component] {
 
-      //---------------------------------------
-      // Actions
-      //---------------------------------------
+        this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
 
-      override def onMousePressed(action: VUIMouseEvent => Unit) = {
+        // Save URL
+        var url = path
 
-        this.addMouseListener(new MouseAdapter() {
+        /**
+          Load into JLabel and resize if necessary
+        */
+        def load = {
 
-           override def  mousePressed(e : MouseEvent) = {
-             action(e)
-           }
+          var sizeDimension = delegate.getPreferredSize
 
-        })
+          // Read Source Image
+          //----------------
+          var originalImage = ImageIO.read(url)
 
-      }
+          // Resolve Sizes for resizing
+          //-------------------------------
+          (sizeDimension.width,sizeDimension.height) match {
 
-      override def onDrag(action: VUIMouseEvent => Unit) = {
+            // Resize based on Width
+            case (width,-1) =>
 
-        	this.addMouseMotionListener(new MouseMotionAdapter() {
+                sizeDimension.height = width * originalImage.getHeight / originalImage.getWidth
+                size(sizeDimension.width,sizeDimension.height)
 
-        	  override def mouseDragged(ev:MouseEvent) = {
-        	    action(ev)
-        	  }
+            // Resize based on Height
+            case (-1,height) =>
 
-        	  /*override def mouseDrag(evt, x, y) = {
+                sizeDimension.width = height * originalImage.getWidth / originalImage.getHeight
+                size(sizeDimension.width,sizeDimension.height)
 
-        	  }*/
+            // Do nothing
+            case _ =>
+          }
 
-        	})
+          //-- Prepare target Image
+          //-----------
+          var resizedImage = new BufferedImage(sizeDimension.width, sizeDimension.height, originalImage.getType);
+          var g = resizedImage.createGraphics
 
-      }
+          g.setComposite(AlphaComposite.Src);
+          g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+          RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+          g.setRenderingHint(RenderingHints.KEY_RENDERING,
+          RenderingHints.VALUE_RENDER_QUALITY);
+          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+          RenderingHints.VALUE_ANTIALIAS_ON);
 
-      override def onClicked(action: => Any) =  this.addMouseListener(new MouseAdapter() {
-        override def  mouseClicked(e : MouseEvent) = SwingUtilities.invokeLater(new Runnable {
+          g.drawImage(originalImage, 0, 0, sizeDimension.width, sizeDimension.height, null);
+          g.dispose
 
-            override def run() = action
-          })
-        })
+          // Set to Label
+          //------------------
+          this.delegate.setIcon(new ImageIcon(resizedImage))
+          
 
+        }
 
-
-      // Positioning
-      //---------------------
-      def setPosition(x:Int,y:Int) = super.setLocation(x, y)
-      def getPosition : Pair[Int,Int] = Pair[Int,Int](super.getLocation().x,super.getLocation().y)
-
-      // Dummy Overrides for JComponent compatibility
-      override def setX(x:Int) = super.setX(x)
-      override def getX: Int = getPosition._1
-      override def setY(y:Int) = super.setY(y)
-      override def getY: Int = getPosition._2
+        override def toString : String = s"Label: ${delegate.getText} "
 
     }
-    */
 
   }
 
@@ -127,77 +132,11 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
         override def disable = super.disable
 
-        //---------------------------------------
-        // Actions
-        //---------------------------------------
-        /*override def onClicked(action: => Any) = {
-
-          delegate.addActionListener(new ActionListener() {
-
-            def actionPerformed(ev: ActionEvent) = {
-              action
-            }
-
-          })
-
-        }*/
-
-        //---------------------------------------
-        // Positioning
-        //---------------------------------------
-        //def setPosition(x:Int,y:Int) = {delegate.setLocation(x, y); delegate.setBounds(x,y,delegate.getBounds().width,delegate.getBounds().height)}
-        //def getPosition : Pair[Int,Int] = Pair[Int,Int](delegate.getLocation().x,delegate.getLocation().y)
-
-        // Dummy Overrides for JComponent compatibility
-        /*override def setX(x:Int) = delegate.setX(x)
-        override def getX: Int = getPosition._1
-        override def setY(y:Int) = delegate.setY(y)
-        override def getY: Int = getPosition._2*/
+      
 
         
     }
-
-    /*
-    return new JButton(text) with VUIButton[Component] {
-
-      //---------------------------------------
-      // Node
-      //---------------------------------------
-
-      def base : Component = this
-      override def revalidate = super.revalidate
-
-      //---------------------------------------
-      // General
-      //---------------------------------------
-      //override def disable 
-
-      //---------------------------------------
-      // Positioning
-      //---------------------------------------
-      def setPosition(x:Int,y:Int) = {super.setLocation(x, y); super.setBounds(x,y,super.getBounds().width,super.getBounds().height)}
-      def getPosition : Pair[Int,Int] = Pair[Int,Int](super.getLocation().x,super.getLocation().y)
-
-      // Dummy Overrides for JComponent compatibility
-      override def setX(x:Int) = super.setX(x)
-      override def getX: Int = getPosition._1
-      override def setY(y:Int) = super.setY(y)
-      override def getY: Int = getPosition._2
-
-      override def onClicked(action: => Any) = {
-
-        this.addActionListener(new ActionListener() {
-
-          def actionPerformed(ev: ActionEvent) = {
-            action
-          }
-
-        })
-
-      }
-
-    }
-    */
+    
   }
 
 

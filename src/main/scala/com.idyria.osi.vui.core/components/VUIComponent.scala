@@ -58,6 +58,9 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
   //----------------------
   //-- Geometry listeners
 
+  def onShown(action: => Unit) = {}
+
+
   //----------------------
   //-- Positioning listeners
   def onPositionChanged(action: ( Int , Int) => Unit) = {}
@@ -95,7 +98,11 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
   def getY : Int = getPosition._2
 
 
+
   //----------------------
   // Styling
+  //----------------------
+
+  def size(width: Int, height: Int)
 
 }

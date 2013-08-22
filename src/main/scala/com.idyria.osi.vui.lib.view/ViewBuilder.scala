@@ -13,7 +13,9 @@ import com.idyria.osi.vui.core.components.scenegraph._
 import scala.language.implicitConversions
 
 
-
+/**
+    A Trait to mixin lamguage to create Views
+*/
 trait ViewBuilder extends  VBuilder with ListeningSupport {
 
     var currentView : View = null
@@ -48,6 +50,23 @@ trait ViewBuilder extends  VBuilder with ListeningSupport {
 
         }
 
+        def is(node: SGGroup[Any] ) = {
+
+            // Add View To Group
+            //-----------------------
+            //ViewGroup.this.view += left
+            ViewBuilder.this.currentView = left
+
+            @->("view.current",left)
+ 
+            
+
+            // Set content to view
+            //----------------
+            left.content = node
+
+
+        }
         
     }
 

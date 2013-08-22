@@ -13,7 +13,7 @@ import com.idyria.osi.tea.listeners.ListeningSupport
  * @author rleys
  *
  */
-trait SGNode[T] extends ListeningSupport {
+trait SGNode[+T] extends ListeningSupport {
 
     /**
         Optional ID for the Node

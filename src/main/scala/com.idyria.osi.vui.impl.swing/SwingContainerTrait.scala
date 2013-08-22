@@ -1,7 +1,7 @@
 /**
  *
  */ 
-package com.idyria.osi.vui.core.swing
+package com.idyria.osi.vui.impl.swing
 
 import com.idyria.osi.vui.core.components.containers.ContainerTrait
 

@@ -1,4 +1,4 @@
-package com.idyria.osi.vui.core.swing.model
+package com.idyria.osi.vui.impl.swing.model
 
 import com.idyria.osi.vui.core.components.model._
 

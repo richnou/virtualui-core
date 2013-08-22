@@ -39,6 +39,8 @@ class ViewButton( var view : View, var delegate : VUIButton[Any]) extends VUIBut
     def getPosition: (Int, Int) = delegate.getPosition
     def setPosition(x: Int,y: Int): Unit = delegate.setPosition(x,y)
 
+    //---- Styling
+    def size(width: Int, height: Int) = delegate.size(width,height)
 
 
 }

@@ -32,7 +32,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GraphBuilde
                 dialog layout vbox
 
                 dialog <= graph {
-
+ 
                     "top" row {
                         |(label("Top"))
                     }

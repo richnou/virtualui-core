@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing
+package com.idyria.osi.vui.impl.swing
 
 import java.awt.Component
 import java.awt.Container
@@ -11,7 +11,7 @@ import java.awt.event.WindowEvent
 import com.idyria.osi.vui.core.components.main.VuiFrame
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.impl.VuiTypeWrapper
-import com.idyria.osi.vui.core.swing.builders._
+import com.idyria.osi.vui.impl.swing.builders._
 
 import javax.swing.JFrame
 import javax.swing.WindowConstants

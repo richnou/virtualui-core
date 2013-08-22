@@ -1,14 +1,9 @@
-package com.idyria.osi.vui.core.swing.builders
+package com.idyria.osi.vui.impl.swing.builders
 
-import java.awt.Component
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
+import java.awt._
+import java.awt.event._
+import javax.swing._
 
-import javax.swing.JComponent
-import javax.swing.SwingUtilities
 
 import com.idyria.osi.vui.core.components._
 import com.idyria.osi.vui.core.components.events._
@@ -17,7 +12,9 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import scala.language.implicitConversions
 
 
-
+/**
+    Wrapper for a JComponent to be seen as an SGNode
+*/
 class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  extends VUIComponent[Component] {
 
     //---------------------------------------
@@ -73,6 +70,21 @@ class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  exten
           })
     })
 
+    //----------------------
+    //-- Geometry listeners
+    override def onShown(action: => Unit) = delegate.addComponentListener(new ComponentAdapter() {
+
+        println("Registering action for ComponentShown")
+
+        override def  componentShown(e : ComponentEvent) = SwingUtilities.invokeLater(new Runnable {
+
+            override def run() = action
+          })
+        override def  componentResized(e : ComponentEvent) = SwingUtilities.invokeLater(new Runnable {
+
+            override def run() = action
+          })
+    })
 
 
     //---------------------------------------
@@ -81,6 +93,13 @@ class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  exten
     def setPosition(x:Int,y:Int) = {delegate.setLocation(x, y); delegate.setBounds(x,y,delegate.getBounds().width,delegate.getBounds().height)}
     def getPosition : Pair[Int,Int] = Pair[Int,Int](delegate.getLocation().x,delegate.getLocation().y)
 
+    //----------------------
+    // Styling
+    //----------------------
+    
+    def size(width: Int, height: Int) = {
+        delegate.setPreferredSize(new Dimension(width,height))
+    }
 
     // Conversions
     //-----------------------
@@ -94,14 +113,29 @@ class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  exten
     }
     private def populateVUIMouseEvent[ET <: VUIMouseEvent](srcEvent:MouseEvent,targetEvent: ET) : ET = {
 
-    // Fill in positions
-    targetEvent.actualX = srcEvent.getX()
-    targetEvent.actualY = srcEvent.getY()
+        // Fill in positions
+        targetEvent.actualX = srcEvent.getX()
+        targetEvent.actualY = srcEvent.getY()
 
-    targetEvent
+        targetEvent
     }
 
 
+    //override def toString = delegate.toString
+
+} 
+
+object SwingJComponentCommonDelegate {
+  
+	implicit def convertJComponentToSGNode[T <: JComponent](comp: T) : SGNode[Any] = {new SwingJComponentCommonDelegate[T](comp)}
+
+    implicit def convertJComponentToSGNodeNoParam(comp: JComponent) : SGNode[Any] = {new SwingJComponentCommonDelegate[JComponent](comp)}
+
 }
 
+object SwingNodeWrapper {
+
+    def apply[T <: JComponent](comp: T) : SGNode[Any] = {new SwingJComponentCommonDelegate[T](comp)}
+
+}
 

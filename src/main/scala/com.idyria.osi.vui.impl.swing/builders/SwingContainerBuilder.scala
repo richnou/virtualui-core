@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing.builders
+package com.idyria.osi.vui.impl.swing.builders
 
 import com.idyria.osi.vui.core.components.containers.ContainerBuilder
 import com.idyria.osi.vui.core.components.layout.VuiSwitchLayout
@@ -16,7 +16,7 @@ import com.idyria.osi.vui.core.components.containers.VUIPanel
 
 import com.idyria.osi.vui.core.components.scenegraph._
 
-import com.idyria.osi.vui.core.swing.style.SwingStylableTrait
+import com.idyria.osi.vui.impl.swing.style.SwingStylableTrait
 
 import java.awt.Component
 import java.awt.Container

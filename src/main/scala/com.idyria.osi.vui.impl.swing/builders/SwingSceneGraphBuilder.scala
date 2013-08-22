@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing.builders
+package com.idyria.osi.vui.impl.swing.builders
 
 import java.awt.Component
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
@@ -11,7 +11,7 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.layout.VUILayout
 import java.awt.LayoutManager
 
-import  com.idyria.osi.vui.core.swing._
+import  com.idyria.osi.vui.impl.swing._
 
 /**
  * @author rleys

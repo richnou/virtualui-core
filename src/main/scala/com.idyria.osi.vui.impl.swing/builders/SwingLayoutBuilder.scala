@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing.builders
+package com.idyria.osi.vui.impl.swing.builders
 
 
 import java.awt.Component
@@ -13,6 +13,8 @@ import java.awt.GridBagConstraints
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
+
+import com.idyria.osi.vui.core.styling._
 
 /**
  * @author rleys
@@ -85,46 +87,99 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
       }
 
-      override def applyConstraints(node: SGNode[Component],constraints:LayoutConstraints) = {
+      override def applyConstraints(node: SGNode[Component],inputConstraints:LayoutConstraints) = {
 
-        var cstr = new GridBagConstraints
+        // Resolve Constraints
+        //---------
+        var constraints = inputConstraints
+        if (node.isInstanceOf[StylableTrait] && node.asInstanceOf[StylableTrait].fixedConstraints!=null) {
+          constraints = inputConstraints + node.asInstanceOf[StylableTrait].fixedConstraints
+        }
+
+        // Prepare constraints
+        var gridbagConstraints = new GridBagConstraints
 
         // Row / Column
         var row = constraints.get("row").asInstanceOf[Integer]
         var column = constraints.get("column").asInstanceOf[Integer]
 
-        println(s"Applying GridBagLayout Constraints $row:$column")
+        //println(s"Applying GridBagLayout Constraints $row:$column")
 
         // Anchor
         try {
           
           constraints.get("align") match {
             case "right" => 
-                println(s"---------> Align right")
-                cstr.anchor = GridBagConstraints.EAST
+                
+                //println(s"---------> Align right")
+                
+                gridbagConstraints.anchor = GridBagConstraints.EAST
           }
 
         } catch {
           case e: Throwable =>
         }
-        // Expand
-        try {
-            var expand = constraints.get("expand")
-            cstr.weightx = 1
-            cstr.weighty = 1
-            cstr.fill = GridBagConstraints.BOTH
 
-        } catch {
-          case e: Throwable =>
+        // Column Spanning
+        constraints.getOption("colspan") match {
+          case Some(colSpan) => 
+            
+            //  println(s"---------> Colspan $colSpan")
+            
+              gridbagConstraints.gridheight = colSpan.asInstanceOf[Int]
+          
+          case None => 
         }
 
+        constraints.getOption("rowspan") match {
+          case Some(rowSpan) => 
+            
+            println(s"---------> rowspan $rowSpan")
+            
+              gridbagConstraints.gridwidth = rowSpan.asInstanceOf[Int]
+          
+          case None => 
+        }
+
+        // Expand
+        //------------------
+
+        constraints.getOption("expand") match {
+          case Some(colSpan) => 
+              gridbagConstraints.weightx = 1
+              gridbagConstraints.weighty = 1
+              gridbagConstraints.fill = GridBagConstraints.BOTH
+          
+          case None => 
+        }
+
+        constraints.getOption("expandHeight") match {
+          case Some(colSpan) => 
+              gridbagConstraints.weighty = 1
+              gridbagConstraints.fill = GridBagConstraints.BOTH
+          
+          case None => 
+        }
+
+        constraints.getOption("expandWidth") match {
+          case Some(colSpan) => 
+
+              println("------> Expand Width")
+
+              gridbagConstraints.weightx = 1
+              gridbagConstraints.fill = GridBagConstraints.BOTH
+          
+          case None => 
+        }
         
 
         
-        cstr.gridy  = row
-        cstr.gridx = column
 
-        this.layout.setConstraints(node.base, cstr)
+        // Apply
+        //-----------------------
+        gridbagConstraints.gridy  = row
+        gridbagConstraints.gridx = column
+        this.layout.setConstraints(node.base, gridbagConstraints)
 
       }
 

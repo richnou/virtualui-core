@@ -1,9 +1,9 @@
 /**
   *
   */
-package com.idyria.osi.vui.core.swing.builders
+package com.idyria.osi.vui.impl.swing.builders
 
-import com.idyria.osi.vui.core.swing.model._
+import com.idyria.osi.vui.impl.swing.model._
 
 import java.awt.Component
 import java.awt.event.ActionEvent
@@ -17,6 +17,8 @@ import javax.swing.text._
 import com.idyria.osi.vui.core.components.form.FormBuilder
 import com.idyria.osi.vui.core.components.form.VUIInputText
 import com.idyria.osi.vui.core.components.form.VUIList
+
+import com.idyria.osi.vui.core.components.layout._
 
 import com.idyria.osi.vui.core.components.model._
 
@@ -71,6 +73,11 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 
     return new SwingJComponentCommonDelegate[JTextField](new JTextField) with VUIInputText[Component] with SwingTextModelSupport {
 
+          this.fixedConstraints = LayoutConstraints("expandWidth" -> true)
+          this.size(20,20)
+
+          this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+
           // Events
           //---------------------
           override def onEnter( action : => Unit) = {
@@ -88,7 +95,7 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 
           // Text Return
           //----------------------
-          override def toString:String = delegate.getText()
+          override def toString:String = "Field: "+delegate.getText()
       }
       /*
     var textField = new JTextField with VUIInputText[Component]  with NodeCommon with SwingTextModelSupport {

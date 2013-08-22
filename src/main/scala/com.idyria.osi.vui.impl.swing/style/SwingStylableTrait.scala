@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.idyria.osi.vui.core.swing.style
+package com.idyria.osi.vui.impl.swing.style
 
 import java.awt.Component
 import scala.util.parsing.combinator.RegexParsers
