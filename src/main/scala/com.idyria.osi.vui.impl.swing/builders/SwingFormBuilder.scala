@@ -73,8 +73,9 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 
     return new SwingJComponentCommonDelegate[JTextField](new JTextField) with VUIInputText[Component] with SwingTextModelSupport {
 
-          this.fixedConstraints = LayoutConstraints("expandWidth" -> true)
-          this.size(20,20)
+          //this.fixedConstraints = LayoutConstraints("expandWidth" -> true)
+          //this.fixedConstraints = LayoutConstraints("expand" -> true)
+          //this.size(20,20)
 
           this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
 

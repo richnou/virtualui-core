@@ -166,11 +166,36 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
               println("------> Expand Width")
 
-              gridbagConstraints.weightx = 1
-              gridbagConstraints.fill = GridBagConstraints.BOTH
+              gridbagConstraints.weightx = 1.0
+              gridbagConstraints.fill = GridBagConstraints.HORIZONTAL
+              //gridbagConstraints.gridwidth = 1
           
           case None => 
+
+              //gridbagConstraints.gridwidth = GridBagConstraints.RELATIVE
         }
+
+        constraints.getOption("spanColumns") match {
+
+          case Some(spanColumns) =>
+
+                  gridbagConstraints.gridwidth = GridBagConstraints.REMAINDER
+
+          case None =>    
+
+        }
+
+        constraints.getOption("relative") match {
+
+          case Some(relative) =>
+
+                  gridbagConstraints.gridwidth = GridBagConstraints.RELATIVE
+                  println("---------------> Relative")
+          case None =>    
+
+        }
+
+      
         
 
         

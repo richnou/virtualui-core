@@ -5,6 +5,9 @@ import com.idyria.osi.vui.core.components.layout._
 
 import com.idyria.osi.vui.core.components.scenegraph._
 
+import com.idyria.osi.vui.core.styling._
+
+
 import scala.language.implicitConversions
 
 trait GridBuilder extends VBuilder {
@@ -269,6 +272,36 @@ trait GridBuilder extends VBuilder {
         }
 
 
+        def using(constraint: Tuple2[String,Any]*) :  ColumnLanguageWrapper = {
+            constraint.foreach {
+                c => this.using(c)
+            }
+            this
+        }
+        def using(constraint: Tuple2[String,Any]) :  ColumnLanguageWrapper = {
+
+            
+            left.isInstanceOf[StylableTrait] match {
+                case true if( left.asInstanceOf[StylableTrait].fixedConstraints == null) =>
+                            left.asInstanceOf[StylableTrait].fixedConstraints = LayoutConstraints(constraint)
+                 case true if( left.asInstanceOf[StylableTrait].fixedConstraints != null) =>
+                            left.asInstanceOf[StylableTrait].fixedConstraints(constraint)
+                case _ =>
+            }
+           
+
+            this
+
+        }
+
+        def | (right: ColumnLanguageWrapper) : ColumnLanguageWrapper = {
+
+            right.nodesStack.foreach {
+                node => nodesStack = nodesStack :+ node
+            }
+            this
+
+        }
         def | (right : SGNode[Any]) : ColumnLanguageWrapper = {
 
             println(s"**** Column Chain $left | $right *****")
@@ -333,9 +366,15 @@ trait GridBuilder extends VBuilder {
             //println("******* Inside spanRight ***********")
             GridBuilder.this.column(left,"colspan" -> count.count,"expandHeight" -> true)
 
+            var actualRow = GridBuilder.this.currentRow
+
             // Execute Right
             //--------------------
             count.execute
+
+            var rowsAdded = GridBuilder.this.currentRow - actualRow
+
+            println(s"spanRight added $rowsAdded rows")
         }
 
     }
