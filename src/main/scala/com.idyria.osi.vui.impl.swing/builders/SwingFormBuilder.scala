@@ -37,33 +37,31 @@ trait SwingFormBuilder extends FormBuilder[Component]{
 
           // Implementation
           //----------------------------------
+
+          /**
+            Add Element to underlying Model
+          */
           def add(obj : AnyRef)  = {
             model.addElement(obj)
           }
+
+          /**
+            Select the object if contained into model
+          */
+          def select(obj: AnyRef) = {
+
+            this.delegate.setSelectedValue(obj,true)
+
+          }
+
+          // Selection
+          //-----------------
+
+          def clearSelection = delegate.clearSelection
+
       }.asInstanceOf[VUIList[Component]]
 
-		 /* new JList[Object] with VUIList[Component] {
-
-			  
-
-			  // Basic OVerrides for all JComponents
-		      //--------------------------
-			  def base : Component = this
-    		  override def revalidate = super.revalidate
-
-    		  def setPosition(x:Int,y:Int) = super.setLocation(x, y)
-    		  def getPosition : Pair[Int,Int] = Pair[Int,Int](super.getLocation().x,super.getLocation().y)
-
-    		  // Dummy Overrides for JComponent compatibility
-		      override def setX(x:Int) = super.setX(x)
-		      override def getX: Int = getPosition._1
-		      override def setY(y:Int) = super.setY(y)
-		      override def getY: Int = getPosition._2
-
-		      
-
-		  }
-      */
+		 
 
   }
 

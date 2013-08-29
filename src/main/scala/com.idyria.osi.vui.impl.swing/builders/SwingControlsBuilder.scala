@@ -12,6 +12,7 @@ import javax.imageio._
 import com.idyria.osi.vui.core.components.events._
 import com.idyria.osi.vui.core.components.controls._
 import com.idyria.osi.vui.core.components.scenegraph._
+import com.idyria.osi.vui.core.components.layout._
 
 import javax.swing._
 import javax.swing.JButton
@@ -38,7 +39,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
     return new SwingJComponentCommonDelegate[JLabel](new JLabel(text)) with VUILabel[Component] {
 
         this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
-
+        
         // Text
         //--------------
         def setText(str: String) = delegate.setText(str)
@@ -130,9 +131,20 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
     //-------------------
     return new SwingJComponentCommonDelegate[JButton](new JButton(text)) with VUIButton[Component] {
 
-        override def disable = super.disable
+      override def disable = super.disable
 
-      
+      // Actions
+      //-------------------
+ 
+      /**
+        On clicked maps to action listener
+      */
+      override def onClicked(action: => Any) =  delegate.addActionListener(new ActionListener() {
+        override def  actionPerformed(e : ActionEvent) = SwingUtilities.invokeLater(new Runnable {
+
+            override def run() = action
+          })
+      })
 
         
     }

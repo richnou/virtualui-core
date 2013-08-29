@@ -3,9 +3,10 @@ package com.idyria.osi.vui.lib.view.wizard.default
 import com.idyria.osi.vui.lib.view.wizard._
 import com.idyria.osi.vui.lib.view._
 
+import com.idyria.osi.vui.core.components.form._
 import com.idyria.osi.vui.core.stdlib.placeholder._
 
-import com.idyria.osi.vui.lib.gridbuilder._
+import com.idyria.osi.vui.lib.gridbuilder2._
 
 class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder {
 
@@ -17,12 +18,20 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
         @group configuration
     */
     var displayListOfSteps = true
+    var stepsList : VUIList[Any] = null
 
     // Place Holder
     //------------------------
     override def changeView (view:View) = {
 
+        // Change Placeholder
         place("middle")(view.content)
+
+        // Try to highlight in list
+        if (stepsList!=null) {
+            stepsList.clearSelection
+            stepsList.select(view.name)
+        }
 
     }
 
@@ -34,10 +43,10 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
         this.initDialog
 
         // Place first view
-       /* this.view.headOption match {
+        this.view.headOption match {
             case Some(view) => ->(view.name)
             case None       => throw new RuntimeException("Showing Default Wizard with no defined views....")
-        }*/
+        }
 
         // Show
         super.showDialog
@@ -63,8 +72,8 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
                     "top" row alignLeft {
 
                         this.name match {
-                            case name if(name==null) => (label("Unnamed Wizard") using ("rowspan" -> 2))
-                            case name => (label(name) using ("rowspan" -> 2))
+                            case name if(name==null) => (label("Unnamed Wizard") using ("spread" -> true))
+                            case name => (label(name) using ("spread" -> true))
                         }
                         
                     }
@@ -72,24 +81,61 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
                     // Middle placeholder for views
                     //-----------------------------------
                     this.displayListOfSteps match {
+
+                        // With List on the left
                         case true => 
                             "middle" row  {
 
-                                (list { l => this.view.foreach(v => l.add(v.name))} using ("expandHeight"->true)) | ( placeHolder("middle") using("expand" -> true))
+                                // Prepare list 
+                                stepsList = list {
+                                    l => this.view.foreach(v => l.add(v.name))
+                                }
+
+                                // Create Column
+                                (stepsList using expandHeight) | (placeHolder("middle") using expand)
+                                
 
                             }
                         case false => 
-                            "middle" expandRow placeHolder("middle")
+                            "middle" row using("expand"->true) { placeHolder("middle") }
                     }
                     
 
                     // Bottom: Controls
                     //-----------------------
+                    "bottom" row using(List(spread,expandWidth)) { 
+
+                                    subgrid {
+                                            
+                                            "-" row {
+                    
+                                                ( 
+                                                    button("Cancel") { b => 
+
+
+
+                                                    } using pushRight)  | (
+
+                                                    button("Next") { b => 
+
+                                                        b.onClicked {
+                                                            nextView
+                                                        }
+
+                                                    }
+
+                                                )
+                    
+                                            }
+                        }
+                            
+                   
+                    }
                     /*"bottom" row group {
 
                        ( button("Cancel")) | button("Next") 
                     }*/
-                    row(group {
+                   /* row(group {
                         g => 
 
                             g layout grid 
@@ -100,7 +146,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
                             g <= button("Next")  {
                                 b => 
                             }
-                    }, "rowspan" -> 2)
+                    }, "rowspan" -> 2)*/
 
                     /*row("top") {
                         |(label("Top"))
@@ -137,6 +183,8 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
         }
 
         this.dialog.revalidate
+
+        
 
     }
     

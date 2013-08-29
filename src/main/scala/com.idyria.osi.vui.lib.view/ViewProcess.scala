@@ -9,14 +9,23 @@ import scala.language.implicitConversions
 */
 trait ViewProcess extends ViewGroup with ViewProcessTrait {
 
+    //var currentView : View = null
+
     // View Definitions
     //---------------------------
     onWith("view.current") {
         view : View => 
 
-            println(s"Added view with id : ${view.id}")
+            //println(s"Added view with id : ${view.id}")
 
             view.process = this
+    }
+    onWith("view.progressTo") {
+        view : View => 
+
+            //println(s"Added view with id : ${view.id}")
+            currentView = view
+            
     }
 
     // Action
@@ -61,7 +70,9 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
             v => println(s"--> Available: ${v.id}")
         }*/
         this.view.find(nextView == _.id.toString) match {
-            case Some(view) => this.changeView(view)
+            case Some(view) => 
+                this.changeView(view)
+                @->("view.progressTo",view)
             case None => throw new RuntimeException(s"Could not change to whished view: $nextView")
         }
 
@@ -89,15 +100,30 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
     }
 
     /**
+        Return String if of the next view, for usage inside action
+    */
+    def nextView : String = {
+
+        currentView match {
+
+            case v if (v!=null && this.view.isDefinedAt(this.view.indexOf(v)+1)) => this.view.get(this.view.indexOf(v)+1).get.name
+            case _ => this.resetView
+        }
+   
+
+    }
+
+    /**
         Progress to view named error
     */
     def progressToErrorView( e : Throwable) = {
 
         this.view.find("error" == _.id.toString) match {
             case Some(view) => 
-                println("Found error view with listeners: "+view.content.listeningPointsWith.size)
+                //println("Found error view with listeners: "+view.content.listeningPointsWith.size)
                 view.content.@->("error",e)
-                this.changeView(view)
+                //this.changeView(view)
+                this.progressTo(view.id.toString)
             case None => throw new RuntimeException(s"Could not change to any error view")
         }
 

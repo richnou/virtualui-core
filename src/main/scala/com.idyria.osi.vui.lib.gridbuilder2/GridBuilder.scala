@@ -39,23 +39,51 @@ trait GridBuilder extends VBuilder {
     // Main grid Interface
     //------------------------------------------------
 
-    class Grid (var group : SGGroup[Any]) {
+    class Grid (var group : SGGroup[Any]) extends Column(group) {
 
         var currentColumn = 0 
         var currentRow = 0
 
-        group layout grid
+        var currentRowLevel = 0
+
+        var currentColumnLevel = 0
+
+    
+
+        left.asInstanceOf[SGGroup[Any]] layout grid
+
+        // Content to be executed
+        var content : ( () => Any ) = { () => }
+
+        override def doResolve() = {
+
+            // Add Group as normal column
+            //----------
+            super.doResolve
+
+            // Execute Content
+            //-----------
+            groupsStack.push(this)
+            content()
+            groupsStack.pop
+
+        }
     }
 
-    def grid(cl: => Unit) : SGGroup[Any] = {
+    def grid(set: ConstraintsSet)(cl: => Any) : SGGroup[Any] = {
 
         // Create a new group
         //---------------------------
         var newGroup = group 
+        if (set.constraints.size >0 ) {
+             newGroup.fixedConstraints = LayoutConstraints()
+             set.constraints.constraints.foreach(newGroup.fixedConstraints(_))
+        }
+       
 
         // Create A new Grid Context instance to reset columns and rows
         //-----------------
-        var grid = new Grid(group)
+        var grid = new Grid(newGroup)
 
         // Push on stack to execute closure
         //----------------------------------
@@ -65,6 +93,58 @@ trait GridBuilder extends VBuilder {
 
         grid.group
 
+    }
+
+    def grid(constraints: (String,Any)*)(cl: => Any) : SGGroup[Any] = (this.grid(this.using(constraints)){cl})
+
+    
+    def grid(cl: => Any) : SGGroup[Any] = {
+
+        // Create a new group
+        //---------------------------
+        var newGroup = group 
+       
+       
+
+        // Create A new Grid Context instance to reset columns and rows
+        //-----------------
+        var grid = new Grid(newGroup)
+
+        // Push on stack to execute closure
+        //----------------------------------
+        println("##################### GRID #############################")
+        groupsStack.push(grid)
+        cl
+        groupsStack.pop
+        println("##################### EOF GRID #############################\n")
+        grid.group
+
+    }
+
+    def subgrid(cl: => Any) : Grid = {
+
+        // Create a new group
+        //---------------------------
+        var newGroup = group 
+       
+       
+
+        // Create A new Grid Context instance to reset columns and rows
+        //-----------------
+        var grid = new Grid(newGroup)
+        grid.content = {
+            () => cl
+        }
+
+        // Push on stack to execute closure
+        //----------------------------------
+        /*println("##################### GRID #############################")
+        groupsStack.push(grid)
+        cl
+        groupsStack.pop
+        println("##################### EOF GRID #############################\n")
+        //grid.group*/
+        grid
     }
 
 
@@ -77,14 +157,24 @@ trait GridBuilder extends VBuilder {
     trait UsingConstraints {
 
 
-        
-
 
     }
     /**
         Return a new constraints Set for this Sequence of Constraints
     */
-    def using(constraints: Tuple2[String,Any]*) :  ConstraintsSet = {
+    /*def using(constraints: Tuple2[String,Any]*) :  ConstraintsSet = {
+
+
+        var constraintsSet = new ConstraintsSet
+        constraints.foreach {
+            c => constraintsSet.constraints(c)
+        }
+        constraintsSet
+    }*/
+    /**
+        Return a new constraints Set for this Sequence of Constraints
+    */
+    def using(constraints: Seq[Tuple2[String,Any]]) :  ConstraintsSet = {
 
 
         var constraintsSet = new ConstraintsSet
@@ -102,11 +192,69 @@ trait GridBuilder extends VBuilder {
 
     }
 
+    /**
+        Merge Multiple Constraints sets into one, to allow syntax like: using(spread,expandWidth)
+    */
+    def using(sets: List[ConstraintsSet]) : ConstraintsSet = {
+
+        var set = new ConstraintsSet
+        sets.foreach { _.constraints.constraints.foreach(set.constraints(_))}
+        set
+    }
+
+    def alignLeft = this.using("align" -> "left")
+    def alignRight = this.using("align" -> "right")
+    def spread = this.using("spread"->true)
+    def pushRight = this.using("pushRight" -> true)
+    def expandWidth = this.using("expandWidth"->true)
+    def expandHeight = this.using("expandHeight"->true)
+    def expand = this.using("expand"->true)
+    
     class ConstraintsSet {
 
          var constraints = new LayoutConstraints
 
     }
+
+    implicit def convertTuplesToConstraintSet(cstr: Tuple2[String,Any]*) : ConstraintsSet = {
+
+        var set = new ConstraintsSet
+        cstr.foreach { set.constraints(_)}
+        set
+
+    }
+
+    implicit def convertTupleToConstraintSet(cstr: Tuple2[String,Any]) : ConstraintsSet = {
+        return using(cstr)
+    }
+
+    
+
+    /**
+        This conversion is mainly used if the Constraints is to be applied on the right, because no explicit method call required the ConstraintSet on the left
+        This is why the resolve implementation if looking ahead
+    */
+    implicit def convertConstraintsToRowLanguageElement(cstr: ConstraintsSet) : LanguageChainElement = {
+
+        new LanguageChainElement {
+
+             name = "Constraints"
+
+            def doResolve = {
+                println("--> Doing constraints set")
+
+                // Apply on next if it is a column
+                //--------------
+                if (this.nextElement!=null && this.nextElement.isInstanceOf[Column]) {
+                    this.nextElement.asInstanceOf[Column].using(cstr)
+                }
+
+            }
+        }
+
+    }
+
+
    /* class ConstraintsWrapper(var cl : ( () => Unit) )    {
 
         var constraints = new LayoutConstraints
@@ -209,7 +357,7 @@ trait GridBuilder extends VBuilder {
         var nextElement : LanguageChainElement = null
 
         final def resolve : Unit = {
-            println(s"-> Applying to $name")
+            println(s"-> Applying chain $name")
             this.doResolve
             if (nextElement!=null)
                 nextElement.resolve
@@ -220,12 +368,32 @@ trait GridBuilder extends VBuilder {
         */
         def apply(languageElement: LanguageChainElement) : LanguageChainElement = {
 
-            println(s" ---- Chaining $name to ${languageElement.name}")
-            this.nextElement = languageElement
+            var current = this 
+            while (current.nextElement!=null)
+                current = current.nextElement
+
+           // println(s" ---- Chaining $name to ${languageElement.name}")
+            current.nextElement = languageElement
             this
         }
 
         def doResolve : Unit
+
+    }
+
+    implicit def convertContentClosureToRowLanguageElement(cl: => Unit) : LanguageChainElement = {
+
+         println("Creating Content closure as LanguageChainElement")
+
+        var wrapper : ( () => Unit) = { () => cl}
+        new LanguageChainElement {
+
+            name = "Contentclosure"
+            def doResolve = {
+                println("--> Doing Content Closure set")
+                wrapper()
+            }
+        }
 
     }
 
@@ -236,7 +404,7 @@ trait GridBuilder extends VBuilder {
     /**
         Wrapper class to represent a row, and add language elements allowed on this row
     */
-    class Row(var left: String) extends RowLanguageElement with UsingConstraints {
+    class Row(var left: String) extends LanguageChainElement with UsingConstraints {
 
         name = "Row"
 
@@ -250,7 +418,7 @@ trait GridBuilder extends VBuilder {
         }*/
         
         def doResolve = {
-            println("Opening Row")
+           // println("Opening Row")
         }
 
         // Language Right to "row" keyword
@@ -272,16 +440,42 @@ trait GridBuilder extends VBuilder {
             this
         }*/
 
-        def row(right: RowLanguageElement) : Unit  = {
+        def row(right: LanguageChainElement) : Row  = {
             //languageElements = languageElements :+ right
 
-            println("In Row language function, will be applying")
+            var rowLevel = groupsStack.head.currentRowLevel+1
+            var rowDbg = (0 to rowLevel+1).map{i => "*"}.mkString
+            println(s"""${rowDbg} Starting Row $left *******""")
+            // Start Row
+            //-----------------
 
+            // Increment row level
+            groupsStack.head.currentRowLevel += 1
+            var currentColumnLevelBeforeRow = groupsStack.head.currentColumn
+
+            // Resolve Chain
+            //-----------------
             this.nextElement = right
-
-            
             this.resolve
-           // this
+
+            // Close Row
+            //-----------------
+            println(s"""${rowDbg} Closing Row $left *******\n""")
+        
+            // Increment row
+            groupsStack.head.currentRow+=1
+
+            // Decrement Row level, and reset Column only if back to top level rows
+            groupsStack.head.currentRowLevel-=1
+            if (groupsStack.head.currentRowLevel==0)
+                groupsStack.head.currentColumn=0
+            else {
+                groupsStack.head.currentColumn=currentColumnLevelBeforeRow
+            }
+
+            this
+            
+         
         }
         
         /*def row(node: SGNode[Any]) = {
@@ -349,29 +543,8 @@ trait GridBuilder extends VBuilder {
         def doResolve : Unit
 
     }
-    implicit def convertConstraintsToRowLanguageElement(cstr: ConstraintsSet) : RowLanguageElement = {
-
-        new RowLanguageElement {
-
-             name = "Constraints"
-
-            def doResolve = {
-                println("--> Doing constraints set")
-            }
-        }
-
-    }
-     implicit def convertContentClosureToRowLanguageElement(cl: => Any) : RowLanguageElement = {
-
-        new RowLanguageElement {
-
-            name = "Contentclosure"
-            def doResolve = {
-                println("--> Doing Content Closure set")
-            }
-        }
-
-    }
+    
+     
    
 
     /**
@@ -472,7 +645,134 @@ trait GridBuilder extends VBuilder {
 
         A Column is always hosting a node
     */
-    class Column(var left: SGNode[Any]) extends UsingConstraints {
+    class Column(var left: SGNode[Any]) extends LanguageChainElement with UsingConstraints {
+
+        name = "Column"
+
+        def doResolve : Unit  = {
+
+            println(s"-> Adding column content(${left.toString}#${left.base.hashCode}")
+
+            // Add 
+            //-------------
+            groupsStack.head.group <= left
+
+            // Apply Constraints
+            //------------------------
+
+            //-- Row + Column position
+            var constraints = LayoutConstraints( "row" -> groupsStack.head.currentRow , "column" -> groupsStack.head.currentColumn )
+            //constraints(constraintsBase)
+
+            //-- Current Global Constraints for all elements
+
+
+            /*if (this.currentConstraints!=null) {
+                constraints(this.currentConstraints)
+            }
+*/
+
+            groupsStack.head.group.layout.applyConstraints(left,constraints)
+
+            // Increment Column
+            groupsStack.head.currentColumn+=1
+
+        }
+
+        // Constraining Language
+        //--------------------------
+
+        def using(constraints: ConstraintsSet) : Column = {
+
+            // this.apply(GridBuilder.this.using(constraint))
+            var newColumn = new Column(left) {
+                name = "Column Element constraint"
+
+                override def doResolve = {
+                     groupsStack.head.group.layout.applyConstraints(left,constraints.constraints)
+                }
+            }
+            this.apply(newColumn)
+            this
+
+        }
+
+        def using(constraints: Tuple2[String,Any]*) : Column = this.using(GridBuilder.this.using(constraints))
+
+        
+
+        def spanRight(cl: => Unit) : Column = {
+
+            var wrapper : ( () => Unit) = {
+                () => cl
+            }
+
+            this.apply(new LanguageChainElement{
+
+                name = "SpanRight"
+
+                def doResolve = {
+
+                    // Note actual row
+                    //------------------------
+                    var actualRow = groupsStack.head.currentRow
+
+                    // Execute Right
+                    //--------------------
+                    //cl.resolve
+                    wrapper()
+
+                    var rowsAdded = groupsStack.head.currentRow - actualRow
+
+                    println(s"spanRight added $rowsAdded rows")
+                    groupsStack.head.group.layout.applyConstraints(left,GridBuilder.this.using("rowspan"->rowsAdded).constraints)
+
+                }
+
+            })
+
+             this
+        }
+
+        /**
+            This language element allow column syntax chaining of a row content:
+
+            label() | label() | label()
+        */
+        def | (columnElement: Column) : Column = {
+
+            this.apply(columnElement)
+
+            this
+        }
+        /*def spanRight(cl: LanguageChainElement) : Column = {
+
+            this.apply(new LanguageChainElement{
+
+                name = "SpanRight"
+
+                def doResolve = {
+
+                    // Note actual row
+                    //------------------------
+                    var actualRow = groupsStack.head.currentRow
+
+                    // Execute Right
+                    //--------------------
+                    //cl.resolve
+
+                    var rowsAdded = groupsStack.head.currentRow - actualRow
+
+                    println(s"spanRight added $rowsAdded rows")
+
+                }
+
+            })
+
+            
+
+            this
+        }*/
 
         /*var nodesStack = List[SGNode[Any]]()
         nodesStack =  nodesStack :+ left 
@@ -592,7 +892,11 @@ trait GridBuilder extends VBuilder {
         }*/
 
     }
-    implicit def convertSGNodeToColumnWrapper(node: SGNode[Any]) = new Column(node)
+
+    /**
+        A Single Node can be a column
+    */
+    implicit def convertSGNodeToColumn(node: SGNode[Any]) = new Column(node)
 
     /*class RightContentWrapper {
 

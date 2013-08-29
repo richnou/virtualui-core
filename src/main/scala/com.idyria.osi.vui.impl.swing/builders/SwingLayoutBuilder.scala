@@ -97,11 +97,26 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
         }
 
         // Prepare constraints
-        var gridbagConstraints = new GridBagConstraints
+        var gridbagConstraints = this.layout.getConstraints(node.base) match {
+          case actual if(actual==null) => new GridBagConstraints
+          case actual =>  actual
+        }
 
         // Row / Column
-        var row = constraints.get("row").asInstanceOf[Integer]
-        var column = constraints.get("column").asInstanceOf[Integer]
+        //---------------------
+        constraints.getOption("row") match {
+          case Some(row) => gridbagConstraints.gridy  = row.asInstanceOf[Int]
+          case _ => 
+        }
+
+        constraints.getOption("column") match {
+          case Some(column) =>  gridbagConstraints.gridx = column.asInstanceOf[Int]
+          case _ => 
+        }
+
+        println(s"Component is at: y:${gridbagConstraints.gridy}, x: ${gridbagConstraints.gridx}")
+        
+       
 
         //println(s"Applying GridBagLayout Constraints $row:$column")
 
@@ -113,6 +128,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
           case Some("left") =>  gridbagConstraints.anchor = GridBagConstraints.WEST
           case Some("top") => gridbagConstraints.anchor = GridBagConstraints.NORTH
           case Some("bottom") =>  gridbagConstraints.anchor = GridBagConstraints.SOUTH
+          case Some("center") =>  gridbagConstraints.anchor = GridBagConstraints.CENTER
           case _ =>
         }
 
@@ -123,7 +139,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
             
             //  println(s"---------> Colspan $colSpan")
             
-              gridbagConstraints.gridheight = colSpan.asInstanceOf[Int]
+              gridbagConstraints.gridwidth = colSpan.asInstanceOf[Int]
           
           case None => 
         }
@@ -133,12 +149,12 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
             
             println(s"---------> rowspan $rowSpan")
             
-              gridbagConstraints.gridwidth = rowSpan.asInstanceOf[Int]
+              gridbagConstraints.gridheight = rowSpan.asInstanceOf[Int]
           
           case None => 
         }
 
-        // Expand
+        // Expand & push
         //------------------
 
         constraints.getOption("expand") match {
@@ -172,22 +188,25 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
               //gridbagConstraints.gridwidth = GridBagConstraints.RELATIVE
         }
 
-        constraints.getOption("spanColumns") match {
-
-          case Some(spanColumns) =>
-
-                  gridbagConstraints.gridwidth = GridBagConstraints.REMAINDER
-
-          case None =>    
-
+        constraints.getOption("pushRight") match {
+          case Some(pushRight) => 
+              gridbagConstraints.weightx = 1
+              gridbagConstraints.anchor = GridBagConstraints.EAST
+               println(s"------> pushRight on ${node.toString}#${node.base.hashCode}")
+          
+          case None => 
         }
 
-        constraints.getOption("relative") match {
+       
 
-          case Some(relative) =>
+        // Spread -> Means the grid width is remainder to take all the available columns
+        //--------------------
+        constraints.getOption("spread") match {
 
-                  gridbagConstraints.gridwidth = GridBagConstraints.RELATIVE
-                  println("---------------> Relative")
+          case Some(spread) =>
+
+                  gridbagConstraints.gridwidth = GridBagConstraints.REMAINDER
+                   println("------> Spread")
           case None =>    
 
         }
@@ -199,10 +218,8 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
         // Apply
         //-----------------------
-        gridbagConstraints.gridy  = row
-        gridbagConstraints.gridx = column
         this.layout.setConstraints(node.base, gridbagConstraints)
-
+        this.layout.invalidateLayout(node.base.getParent)
       }
 
     }

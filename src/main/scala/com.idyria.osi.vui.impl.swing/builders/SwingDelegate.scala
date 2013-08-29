@@ -24,7 +24,7 @@ class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  exten
     def base : DT = delegate
     override def revalidate = delegate.revalidate
 
-    def clear = {delegate.removeAll;  delegate.revalidate}
+    def clear = {delegate.removeAll;  delegate.revalidate ; delegate.validate}
 
     //---------------------------------------
     // General

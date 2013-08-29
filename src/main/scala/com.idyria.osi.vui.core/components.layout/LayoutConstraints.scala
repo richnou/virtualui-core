@@ -5,6 +5,8 @@ class LayoutConstraints {
 
     var constraints = Map[String,Any]()
 
+    def size = constraints.size
+
     def apply(lc: (String,Any)) = {
          this.constraints = this.constraints + lc
     }
@@ -61,6 +63,7 @@ class LayoutConstraints {
 
 object LayoutConstraints {
 
+    def apply : LayoutConstraints = new LayoutConstraints
     def apply( tuples: Tuple2[String,Any]*) : LayoutConstraints = {
 
         var constraints = new LayoutConstraints

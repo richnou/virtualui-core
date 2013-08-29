@@ -5,6 +5,7 @@ package com.idyria.osi.vui.core.components.scenegraph
 
 import com.idyria.osi.tea.listeners.ListeningSupport
 
+import com.idyria.osi.vui.core.styling.StylableTrait
 
 /**
  *
@@ -13,7 +14,7 @@ import com.idyria.osi.tea.listeners.ListeningSupport
  * @author rleys
  *
  */
-trait SGNode[+T] extends ListeningSupport {
+trait SGNode[+T] extends ListeningSupport with StylableTrait {
 
     /**
         Optional ID for the Node

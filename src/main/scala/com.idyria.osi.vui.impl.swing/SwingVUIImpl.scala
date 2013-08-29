@@ -58,7 +58,23 @@ class SwingVUIImpl
         //-----------------
         // VuiFrame
 
-        
+        def show() = {
+
+          if (this.topNode.base.isInstanceOf[java.awt.Container]) {
+
+            var container = this.topNode.base.asInstanceOf[java.awt.Container]
+             if (container.getComponentCount == 1 && container.getComponent(0).isInstanceOf[java.awt.Container]) {
+
+            base.setContentPane(container.getComponent(0).asInstanceOf[java.awt.Container])
+            println("Content pane has only one container, so set this container as top node ")
+          }
+          }
+         
+
+          base.setVisible(true)
+
+
+        }
 
         //------------------
         //-- Events
@@ -81,9 +97,6 @@ class SwingVUIImpl
         def width(width: Int) = base.setSize(new Dimension(width, base.getSize().height))
         def height(height: Int) = base.setSize(new Dimension(base.getSize().width, height))
 
-        def show() {
-          base.setVisible(true)
-        }
 
         /**
          * Add a node to this node container

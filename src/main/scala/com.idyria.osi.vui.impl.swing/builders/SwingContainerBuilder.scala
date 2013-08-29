@@ -53,45 +53,7 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
 
     }
 
-    //return null
-   /* new JTabbedPane() with VUITabPane[Component] {
-
-      def base : Container = this
-
-
-
-      // Node
-      //------------
-
-      /**
-       * Node method override to add components as tabs
-       */
-      def node[NT <: SGNode[Component]](title:String)(content:NT) : NT = {
-
-        this.addTab(title,content.base)
-        content
-      }
-
-      def clear = {
-        this.removeAll
-        this.revalidate
-      }
-
-      // Positioning
-      //---------------------
-      def setPosition(x:Int,y:Int) = super.setLocation(x, y)
-      def getPosition : Pair[Int,Int] = Pair[Int,Int](super.getLocation().x,super.getLocation().y)
-
-      // Dummy Overrides for JComponent compatibility
-      override def setX(x:Int) = super.setX(x)
-      override def getX: Int = getPosition._1
-      override def setY(y:Int) = super.setY(y)
-      override def getY: Int = getPosition._2
-
-
-
-    }*/
-
+   
 
   }
 
@@ -126,6 +88,10 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
           if (definedLayout!=null) {
             definedLayout nodeAdded nd
           }
+
+          // Revalidate
+          nd.revalidate
+          this.revalidate
 
           nd
 
