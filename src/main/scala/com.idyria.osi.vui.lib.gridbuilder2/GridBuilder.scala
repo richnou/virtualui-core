@@ -1,4 +1,4 @@
-package com.idyria.osi.vui.lib.gridbuilder
+package com.idyria.osi.vui.lib.gridbuilder2
 
 import com.idyria.osi.vui.core._
 import com.idyria.osi.vui.core.components.layout._
@@ -12,20 +12,20 @@ import scala.language.implicitConversions
 
 trait GridBuilder extends VBuilder {
 
-    var groupsStack = scala.collection.mutable.Stack[SGGroup[Any]]()
+    var groupsStack = scala.collection.mutable.Stack[Grid]()
 
-    var currentRow = 0 
+    //var currentRow = 0 
 
-    var currentColumn = 0
+   // var currentColumn = 0
 
     /**
         The row level is used to detect rows in rows, and then not reset column count until we are back to row level 0
     */
-    var currentRowLevel = 0
+   // var currentRowLevel = 0
 
-     var currentColumnLevel = 0
+    // var currentColumnLevel = 0
 
-    var currentConstraints : LayoutConstraints = null
+    //var currentConstraints : LayoutConstraints = null
 
     // Language
     //---------------------------
@@ -43,6 +43,8 @@ trait GridBuilder extends VBuilder {
 
         var currentColumn = 0 
         var currentRow = 0
+
+        group layout grid
     }
 
     def grid(cl: => Unit) : SGGroup[Any] = {
@@ -50,15 +52,18 @@ trait GridBuilder extends VBuilder {
         // Create a new group
         //---------------------------
         var newGroup = group 
-        newGroup layout grid
 
         // Create A new Grid Context instance to reset columns and rows
+        //-----------------
+        var grid = new Grid(group)
 
         // Push on stack to execute closure
         //----------------------------------
-        groupsStack.push(newGroup)
+        groupsStack.push(grid)
         cl
         groupsStack.pop
+
+        grid.group
 
     }
 
@@ -69,7 +74,40 @@ trait GridBuilder extends VBuilder {
 
     // Constraining Language
     //------------------------------------------------
-    class ConstraintsWrapper(var cl : ( () => Unit) )    {
+    trait UsingConstraints {
+
+
+        
+
+
+    }
+    /**
+        Return a new constraints Set for this Sequence of Constraints
+    */
+    def using(constraints: Tuple2[String,Any]*) :  ConstraintsSet = {
+
+
+        var constraintsSet = new ConstraintsSet
+        constraints.foreach {
+            c => constraintsSet.constraints(c)
+        }
+        constraintsSet
+    }
+    def using(constraint: Tuple2[String,Any]) :  ConstraintsSet = {
+
+        
+        var constraintsSet = new ConstraintsSet
+        constraintsSet.constraints(constraint)
+        constraintsSet
+
+    }
+
+    class ConstraintsSet {
+
+         var constraints = new LayoutConstraints
+
+    }
+   /* class ConstraintsWrapper(var cl : ( () => Unit) )    {
 
         var constraints = new LayoutConstraints
 
@@ -86,16 +124,16 @@ trait GridBuilder extends VBuilder {
             this
         }
         
-    }
+    }*/
 
     /**  Add a user define constraint to enclosed content
         Example: 
 
-        "id" row with("align" -> "right") {
+        "id" row using("align" -> "right") {
             // Content
         }
     */
-    def using(constraints: (String,Any)*)(cl: => Unit) : ConstraintsWrapper = {
+   /* def using(constraints: (String,Any)*)(cl: => Unit) : ConstraintsWrapper = {
 
 
         var clwrapper = { () =>
@@ -110,7 +148,7 @@ trait GridBuilder extends VBuilder {
         GridBuilder.this.currentConstraints = null
 
         constraintsWrapper
-    }
+    }*/
 
     /** Add an align right to enclosed content
         Example: 
@@ -119,7 +157,7 @@ trait GridBuilder extends VBuilder {
             // Content
         }
     */
-    def alignRight (cl: => Any) :  ConstraintsWrapper = {
+    /*def alignRight (cl: => Any) :  ConstraintsWrapper = {
 
 
         var clwrapper : (() => Unit) = { () =>
@@ -133,7 +171,7 @@ trait GridBuilder extends VBuilder {
             column.addNodes
         }
         return new ConstraintsWrapper(clwrapper)("align" -> "right")
-    }
+    }*/
 
 
     /** Add an align right to enclosed content
@@ -143,7 +181,7 @@ trait GridBuilder extends VBuilder {
             // Content
         }
     */
-    def alignLeft (cl: => Any) :  ConstraintsWrapper = {
+    /*def alignLeft (cl: => Any) :  ConstraintsWrapper = {
 
 
         var clwrapper : (() => Unit) = { () =>
@@ -159,21 +197,94 @@ trait GridBuilder extends VBuilder {
             column.addNodes
         }
         return new ConstraintsWrapper(clwrapper)("align" -> "left")
-    }
+    }*/
 
     
+    // Common Chanining Language
+    //----------------
+    trait LanguageChainElement {
+
+        var name = "unnamed"
+
+        var nextElement : LanguageChainElement = null
+
+        final def resolve : Unit = {
+            println(s"-> Applying to $name")
+            this.doResolve
+            if (nextElement!=null)
+                nextElement.resolve
+        }
+
+        /**
+            Save element to the right as next, and return self for left composition
+        */
+        def apply(languageElement: LanguageChainElement) : LanguageChainElement = {
+
+            println(s" ---- Chaining $name to ${languageElement.name}")
+            this.nextElement = languageElement
+            this
+        }
+
+        def doResolve : Unit
+
+    }
 
 
     //---- Row
     //--------------------------
-     class RowLanguageWrapper(var left: String) {
+
+    /**
+        Wrapper class to represent a row, and add language elements allowed on this row
+    */
+    class Row(var left: String) extends RowLanguageElement with UsingConstraints {
+
+        name = "Row"
+
+       // var languageElements = List[RowLanguageElement]()
+
+        // Apply Opens the row for the current Grid, and starts content
+        //----------
+        /*def apply(content: => Any) = {
 
 
-        def row(cl: => Unit) = {
-            GridBuilder.this.row(left)(cl)
+        }*/
+        
+        def doResolve = {
+            println("Opening Row")
+        }
+
+        // Language Right to "row" keyword
+        //---------------------
+
+        /**
+            row alone : row {
+    
+            }
+        */
+        /*def row : Row = {
+            this
+        }*/
+
+        /**
+            row using(constraint -> value*)
+        */
+       /* def row(right: ConstraintsSet) : Row = {
+            this
+        }*/
+
+        def row(right: RowLanguageElement) : Unit  = {
+            //languageElements = languageElements :+ right
+
+            println("In Row language function, will be applying")
+
+            this.nextElement = right
+
+            
+            this.resolve
+           // this
         }
         
-        def row(node: SGNode[Any]) = {
+        /*def row(node: SGNode[Any]) = {
             GridBuilder.this.row(node)
         }
 
@@ -207,19 +318,66 @@ trait GridBuilder extends VBuilder {
 
             //GridBuilder.this.row(left, ("expand" -> true))
 
+        }*/
+
+    }
+    implicit def convertStringToRow(str:String) = new Row(str)
+
+    abstract class RowLanguageElement {
+
+        var name = "unnamed"
+
+        var nextElement : RowLanguageElement = null
+
+        final def resolve : Unit = {
+            println(s"-> Applying to $name")
+            this.doResolve
+            if (nextElement!=null)
+                nextElement.resolve
+        }
+
+        /**
+            Save element to the right as next, and return self for left composition
+        */
+        def apply(languageElement: RowLanguageElement) : RowLanguageElement = {
+
+            println(s" ---- Chaining $name to ${languageElement.name}")
+            this.nextElement = languageElement
+            this
+        }
+
+        def doResolve : Unit
+
+    }
+    implicit def convertConstraintsToRowLanguageElement(cstr: ConstraintsSet) : RowLanguageElement = {
+
+        new RowLanguageElement {
+
+             name = "Constraints"
+
+            def doResolve = {
+                println("--> Doing constraints set")
+            }
         }
 
     }
-    implicit def convertStringToRow(str:String) = new RowLanguageWrapper(str)
+     implicit def convertContentClosureToRowLanguageElement(cl: => Any) : RowLanguageElement = {
 
-    class RowContentWrapper( var contentClosure: () => Unit) {
+        new RowLanguageElement {
+
+            name = "Contentclosure"
+            def doResolve = {
+                println("--> Doing Content Closure set")
+            }
+        }
 
     }
+   
 
     /**
         Do Nothing if a ColumnLanguage is found, because this one already handles everything correctly
     */
-    def row( column: ColumnLanguageWrapper) : Unit = {
+    /*def row( column: ColumnLanguageWrapper) : Unit = {
 
         println("**** Row With ColumnLanguageWrapper *****")
         this.row("Undefined") {
@@ -303,14 +461,20 @@ trait GridBuilder extends VBuilder {
 
         //this.row(node)
         //groupsStack.head.layout.applyConstraints(node,constraints)
-    }
+    }*/
 
     
     //----- Columns content
     //-----------------------
-    class ColumnLanguageWrapper(var left: SGNode[Any]) {
 
-        var nodesStack = List[SGNode[Any]]()
+    /**
+        Class to represent a column, and handle language elements allowed 
+
+        A Column is always hosting a node
+    */
+    class Column(var left: SGNode[Any]) extends UsingConstraints {
+
+        /*var nodesStack = List[SGNode[Any]]()
         nodesStack =  nodesStack :+ left 
 
         def addNodes = {
@@ -396,7 +560,7 @@ trait GridBuilder extends VBuilder {
             content
 
             
-        }
+        }*/
 
         /**
             normal content add but left is spanning
@@ -409,7 +573,7 @@ trait GridBuilder extends VBuilder {
 
         }*/
 
-        def spanRight(count : IntWrapper) : Unit = {
+        /*def spanRight(count : IntWrapper) : Unit = {
 
             // Add Left
             //---------------
@@ -425,12 +589,12 @@ trait GridBuilder extends VBuilder {
             var rowsAdded = GridBuilder.this.currentRow - actualRow
 
             println(s"spanRight added $rowsAdded rows")
-        }
+        }*/
 
     }
-    implicit def convertSGNodeToColumnWrapper(node: SGNode[Any]) = new ColumnLanguageWrapper(node)
+    implicit def convertSGNodeToColumnWrapper(node: SGNode[Any]) = new Column(node)
 
-    class RightContentWrapper {
+    /*class RightContentWrapper {
 
         var closure : () => Unit = null
 
@@ -458,8 +622,9 @@ trait GridBuilder extends VBuilder {
         }
     }
     implicit def convertIntToIntWrapper(count: Int) = new IntWrapper(count)
+    */
 
-    def column(node:SGNode[Any],constraintsBase: Tuple2[String,Any]*) = {
+    /*def column(node:SGNode[Any],constraintsBase: Tuple2[String,Any]*) = {
 
     
         // Add 
@@ -481,6 +646,6 @@ trait GridBuilder extends VBuilder {
 
     
         
-    }
+    }*/
 
 }

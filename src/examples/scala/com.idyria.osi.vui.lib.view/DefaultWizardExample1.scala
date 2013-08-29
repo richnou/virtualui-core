@@ -15,6 +15,7 @@ object DefaultWizardExample1 extends App {
 
         // Parameters
         //----------------
+        this.name = "Default WizardExample1"
         dialog.size(800,600)
         dialog.title("Default WizardExample1")
 
@@ -108,8 +109,8 @@ object DefaultWizardExample1 extends App {
 
     }
 
-    wizard.initDialog
-    wizard -> "A"
+   // wizard.initDialog
+    //wizard -> "A"
     wizard.showDialog
 
     println("End Of Dialog")

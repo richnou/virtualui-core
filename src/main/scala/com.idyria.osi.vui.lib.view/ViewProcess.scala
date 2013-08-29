@@ -56,10 +56,10 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
 
         // Search
         //----------
-        println(s"Trying to go to $nextView")
+        /*println(s"Trying to go to $nextView")
         this.view.foreach {
             v => println(s"--> Available: ${v.id}")
-        }
+        }*/
         this.view.find(nextView == _.id.toString) match {
             case Some(view) => this.changeView(view)
             case None => throw new RuntimeException(s"Could not change to whished view: $nextView")

@@ -106,21 +106,18 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
         //println(s"Applying GridBagLayout Constraints $row:$column")
 
         // Anchor
-        try {
-          
-          constraints.get("align") match {
-            case "right" => 
-                
-                //println(s"---------> Align right")
-                
-                gridbagConstraints.anchor = GridBagConstraints.EAST
-          }
+        //--------------------------
+        constraints.getOption("align") match {
 
-        } catch {
-          case e: Throwable =>
+          case Some("right") => gridbagConstraints.anchor = GridBagConstraints.EAST
+          case Some("left") =>  gridbagConstraints.anchor = GridBagConstraints.WEST
+          case Some("top") => gridbagConstraints.anchor = GridBagConstraints.NORTH
+          case Some("bottom") =>  gridbagConstraints.anchor = GridBagConstraints.SOUTH
+          case _ =>
         }
 
         // Column Spanning
+        //-------------------------
         constraints.getOption("colspan") match {
           case Some(colSpan) => 
             
@@ -156,7 +153,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
         constraints.getOption("expandHeight") match {
           case Some(colSpan) => 
               gridbagConstraints.weighty = 1
-              gridbagConstraints.fill = GridBagConstraints.BOTH
+              gridbagConstraints.fill = GridBagConstraints.VERTICAL
           
           case None => 
         }

@@ -18,6 +18,10 @@ object ViewModel extends ModelBuilder {
 
         //withTrait("com.idyria.osi.vui.lib.view.ViewProcessTrait")
         isTrait
+
+        attribute("name") {
+            "This is the name of the View Process. Useful for GUI wizard for example"
+        }
     }
 
 
@@ -38,7 +42,7 @@ object ViewModel extends ModelBuilder {
     "ViewGroupTrait" is {
         isTrait
         
-        "View" multiple(view)
+        "View" multipleOf(view)
 
        // withTrait("com.idyria.osi.vui.lib.view.ViewGroupTrait")
 
