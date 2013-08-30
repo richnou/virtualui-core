@@ -8,7 +8,7 @@ object SwingVuiDemo extends App {
 
   println("Swing VUI Demo")
 
-  object ui extends VBuilder {
+  /*object ui extends VBuilder {
 
     var demoFrame = frame {
 
@@ -125,5 +125,5 @@ object SwingVuiDemo extends App {
   }
 
   ui.demoFrame show
-
+*/
 }

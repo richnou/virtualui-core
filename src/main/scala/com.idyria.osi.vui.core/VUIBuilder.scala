@@ -6,7 +6,7 @@ package com.idyria.osi.vui.core
 import scala.Predef.Set.apply
 import com.idyria.osi.vui.core.components.containers.ContainerBuilder
 import com.idyria.osi.vui.core.components.controls.ControlsBuilder
-import com.idyria.osi.vui.core.swing.SwingVUIImpl
+import com.idyria.osi.vui.impl.swing.SwingVUIImpl
 import com.idyria.osi.vui.core.components.main.MainBuilder
 import com.idyria.osi.vui.core.components.scenegraph.SceneGraphBuilder
 import com.idyria.osi.vui.core.components.layout.LayoutBuilder

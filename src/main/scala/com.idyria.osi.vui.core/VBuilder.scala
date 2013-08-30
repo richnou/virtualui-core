@@ -3,26 +3,16 @@
  */
 package com.idyria.osi.vui.core
 
-import com.idyria.osi.vui.core.components.main.MainBuilder
-import com.idyria.osi.vui.core.components.containers.ContainerBuilder
-import com.idyria.osi.vui.core.components.controls.ControlsBuilder
-import com.idyria.osi.vui.core.components.layout.VuiSwitchLayout
-import com.idyria.osi.vui.core.components.scenegraph.SceneGraphBuilder
-import com.idyria.osi.vui.core.components.scenegraph.SGGroup
-import com.idyria.osi.vui.core.components.layout.LayoutBuilder
-import com.idyria.osi.vui.core.components.layout.VUIVBoxLayout
-import com.idyria.osi.vui.core.components.controls.VUIButton
-import com.idyria.osi.vui.core.components.controls.VUILabel
-import com.idyria.osi.vui.core.components.layout.VUIHBoxLayout
-import com.idyria.osi.vui.core.components.layout.VUIFreeLayout
-import com.idyria.osi.vui.core.components.containers.VUITabPane
-import com.idyria.osi.vui.core.components.containers.VUIPanel
-import com.idyria.osi.vui.core.components.scenegraph.SGNode
-import com.idyria.osi.vui.core.components.form.FormBuilder
-import com.idyria.osi.vui.core.components.form.VUIInputText
-import com.idyria.osi.vui.core.components.main.VuiFrame
-import com.idyria.osi.vui.core.components.form.VUIList
 
+
+import com.idyria.osi.vui.core.components.containers._
+import com.idyria.osi.vui.core.components.scenegraph._
+import com.idyria.osi.vui.core.components.controls._
+import com.idyria.osi.vui.core.components.layout._
+import com.idyria.osi.vui.core.components.form._
+import com.idyria.osi.vui.core.components.main._
+
+import java.net._
 
 /**
  * @author rleys
@@ -42,7 +32,8 @@ trait VBuilderBase[T]  {
   // Controls
   //--------------------
   def button(text: String)(implicit cl: VUIButton[T] => Unit) : VUIButton[T] = apply(VUIBuilder.selectedImplementation[T].button(text),cl);
-   def label(text:String)(implicit cl: VUILabel[T] => Unit) : VUILabel[T] = apply(VUIBuilder.selectedImplementation[T].label(text),cl);
+  def label(text:String)(implicit cl: VUILabel[T] => Unit) : VUILabel[T] = apply(VUIBuilder.selectedImplementation[T].label(text),cl);
+  def image(path: URL)(implicit cl: VUIImage[T] => Unit) :  VUIImage[T] = apply(VUIBuilder.selectedImplementation[T].image(path),cl);
 
   // Form
   //------------------
@@ -52,12 +43,13 @@ trait VBuilderBase[T]  {
   // Scene Graph
   //--------------------------
 
-  def group(cl : SGGroup[T] => Unit ) : SGGroup[T] = apply(VUIBuilder.selectedImplementation[T].group(),cl)
+  def group(implicit cl : SGGroup[T] => Unit ) : SGGroup[T] = apply(VUIBuilder.selectedImplementation[T].group(),cl)
 
   // Layouts
   //-------------------
   def vbox : VUIVBoxLayout[T] = VUIBuilder.selectedImplementation[T].vbox
   def hbox : VUIHBoxLayout[T] = VUIBuilder.selectedImplementation[T].hbox
+  def grid : VUIGridLayout[T] = VUIBuilder.selectedImplementation[T].grid
   def none : VUIFreeLayout[T] = VUIBuilder.selectedImplementation[T].none
 
   // Containers

@@ -1,0 +1,53 @@
+
+
+
+import com.idyria.osi.ooxoo.model.out.scala._
+
+@producers(Array(
+    new producer(value=classOf[ScalaProducer])
+))
+object ViewModel extends ModelBuilder {
+    
+
+    parameter("scalaProducer.targetPackage"->"com.idyria.osi.vui.lib.view")
+
+
+    // View Process
+    //-------------------
+    "ViewProcessTrait" is {
+
+        //withTrait("com.idyria.osi.vui.lib.view.ViewProcessTrait")
+        isTrait
+
+        attribute("name") {
+            "This is the name of the View Process. Useful for GUI wizard for example"
+        }
+    }
+
+
+    // View
+    //-------------------
+
+    var view = "ViewTrait" is {
+        isTrait
+
+        attribute("id")
+        attribute("name")
+        
+       // withTrait("com.idyria.osi.vui.lib.view.ViewTrait")
+
+    }
+
+
+    "ViewGroupTrait" is {
+        isTrait
+        
+        "View" multipleOf(view)
+
+       // withTrait("com.idyria.osi.vui.lib.view.ViewGroupTrait")
+
+    }
+   
+
+    
+}
