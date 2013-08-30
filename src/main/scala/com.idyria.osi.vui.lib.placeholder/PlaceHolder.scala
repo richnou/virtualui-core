@@ -1,9 +1,9 @@
-package com.idyria.osi.vui.core.stdlib.placeholder
+package com.idyria.osi.vui.lib.placeholder
 
 import com.idyria.osi.vui.core._
 import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.components.layout._
-import com.idyria.osi.vui.lib.gridbuilder2._
+import com.idyria.osi.vui.lib.gridbuilder._
 
 trait PlaceHolder extends VBuilder {
 

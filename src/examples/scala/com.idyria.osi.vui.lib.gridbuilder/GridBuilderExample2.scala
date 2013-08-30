@@ -1,4 +1,4 @@
-package com.idyria.osi.vui.lib.gridbuilder2
+package com.idyria.osi.vui.lib.gridbuilder
 
 
 object GridBuilderExample2 extends App with GridBuilder {

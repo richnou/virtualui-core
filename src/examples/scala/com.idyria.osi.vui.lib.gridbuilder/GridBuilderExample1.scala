@@ -13,9 +13,7 @@ object GridBuilderExample1 extends App with GridBuilder {
     var uniLogo3 = image(url) {
         img => img size(250,-1)
     }
-    var uniLogo4 = image(url) {
-        img => img size(250,-1)
-    }
+
  
 
     var ui = frame { f=>
@@ -33,9 +31,9 @@ object GridBuilderExample1 extends App with GridBuilder {
 
             "middle" row {
 
-                uniLogo spanRight 2 {  
-                                      row(label("Image Right"))
-                                      row(label("Image Right bottom"))
+                uniLogo spanRight {  
+                                      "-" row(label("Image Right"))
+                                      "-" row(label("Image Right bottom"))
                                                        
                                     }
 
@@ -43,45 +41,32 @@ object GridBuilderExample1 extends App with GridBuilder {
 
             "login" row {
 
-                uniLogo2 spanRight 4 {  
-                                      row { (label("Login: ")) | (textInput  using ("expandWidth" -> true,"expand" -> true,"relative" -> true)) | label(" OK ")}
+                uniLogo2 spanRight {  
+                                      "-" row { (label("Login: ")) | (textInput  using ("expandWidth" -> true,"expand" -> true,"relative" -> true)) | label(" OK ")}
 
-                                      using("rowspan"->3,"expandWidth" -> true){row(label("Image Right bottom"))}
+                                      "-" row using("colspan"->3,"expandWidth" -> true) (label("Image Right bottom"))
 
-                                      row((label("Image Right bottom") using ("rowspan"-> 3,"expandWidth" -> true)))
+                                      "-" row((label("Image Right bottom") using ("colspan"-> 3,"expandWidth" -> true)))
 
-                                      row(label("Image Right bottom"),"rowspan"-> 3,"expandWidth" -> true)            
+                             
                                     }
 
             }
 
             "login" row {
 
-                uniLogo3 spanRight 4 {  
-                                      row { (textInput  using ("expandWidth" -> true)) | (label("Login: ")) | label(" OK ")}
+                uniLogo3 spanRight {  
+                                      "-" row { (textInput  using ("expandWidth" -> true)) | (label("Login: ")) | label(" OK ")}
 
-                                      using("rowspan"->3,"expandWidth" -> true){row(label("Image Right bottom"))}
 
-                                      row((label("Image Right bottom") using ("rowspan"-> 3,"expandWidth" -> true)))
+                                      "-" row((label("Image Right bottom") using ("colspan"-> 3,"expandWidth" -> true)))
 
-                                      row(label("Image Right bottom"),"rowspan"-> 3,"expandWidth" -> true)            
+                                       
                                     }
 
             }
 
-            "login" row {
-
-                uniLogo4 spanRight 4 {  
-                                      row {  (label("Login: ")) | (label("test")  using ("expandWidth" -> true)) |label(" OK ")}
-
-                                      using("rowspan"->3,"expandWidth" -> true){row(label("Image Right bottom"))}
-
-                                      row((label("Image Right bottom") using ("rowspan"-> 3,"expandWidth" -> true)))
-
-                                      row(label("Image Right bottom"),"rowspan"-> 3,"expandWidth" -> true)            
-                                    }
-
-            }
+            
         }
 
 

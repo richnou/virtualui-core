@@ -4,9 +4,9 @@ import com.idyria.osi.vui.lib.view.wizard._
 import com.idyria.osi.vui.lib.view._
 
 import com.idyria.osi.vui.core.components.form._
-import com.idyria.osi.vui.core.stdlib.placeholder._
+import com.idyria.osi.vui.lib.placeholder._
 
-import com.idyria.osi.vui.lib.gridbuilder2._
+import com.idyria.osi.vui.lib.gridbuilder._
 
 class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder {
 
