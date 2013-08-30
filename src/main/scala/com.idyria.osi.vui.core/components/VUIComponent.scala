@@ -47,6 +47,11 @@ trait VUIComponent[T] extends SGNode[T] with StylableTrait {
   def onClicked(action: => Any) = {}
 
   /**
+    Alias for @see #onClicked
+  */
+  def onClick(action: => Any) = onClicked(action)
+  
+  /**
    * The drag event is triggered when the mouse is hold and moved on the object
    */
   def onDrag(action: VUIMouseEvent => Unit) = {}
