@@ -92,7 +92,9 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
           // Revalidate
           nd.revalidate
           this.revalidate
-
+          this.delegate.validate
+          this.delegate.invalidate
+          
           nd
 
         }

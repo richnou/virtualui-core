@@ -1,6 +1,9 @@
 package com.idyria.osi.vui.core.components.layout
 
 
+import scala.language.implicitConversions
+
+
 class LayoutConstraints {
 
     var constraints = Map[String,Any]()
@@ -63,7 +66,7 @@ class LayoutConstraints {
 
 object LayoutConstraints {
 
-    def apply : LayoutConstraints = new LayoutConstraints
+    def apply() : LayoutConstraints = new LayoutConstraints
     def apply( tuples: Tuple2[String,Any]*) : LayoutConstraints = {
 
         var constraints = new LayoutConstraints
@@ -73,5 +76,24 @@ object LayoutConstraints {
         constraints
 
     }
+
+    implicit def convertTuplesToConstraints(tuples: (String,Any)*) : LayoutConstraints = {
+
+        var constraints = new LayoutConstraints
+        tuples.foreach {
+            t => constraints(t)
+        }
+        constraints
+
+    }
+
+     implicit def convertTupleToConstraints(tuple: (String,Any)) : LayoutConstraints = {
+
+        var constraints = new LayoutConstraints
+        constraints(tuple)
+        constraints
+
+    }
+
 
 }

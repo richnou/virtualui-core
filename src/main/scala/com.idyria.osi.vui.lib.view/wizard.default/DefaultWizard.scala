@@ -33,6 +33,9 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
             stepsList.select(view.name)
         }
 
+        // Repaint
+        dialog.revalidate
+
     }
 
     // Default Design
@@ -103,83 +106,40 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
 
                     // Bottom: Controls
                     //-----------------------
-                    "bottom" row using(List(spread,expandWidth)) { 
+                    "bottom" row using(spread,expandWidth) { 
 
-                                    subgrid {
-                                            
-                                            "-" row {
-                    
-                                                ( 
-                                                    button("Cancel") { b => 
+                            subgrid {
+                                    
+                                "-" row {
+        
+                                        ( 
+                                            button("Cancel") { b => 
 
 
 
-                                                    } using pushRight)  | (
+                                            } using pushRight
 
-                                                    button("Next") { b => 
+                                        )  | (
 
-                                                        b.onClicked {
-                                                            nextView
-                                                        }
+                                            button("Next") { b => 
 
-                                                    }
+                                                b.onClicked {
+                                                    nextView
+                                                }
 
-                                                )
-                    
                                             }
+
+                                        )
+        
+                                }
                         }
                             
                    
                     }
-                    /*"bottom" row group {
-
-                       ( button("Cancel")) | button("Next") 
-                    }*/
-                   /* row(group {
-                        g => 
-
-                            g layout grid 
-
-                            g <= button("Cancel") {
-                                b => 
-                            }
-                            g <= button("Next")  {
-                                b => 
-                            }
-                    }, "rowspan" -> 2)*/
-
-                    /*row("top") {
-                        |(label("Top"))
-                    }
-                    row(placeHolder("middle"),Seq[Tuple2[String,Any]](new Tuple2("expand",true)) ) 
-
-                    row("bottom") {
-
-                        |(button("Ok") , button("Finish") ,button("Cancel"))
-                       // ->(  button("Ok") , button("Finish") ,button("Cancel") )
-
-                    }*/
+                    
 
                 }
-                /*dialog <= group {
-                    g => 
-                        g <= label("Top")
-                }
-
-                dialog <=  placeHolder("middle") 
-
-                dialog <= group {
-                    g => 
-
-                        g layout hbox
-
-                        g <= button("Ok")
-
-                        g <= button("Finish") {
-                            b => b disable
-                        }
-                        g <= button("Cancel")
-                }*/
+                
         }
 
         this.dialog.revalidate

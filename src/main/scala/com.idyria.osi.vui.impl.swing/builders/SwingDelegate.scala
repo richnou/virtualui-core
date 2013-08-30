@@ -2,6 +2,7 @@ package com.idyria.osi.vui.impl.swing.builders
 
 import java.awt._
 import java.awt.event._
+import javax.swing.event._
 import javax.swing._
 
 
@@ -72,19 +73,37 @@ class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  exten
 
     //----------------------
     //-- Geometry listeners
-    override def onShown(action: => Unit) = delegate.addComponentListener(new ComponentAdapter() {
+    override def onShown(action: => Unit) = {
 
         println("Registering action for ComponentShown")
+        var wrapper : (() => Unit) = {
+            () => action
+        }
 
-        override def  componentShown(e : ComponentEvent) = SwingUtilities.invokeLater(new Runnable {
+        delegate.addComponentListener(new ComponentAdapter() {
 
-            override def run() = action
-          })
-        override def  componentResized(e : ComponentEvent) = SwingUtilities.invokeLater(new Runnable {
+           
 
-            override def run() = action
-          })
-    })
+            override def  componentShown(e : ComponentEvent) =  wrapper()
+            override def  componentResized(e : ComponentEvent) =  wrapper()
+        })
+
+        delegate.addAncestorListener(new AncestorListener() {
+
+           
+            var wrapper : (() => Unit) = {
+                () => action
+            }
+
+            override def  ancestorAdded(e : AncestorEvent ) =  wrapper()
+            override def  ancestorMoved(e : AncestorEvent ) =  {}
+            override def  ancestorRemoved(e : AncestorEvent ) =  {}
+
+     
+        })
+
+
+    }
 
 
     //---------------------------------------

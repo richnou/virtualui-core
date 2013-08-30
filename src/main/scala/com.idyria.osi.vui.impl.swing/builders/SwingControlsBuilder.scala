@@ -38,7 +38,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
     return new SwingJComponentCommonDelegate[JLabel](new JLabel(text)) with VUILabel[Component] {
 
-        this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+        //this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
         
         // Text
         //--------------
@@ -57,7 +57,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
     new SwingJComponentCommonDelegate[JLabel](new JLabel) with VUIImage[Component] {
 
-        this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+       //this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
 
         // Save URL
         var url = path
@@ -67,56 +67,65 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
         */
         def load = {
 
-          var sizeDimension = delegate.getPreferredSize
+          if (this.delegate.getIcon==null) {
 
-          // Read Source Image
-          //----------------
-          var originalImage = ImageIO.read(url)
+            println("Loading image")
 
-          // Resolve Sizes for resizing
-          //-------------------------------
-          (sizeDimension.width,sizeDimension.height) match {
+            var sizeDimension = delegate.getPreferredSize
 
-            // Resize based on Width
-            case (width,-1) =>
+            // Read Source Image
+            //----------------
+            var originalImage = ImageIO.read(url)
 
-                sizeDimension.height = width * originalImage.getHeight / originalImage.getWidth
-                size(sizeDimension.width,sizeDimension.height)
+            // Resolve Sizes for resizing
+            //-------------------------------
+            (sizeDimension.width,sizeDimension.height) match {
 
-            // Resize based on Height
-            case (-1,height) =>
+              // Resize based on Width
+              case (width,-1) =>
 
-                sizeDimension.width = height * originalImage.getWidth / originalImage.getHeight
-                size(sizeDimension.width,sizeDimension.height)
+                  sizeDimension.height = width * originalImage.getHeight / originalImage.getWidth
+                  size(sizeDimension.width,sizeDimension.height)
 
-            // Do nothing
-            case _ =>
+              // Resize based on Height
+              case (-1,height) =>
+
+                  sizeDimension.width = height * originalImage.getWidth / originalImage.getHeight
+                  size(sizeDimension.width,sizeDimension.height)
+
+              // Do nothing
+              case _ =>
+            }
+
+            //-- Prepare target Image
+            //-----------
+            var resizedImage = new BufferedImage(sizeDimension.width, sizeDimension.height, originalImage.getType);
+            var g = resizedImage.createGraphics
+
+            g.setComposite(AlphaComposite.Src);
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING,
+            RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g.drawImage(originalImage, 0, 0, sizeDimension.width, sizeDimension.height, null);
+            g.dispose
+
+            // Set to Label
+            //------------------
+            this.delegate.setIcon(new ImageIcon(resizedImage))
+
           }
 
-          //-- Prepare target Image
-          //-----------
-          var resizedImage = new BufferedImage(sizeDimension.width, sizeDimension.height, originalImage.getType);
-          var g = resizedImage.createGraphics
 
-          g.setComposite(AlphaComposite.Src);
-          g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-          RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-          g.setRenderingHint(RenderingHints.KEY_RENDERING,
-          RenderingHints.VALUE_RENDER_QUALITY);
-          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-          RenderingHints.VALUE_ANTIALIAS_ON);
-
-          g.drawImage(originalImage, 0, 0, sizeDimension.width, sizeDimension.height, null);
-          g.dispose
-
-          // Set to Label
-          //------------------
-          this.delegate.setIcon(new ImageIcon(resizedImage))
+          
           
 
         }
 
-        override def toString : String = s"Label: ${delegate.getText} "
+        override def toString : String = s"Image: $url"
 
     }
 
@@ -140,9 +149,20 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
         On clicked maps to action listener
       */
       override def onClicked(action: => Any) =  delegate.addActionListener(new ActionListener() {
+       
         override def  actionPerformed(e : ActionEvent) = SwingUtilities.invokeLater(new Runnable {
 
-            override def run() = action
+            override def run() = {
+
+              SwingUtilities.invokeLater(new Runnable() {
+
+                  override def run() = {
+                    //println("Button Action invoked later")
+                    action
+                  }
+
+                })
+            } 
           })
       })
 

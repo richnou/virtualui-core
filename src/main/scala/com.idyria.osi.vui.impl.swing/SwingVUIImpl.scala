@@ -45,7 +45,10 @@ class SwingVUIImpl
 
         // Node
         //---------------
-        override def revalidate = base.revalidate
+        override def revalidate = {
+          base.revalidate
+          base.repaint()
+        }
 
         // Per default dispose
         base.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)

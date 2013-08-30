@@ -34,7 +34,7 @@ trait VUIImage[T] extends VUIComponent[T]  {
     // Automatic loading
     //----------------------
     this.onShown {
-        println("Showing Image")
+        //println("Showing Image")
         load
     }
 
