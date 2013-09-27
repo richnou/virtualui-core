@@ -71,7 +71,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
                 dialog <= grid {
                     
                     // Top : Title
-                    //----------------
+                    //---------------- 
                     "top" row alignLeft {
 
                         this.name match {
@@ -100,9 +100,9 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
 
                             }
                         case false => 
-                            "middle" row using("expand"->true) { placeHolder("middle") }
+                            "middle" row using("expand"-> true) { placeHolder("middle") }
                     }
-                    
+                     
 
                     // Bottom: Controls
                     //-----------------------

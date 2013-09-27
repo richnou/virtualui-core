@@ -8,6 +8,7 @@ import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.core.VBuilder
 import com.idyria.osi.vui.core.VBuilderBase
+import com.idyria.osi.vui.core.styling.StylableTrait
 
 
 /**
@@ -16,8 +17,10 @@ import com.idyria.osi.vui.core.VBuilderBase
   
  *
  */
-trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T] with VBuilderBase[T] {
+trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T] with VBuilderBase[T] with StylableTrait {
 
+   type Self = VUITabPane[T]
+  
   // Overrides The normal add functions to be able to add a title
   //------------------------
 

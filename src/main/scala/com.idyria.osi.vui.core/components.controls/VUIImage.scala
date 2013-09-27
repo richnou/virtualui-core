@@ -5,10 +5,8 @@ package com.idyria.osi.vui.core.components.controls
 
 import com.idyria.osi.vui.core.components.VUIComponent
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
-
 import com.idyria.osi.vui.core._
-
-
+import com.idyria.osi.vui.core.styling.StylableTrait
 
 /**
  *
@@ -16,26 +14,28 @@ import com.idyria.osi.vui.core._
  * @author rleys
  *
  */
-trait VUIImage[T] extends VUIComponent[T]  {
+trait VUIImage[T] extends VUIComponent[T] with StylableTrait {
 
-    //------------------------
-    // General
-    //------------------------
-    /*override def disable = {
+  type Self = VUIImage[T]
+
+  //------------------------
+  // General
+  //------------------------
+  /*override def disable = {
         throw NotImplementedException(s"button.disable not implemented in ${getClass}")
     }*/
 
-    /**
-        Performs the Load operation to display the image.
-        This is decoupled from component creation to allow resizing and so on
-    */
-    def load
+  /**
+   * Performs the Load operation to display the image.
+   * This is decoupled from component creation to allow resizing and so on
+   */
+  def load
 
-    // Automatic loading
-    //----------------------
-    this.onShown {
-        //println("Showing Image")
-        load
-    }
+  // Automatic loading
+  //----------------------
+  this.onShown {
+    //println("Showing Image")
+    load
+  }
 
 }

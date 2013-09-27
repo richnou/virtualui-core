@@ -32,14 +32,23 @@ trait VBuilderBase[T]  {
   // Controls
   //--------------------
   def button(text: String)(implicit cl: VUIButton[T] => Unit) : VUIButton[T] = apply(VUIBuilder.selectedImplementation[T].button(text),cl);
-  def label(text:String)(implicit cl: VUILabel[T] => Unit) : VUILabel[T] = apply(VUIBuilder.selectedImplementation[T].label(text),cl);
+  def label(text:String) : VUILabel[T] = VUIBuilder.selectedImplementation[T].label(text)
   def image(path: URL)(implicit cl: VUIImage[T] => Unit) :  VUIImage[T] = apply(VUIBuilder.selectedImplementation[T].image(path),cl);
-
+  def text :  VUIText[T] = VUIBuilder.selectedImplementation[T].text;
+  def tree : VUITree[T] = VUIBuilder.selectedImplementation.tree
+  
   // Form
   //------------------
-  def textInput(implicit cl: VUIInputText[T] => Unit): VUIInputText[T] =  apply(VUIBuilder.selectedImplementation[T].textInput(),cl)
+  
+  def checkBox : VUICheckBox[T] =  VUIBuilder.selectedImplementation[T].checkBox()
+  
+  def textInput : VUIInputText[T] =  VUIBuilder.selectedImplementation[T].textInput()
+  def textArea : VUIInputText[T] = VUIBuilder.selectedImplementation[T].textArea()
+  
   def list(implicit cl: VUIList[T] => Unit): VUIList[T] =   apply(VUIBuilder.selectedImplementation[T].list(),cl)
 
+  
+  
   // Scene Graph
   //--------------------------
 

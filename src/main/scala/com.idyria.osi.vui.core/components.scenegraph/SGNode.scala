@@ -4,8 +4,8 @@
 package com.idyria.osi.vui.core.components.scenegraph
 
 import com.idyria.osi.tea.listeners.ListeningSupport
-
 import com.idyria.osi.vui.core.styling.StylableTrait
+import com.idyria.osi.vui.core.constraints.Constrainable
 
 /**
  *
@@ -14,7 +14,7 @@ import com.idyria.osi.vui.core.styling.StylableTrait
  * @author rleys
  *
  */
-trait SGNode[+T] extends ListeningSupport with StylableTrait {
+trait SGNode[+T] extends ListeningSupport with Constrainable  {
 
     /**
         Optional ID for the Node

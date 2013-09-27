@@ -7,7 +7,7 @@ import javax.swing.text._
 import javax.swing.event._
 
 import com.idyria.osi.tea.swing._
-
+ 
 trait SwingTextModelSupport  extends  TextModelSupport {
 
     def getDocument() : Document

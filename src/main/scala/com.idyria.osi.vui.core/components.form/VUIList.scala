@@ -1,23 +1,26 @@
 /**
-  *
-  */
+ *
+ */
 package com.idyria.osi.vui.core.components.form
 
 import com.idyria.osi.vui.core.components.VUIComponent
+import com.idyria.osi.vui.core.styling.StylableTrait
 
 /**
-  * @author rleys
-  *
-  */
-trait VUIList [T] extends VUIComponent[T]  {
+ * @author rleys
+ *
+ */
+trait VUIList[T] extends VUIComponent[T] with StylableTrait {
 
-	def add(obj : AnyRef)
+  type Self = VUIList[T]
 
-    def select(obj: AnyRef)
+  def add(obj: AnyRef)
 
-    // Selection Interface
-    //-------------------------
-    
-    def clearSelection
+  def select(obj: AnyRef)
+
+  // Selection Interface
+  //-------------------------
+
+  def clearSelection
 
 }

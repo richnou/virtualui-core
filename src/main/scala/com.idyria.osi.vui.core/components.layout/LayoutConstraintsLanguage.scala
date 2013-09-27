@@ -4,12 +4,12 @@ package com.idyria.osi.vui.core.components.layout
 trait LayoutConstraintsLanguage {
 
 
-    def alignLeft = LayoutConstraints("align" -> "left")
-    def alignRight = LayoutConstraints("align" -> "right")
-    def spread = LayoutConstraints("spread"->true)
-    def pushRight = LayoutConstraints("pushRight" -> true)
-    def expandWidth = LayoutConstraints("expandWidth"->true)
-    def expandHeight = LayoutConstraints("expandHeight"->true)
-    def expand = LayoutConstraints("expand"->true)
+    def alignLeft = LayoutConstraint("align" -> "left")
+    def alignRight = LayoutConstraint("align" -> "right")
+    def spread = LayoutConstraint("spread"->true)
+    def pushRight = LayoutConstraint("pushRight" -> true)
+    def expandWidth = LayoutConstraint("expandWidth"->true)
+    def expandHeight = LayoutConstraint("expandHeight"->true)
+    def expand = LayoutConstraint("expand"->true)
 
 }

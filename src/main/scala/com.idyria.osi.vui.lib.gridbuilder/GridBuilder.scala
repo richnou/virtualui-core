@@ -4,10 +4,12 @@ import com.idyria.osi.vui.core._
 import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.styling._
-
 import com.idyria.osi.tea.logging._
-
 import scala.language.implicitConversions
+import com.idyria.osi.vui.core.constraints.Constraints
+import com.idyria.osi.vui.core.constraints.Constraint
+import com.idyria.osi.vui.core.constraints.ConstraintsConversions
+import com.idyria.osi.vui.core.constraints.Constrainable
 
 /**
     Trait to be mixed somewhere, to have access to the grid building language
@@ -79,7 +81,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         Represents a grid
         The language functions are adding nodes to the current grid on the stack, which holds its current Row/Columns informations
     */
-    class Grid (var group : SGGroup[Any]) extends Column(group) {
+    class Grid (var group : SGGroup[Any]) extends Column(group)  {
 
         var currentColumn = 0 
         var currentRow = 0
@@ -94,6 +96,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         // Content to be executed
         var content : ( () => Any ) = { () => }
 
+        
         override def doResolve() = {
 
             // Add Group as normal column
@@ -133,9 +136,31 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
     }
 
-    def subgrid(cl: => Any) : Grid = {
+    
+    
+    def subgrid(c:Constraints)(cl: => Any) : Grid = {
 
         // Create a new group
+        //---------------------------
+        var newGroup = group 
+       
+    
+        // Create A new Grid Context instance to reset columns and rows
+        //-----------------
+        var grid = new Grid(newGroup)
+        grid.group(c)
+        grid.content = {
+            () => cl
+        }
+
+        // Push on stack to execute closure
+        //----------------------------------
+        grid
+    }
+    
+    def subgrid(cl: => Any) : Grid = {
+      
+    	// Create a new group
         //---------------------------
         var newGroup = group 
        
@@ -163,9 +188,9 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
     /**
         This class is just the normal LayoutConstraints with LanguageChainElement interface so that the constraints can be chained in the language
     */
-    class LayoutConstraintsLanguageElement extends LayoutConstraints with LanguageChainElement {
+    class ConstraintsLanguageElement extends Constraints with LanguageChainElement {
 
-        name = "LayoutConstraints"
+        name = "Constraints"
 
         def doResolve = {
                
@@ -178,17 +203,35 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         }
 
     }
+    
+    def apply(constraints:Constraints) = {
+      
+      groupsStack.headOption match {
+        case Some(top) => top.group(constraints)
+        case _ => 
+      }
+      
+    }
 
     /**
         Return a new constraints Set for this Sequence of Constraints
     */
-    def using(constraints: LayoutConstraints*) : LayoutConstraintsLanguageElement = {
+    def using(constraints: Constraints) : ConstraintsLanguageElement = {
 
-        var lc = new LayoutConstraintsLanguageElement
+        var lc = new ConstraintsLanguageElement
         constraints.foreach {
             c => lc(c)
         }
         lc
+
+    }
+    
+    /**
+        Return a new constraints Set for this Sequence of Constraints
+    */
+    def using(constraints: Constraint*) : ConstraintsLanguageElement = {
+
+        this.using(constraints)
 
     }
 
@@ -198,12 +241,38 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         This conversion is mainly used if the Constraints is to be applied on the right, because no explicit method call required the ConstraintSet on the left
         This is why the resolve implementation if looking ahead
     */
-    implicit def convertLayoutConstraintsToRowLanguageElement(cstr: LayoutConstraints) : LanguageChainElement = {
+    implicit def convertLayoutConstraintsToRowLanguageElement(cstr: Constraints) : LanguageChainElement = {
 
-        var chainElement = new LayoutConstraintsLanguageElement
-        chainElement(cstr)
+        var chainElement = new ConstraintsLanguageElement
+        cstr.constraints.foreach(c => chainElement(c))
+
         chainElement
 
+
+    }
+    
+    /**
+        This conversion is mainly used if the Constraints is to be applied on the right, because no explicit method call required the ConstraintSet on the left
+        This is why the resolve implementation if looking ahead
+    */
+    implicit def convertLayoutConstraintToRowLanguageElement(c: Constraint) : LanguageChainElement = {
+
+        var chainElement = new ConstraintsLanguageElement
+        chainElement(Constraints(c))
+        chainElement
+
+
+    }
+    
+    /**
+        This conversion is mainly used if the Constraints is to be applied on the right, because no explicit method call required the ConstraintSet on the left
+        This is why the resolve implementation if looking ahead
+    */
+    implicit def convertLayoutConstraintToRowLanguageElement(cs: Constraint*) : LanguageChainElement = {
+
+        var chainElement = new ConstraintsLanguageElement
+        cs.foreach(c => chainElement(c))
+        chainElement
 
     }
 
@@ -216,11 +285,19 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
         var nextElement : LanguageChainElement = null
 
+        var resolved = false
+        
         final def resolve : Unit = {
             logInfo(s"-> Applying chain $name")
-            this.doResolve
-            if (nextElement!=null)
-                nextElement.resolve
+            this.resolved match {
+              case true => 
+              case false => 
+                 this.doResolve
+	            resolved = true
+	            if (nextElement!=null)
+	                nextElement.resolve
+            }
+           
         }
 
         /**
@@ -271,6 +348,11 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
         def doResolve = {
     
+        }
+        
+        def apply(right: ConstraintsLanguageElement) : Row = {
+          super.apply(right)
+          this
         }
 
         // Language Right to "row" keyword
@@ -335,9 +417,11 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
         name = "Column"
 
+        override def toString : String = left.getClass().getName()
+          
         def doResolve : Unit  = {
 
-            logFine(s"-> Adding column content(${left.toString}#${left.base.hashCode}")
+            println(s"-> Adding column content(${left.toString}#${left.base.hashCode} at row ${groupsStack.head.currentRow} ")
 
             // Add 
             //-------------
@@ -347,9 +431,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
             //------------------------
 
             //-- Row + Column position
-            var constraints = LayoutConstraints( "row" -> groupsStack.head.currentRow , "column" -> groupsStack.head.currentColumn )
-            
-
+            var constraints = Constraints( "row" -> groupsStack.head.currentRow , "column" -> groupsStack.head.currentColumn )
             groupsStack.head.group.layout.applyConstraints(left,constraints)
 
             // Increment Column
@@ -360,28 +442,58 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         // Constraining Language
         //--------------------------
 
-        def using(constraints: LayoutConstraints) : Column = {
+        
+         /**
+         *  Add A Constraints bag to current column
+         */
+        def using(constraints: Constraints) : Column = {
 
             // this.apply(GridBuilder.this.using(constraint))
             var newColumn = new Column(left) {
                 name = "Column Element constraint"
 
                 override def doResolve = {
-                     groupsStack.head.group.layout.applyConstraints(left,constraints)
+            		left match {
+            		  case e  : Constrainable => e(constraints)
+            		  case _ =>
+            		}
+                    groupsStack.head.group.layout.applyConstraints(left,constraints)
                 }
             }
             this.apply(newColumn)
             this
 
         }
+        
+        def using(constraints: Constraint*) :  Column = {
 
-        def using(constraints: Tuple2[String,Any]*) : Column = {
-
-            var set = new LayoutConstraints
+            var set = new Constraints
             constraints.foreach(set(_))
             this.using(set)
-
         } 
+        
+        /**
+         * Converts to Constraints object and calls #using(Constraints)
+         */
+       /* def using(constraints: Tuple2[String,Any]*) : Column = {
+
+            var set = new Constraints
+            constraints.foreach(set(_))
+            this.using(set)
+        } 
+
+         /**
+         * Converts to Constraints object and calls #using(Constraints)
+         */
+        def using(constraints: Tuple2[String,Constraint]*) : Column = {
+
+            var set = new Constraints
+            
+            constraints.foreach(c => set(c._2)) 
+            
+            this.using(set)
+
+        } */
 
         
         /**
@@ -414,7 +526,9 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
                     var rowsAdded = groupsStack.head.currentRow - actualRow
 
                     logFine(s"spanRight added $rowsAdded rows")
-                    groupsStack.head.group.layout.applyConstraints(left,LayoutConstraints("rowspan"->rowsAdded))
+                    
+
+                    groupsStack.head.group.layout.applyConstraints(left,Constraints("rowspan"-> rowsAdded))  
 
                 }
 

@@ -5,8 +5,9 @@ package com.idyria.osi.vui.core.components.controls
 
 import com.idyria.osi.vui.core.components.VUIComponent
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
-
 import com.idyria.osi.vui.core._
+import com.idyria.osi.vui.core.styling.StylableTrait
+import com.idyria.osi.vui.core.styling.ApplyTrait
 
 
 /**
@@ -15,8 +16,10 @@ import com.idyria.osi.vui.core._
  * @author rleys
  *
  */
-trait VUIButton[T] extends VUIComponent[T]  {
+trait VUIButton[T] extends VUIComponent[T] with StylableTrait with ApplyTrait  {
 
+    type Self = VUIButton[T]
+  
     //------------------------
     // General
     //------------------------

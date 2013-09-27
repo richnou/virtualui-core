@@ -5,6 +5,7 @@ package com.idyria.osi.vui.core.components.layout
 
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
+import com.idyria.osi.vui.core.constraints.Constraints
 
 /**
  * @author rleys
@@ -23,7 +24,7 @@ trait VUILayout[T] {
 
   def nodeAdded(node : SGNode[T])
 
-  def applyConstraints(node: SGNode[T], constraints: LayoutConstraints) = {
+  def applyConstraints(node: SGNode[T], constraints: Constraints) = {
     
   }
 

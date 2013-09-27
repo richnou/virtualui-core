@@ -4,19 +4,23 @@ import java.awt._
 import java.awt.event._
 import javax.swing.event._
 import javax.swing._
-
-
 import com.idyria.osi.vui.core.components._
 import com.idyria.osi.vui.core.components.events._
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
-
 import scala.language.implicitConversions
+import com.idyria.osi.vui.impl.swing.style.SwingComponentStyleSupport
 
+
+trait SwingComponentDelegate {
+  
+  def base : JComponent 
+  
+}
 
 /**
     Wrapper for a JComponent to be seen as an SGNode
 */
-class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  extends VUIComponent[Component] {
+class SwingJComponentCommonDelegate[DT <: JComponent]( val delegate : DT)  extends VUIComponent[Component] with SwingComponentStyleSupport {
 
     //---------------------------------------
     // Node

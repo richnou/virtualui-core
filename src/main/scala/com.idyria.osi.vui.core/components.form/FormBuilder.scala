@@ -13,8 +13,27 @@ import com.idyria.osi.vui.core.components.controls.VUIButton
   */
 trait FormBuilder[T] {
 
-  def textInput() : VUIInputText[T]
-
+  // Data
+  //------------------
+    
   def list() : VUIList[T]
+  
+  // Text Inputs
+  //----------------
+  
+  /**
+   * This is a simple text input
+   */
+  def textInput() : VUIInputText[T]
+  
+  /**
+   * Also a text input but beeing a text area
+   */
+  def textArea() : VUIInputText[T]
+
+  // Buttons
+  //------------------
+  
+  def checkBox : VUICheckBox[T]
 
 }

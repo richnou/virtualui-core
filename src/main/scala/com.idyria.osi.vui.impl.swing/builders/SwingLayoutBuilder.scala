@@ -9,12 +9,12 @@ import javax.swing.BoxLayout
 import java.awt.Container
 import java.awt.GridBagLayout
 import java.awt.GridBagConstraints
-
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
-
 import com.idyria.osi.vui.core.styling._
+import com.idyria.osi.vui.core.constraints.Constraints
+import com.idyria.osi.vui.core.constraints.Constrainable
 
 /**
  * @author rleys
@@ -68,10 +68,14 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
   }
 
+  /**
+   * Implementation of the Grid Special Layout using GridBagLayout from Swing
+   */
   def grid : VUIGridLayout[Component] = {
 
     return new VUIGridLayout[Component] {
-
+    	
+      
       var layout = new GridBagLayout
 
       def setTargetGroup(group : SGGroup[Component]) = {
@@ -87,14 +91,16 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
       }
 
-      override def applyConstraints(node: SGNode[Component],inputConstraints:LayoutConstraints) = {
+      override def applyConstraints(node: SGNode[Component],inputConstraints:Constraints) = {
 
         // Resolve Constraints
         //---------
         var constraints = inputConstraints
-        if (node.isInstanceOf[StylableTrait] && node.asInstanceOf[StylableTrait].fixedConstraints!=null) {
-          constraints = inputConstraints + node.asInstanceOf[StylableTrait].fixedConstraints
+        node match {
+          case constrainable : Constrainable =>  constraints = inputConstraints + constrainable.fixedConstraints
+          case _  =>
         }
+        
 
         // Prepare constraints
         var gridbagConstraints = this.layout.getConstraints(node.base) match {

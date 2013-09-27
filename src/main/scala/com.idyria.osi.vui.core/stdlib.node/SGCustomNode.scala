@@ -51,6 +51,9 @@ abstract class SGCustomNode[T] extends SGNode[T] {
     this.uiNode
   }
 
+   /**
+   * This must be defined by sublass.
+   */
   protected def createUI : SGNode[T]
 
 }

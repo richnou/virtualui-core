@@ -16,7 +16,7 @@ import com.idyria.osi.vui.core._
  * @author rleys
  *
  */
-trait VUIComponent[T] extends SGNode[T] with StylableTrait {
+trait VUIComponent[T] extends SGNode[T] {
 
 
   //----------------------

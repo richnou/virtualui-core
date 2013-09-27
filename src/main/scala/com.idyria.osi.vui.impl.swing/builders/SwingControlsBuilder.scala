@@ -5,22 +5,15 @@ package com.idyria.osi.vui.impl.swing.builders
 
 import java.awt._
 import java.awt.event._
-
 import java.awt.image._
-import javax.imageio._
-
-import com.idyria.osi.vui.core.components.events._
+import java.net._
+import scala.language.implicitConversions
 import com.idyria.osi.vui.core.components.controls._
-import com.idyria.osi.vui.core.components.scenegraph._
-import com.idyria.osi.vui.core.components.layout._
-
+import javax.imageio._
 import javax.swing._
 import javax.swing.JButton
 import javax.swing.JLabel
-
-import java.net._
-
-import scala.language.implicitConversions
+import com.idyria.osi.vui.impl.swing.model.SwingTreeModelAdapter
 
 
 /**
@@ -29,7 +22,7 @@ import scala.language.implicitConversions
  */
 trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
-
+ 
 
   /**
    * Implements returning a label
@@ -40,14 +33,34 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
         //this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
         
+
+      
         // Text
         //--------------
         def setText(str: String) = delegate.setText(str)
 
     }
-
+  }
   
+  /**
+   * Implements returning a textarea
+   */
+  override def text : VUIText[Component] = {
 
+    return new SwingJComponentCommonDelegate[JTextArea](new JTextArea()) with VUIText[Component] {
+
+        //this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+        
+        this.delegate.setEditable(false)
+      
+    	//-- Line wrap per default
+    	this.base.setLineWrap(true)
+      
+        // Text
+        //--------------
+        def setText(str: String) = delegate.setText(str)
+
+    }
   }
 
   /**
@@ -166,6 +179,48 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
           })
       })
 
+        
+    }
+    
+  }
+  
+  /**
+   * Create the Tree component
+   */
+  def tree : VUITree[Component] = {
+
+    return new SwingJComponentCommonDelegate[JTree](new JTree()) with VUITree[Component] {
+
+      var model : SwingTreeModelAdapter = null
+      
+      this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+      
+      /**
+       * Change Model
+       */
+      def setModel(model: TreeModel) = {
+        
+        // Set
+        //--------------
+        this.model = new SwingTreeModelAdapter(model)
+        this.delegate.setModel(this.model)
+        
+        // Update View parameters
+        //------------------
+        model.root.show match {
+          case true => 
+            
+            this.base.setShowsRootHandles(true)
+            this.base.setRootVisible(true)
+            
+          case false => 
+            
+            this.base.setShowsRootHandles(false)
+            this.base.setRootVisible(false)
+        }
+      } 
+      
+    
         
     }
     

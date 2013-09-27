@@ -3,12 +3,12 @@
  */
 package com.idyria.osi.vui.core.components.containers
 
-import com.idyria.osi.vui.core.components.VUIComponent
-import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.VBuilder
-import com.idyria.osi.vui.core.components.controls.ControlsBuilder
 import com.idyria.osi.vui.core.VBuilderBase
-import com.idyria.osi.vui.core.stdlib.form.VUIStdlibFormBuilder
+import com.idyria.osi.vui.core.components.VUIComponent
+import com.idyria.osi.vui.core.components.controls.ControlsBuilder
+import com.idyria.osi.vui.core.components.scenegraph._
+import com.idyria.osi.vui.core.styling.StylableTrait
 
 /**
  * a VUIPanel is a simple container group, but customisable like a UI component
@@ -16,8 +16,9 @@ import com.idyria.osi.vui.core.stdlib.form.VUIStdlibFormBuilder
  * @author rleys
  *
  */
-trait VUIPanel[T] extends VUIComponent[T] with SGGroup[T]  {
-
+trait VUIPanel[T] extends VUIComponent[T] with SGGroup[T] with StylableTrait  {
+ 
+     type Self = VUIPanel[T]
 
   // Embedded Builder Interface
   //---------------------

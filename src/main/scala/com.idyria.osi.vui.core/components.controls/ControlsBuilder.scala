@@ -20,7 +20,7 @@ trait ControlsBuilder[T] {
    * Contstruct a simple text display
    */
   def label(text:String) : VUILabel[T]
-
+ 
   /**
     Construct an Image
   */
@@ -31,5 +31,14 @@ trait ControlsBuilder[T] {
    */
   def button(text: String) : VUIButton[T]
 
+  /**
+   * Construct an area that can hold more text
+   */
+  def text : VUIText[T]
+  
+  /**
+   * Construct a tree component
+   */
+  def tree : VUITree[T]
 
 }

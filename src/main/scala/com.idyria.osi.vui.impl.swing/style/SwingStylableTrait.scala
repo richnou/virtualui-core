@@ -8,32 +8,35 @@ import scala.util.parsing.combinator.RegexParsers
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.styling.StylableTrait
 import scala.util.parsing.combinator.Parsers$Failure
+import com.idyria.osi.vui.core.constraints.Constraint
+import com.idyria.osi.vui.impl.swing.builders.SwingComponentDelegate
 
 
 
-
-
-
-
-
-/**
- * Implements default for Stylable trait that relies on CSS3 parser
- * that applies requests to swing components
- * @author rleys
- *
- */
-trait SwingStylableTrait extends StylableTrait with SGNode[Component]{
-
-  /*class CSS3Parser extends RegexParsers{
-
-    def background_color: Parser[String] = "background-color:\\s*(.+);".r
-
-
-  }*/
-
-  class ColorDefinition {
-
+trait SwingComponentStyleSupport extends StylableTrait with SwingComponentDelegate {
+  
+  this.on("constraints.updated") {
+    
+    this.fixedConstraints.foreach{  c =>
+      
+      println(s"Trying to match constraint: ${c.name}")
+      c match {
+     
+      case Constraint("border",value) => 
+        
+        println(s"-- Setting Border: ${c.name}")
+        this.base.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
+        
+      case _ =>
+      
+    }
+    }
+    
   }
+  
+}
+
+/*
 
   object CSS3Parser extends RegexParsers {
 
@@ -84,4 +87,4 @@ trait SwingStylableTrait extends StylableTrait with SGNode[Component]{
   }
 
 
-}
+}*/
