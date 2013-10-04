@@ -72,8 +72,10 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
         /**
          * Add The node to the jpanel
          */
-        def node[NT <: SGNode[Component]](nd: NT): NT = {
+        override def node[NT <: SGNode[Component]](nd: NT): NT = {
 
+          super.node(nd)
+          
           // Add to group
           delegate.add(nd.base)
 

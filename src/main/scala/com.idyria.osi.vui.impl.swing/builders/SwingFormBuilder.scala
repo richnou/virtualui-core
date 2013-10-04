@@ -19,6 +19,12 @@ import com.idyria.osi.vui.core.components.model._
 import javax.swing.JTextArea
 import com.idyria.osi.vui.core.components.form.VUICheckBox
 import javax.swing.JCheckBox
+import javax.swing.JScrollPane
+import com.idyria.osi.vui.core.components.form.VUIComboBox
+import javax.swing.JComboBox
+import javax.swing.DefaultComboBoxModel
+import java.awt.event.ItemListener
+import java.awt.event.ItemEvent
 
 /**
  * @author rleys
@@ -33,18 +39,21 @@ trait SwingFormBuilder extends FormBuilder[Component] {
 
     return new SwingJComponentCommonDelegate[JList[Object]](new JList[Object]()) with VUIList[Component] {
 
-      var model = new DefaultListModel[Object]
-      delegate.setModel(model)
-
+       
+      
+      // Model
+      //-------------------
+    	
+      //-- Default
+      this.delegate.setModel(new SwingListModelAdapter(modelImpl))
+        
+      onWith("model.changed") {
+        m : ListModel => 
+          this.delegate.setModel(new SwingListModelAdapter(m))
+      }
+      
       // Implementation
       //----------------------------------
-
-      /**
-       * Add Element to underlying Model
-       */
-      def add(obj: AnyRef) = {
-        model.addElement(obj)
-      }
 
       /**
        * Select the object if contained into model
@@ -62,6 +71,65 @@ trait SwingFormBuilder extends FormBuilder[Component] {
 
     }.asInstanceOf[VUIList[Component]]
 
+  }
+  
+  def comboBox : VUIComboBox[Component] = {
+    
+    return new SwingJComponentCommonDelegate[JComboBox[Object]](new JComboBox[Object]()) with VUIComboBox[Component] {
+
+     
+      
+      // Model
+      //-------------------
+    	
+      //-- Default
+      this.delegate.setModel(new SwingComboBoxModelModelAdapter(modelImpl))
+        
+      onWith("model.changed") {
+        m : ComboBoxModel => 
+          this.delegate.setModel(new SwingComboBoxModelModelAdapter(m))
+      }
+      
+
+      // Events
+      //--------------
+      
+      //FIXME
+      def onSelected(cl: Any => Unit)= {
+        
+        this.delegate.addItemListener(new ItemListener {
+          
+          
+          def itemStateChanged( e : ItemEvent) = {
+            
+            cl(e)
+            
+          }
+          
+        }
+        )
+        
+      }
+
+      
+
+      // Selection
+      //-----------------
+
+      /**
+       * Select the object if contained into model
+       */
+      def select(obj: AnyRef) = {
+
+        this.delegate.setSelectedItem(obj)
+
+      }
+      
+      //def clearSelection = delegate.clearSelection
+
+    }.asInstanceOf[VUIComboBox[Component]]
+    
+    
   }
   
   // Text Inputs
@@ -102,6 +170,7 @@ trait SwingFormBuilder extends FormBuilder[Component] {
 
       // Text and Model
       //--------------
+      
       def getDocument: Document = delegate.getDocument
       def setText(str: String) = delegate.setText(str)
 
@@ -121,13 +190,24 @@ trait SwingFormBuilder extends FormBuilder[Component] {
   
   def textArea(): VUIInputText[Component] = {
 
-    return return new SwingTextInput[JTextArea](new JTextArea) {
+    var ta = new JTextArea
+    
+    return new SwingJComponentCommonDelegate[JScrollPane](new JScrollPane(ta)) with VUIInputText[Component] with SwingTextModelSupport {
       
-      // Some Defaults
+      
+       // Some Defaults
       //-------------------
-      this.delegate.setLineWrap(true)
-      this.delegate.setAutoscrolls(true)
+      ta.setLineWrap(true)
+      ta.setAutoscrolls(true)
+      
+      def setText(str: String) = ta.setText(str)
+      
+      def getDocument() = ta.getDocument()
+      
+      
     }
+    
+ 
   
 
   }
@@ -141,6 +221,10 @@ trait SwingFormBuilder extends FormBuilder[Component] {
     return new SwingJComponentCommonDelegate[JCheckBox](new JCheckBox()) with VUICheckBox[Component] {
 
     	
+      // State
+      //--------------
+      def isChecked = this.delegate.isSelected()
+      
       // Text
       //-----------
       def setText(str: String) = {

@@ -26,6 +26,10 @@ trait SGGroup[T] extends SGContainerNode[T] {
     cl(this)
   }
 
+  // Layout and constraints
+  //----------------------------
+  
+ 
 
   /**
    * Called to apply a layout to the group

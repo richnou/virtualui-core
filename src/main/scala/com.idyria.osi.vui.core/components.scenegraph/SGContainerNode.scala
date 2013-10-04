@@ -17,7 +17,10 @@ abstract trait SGContainerNode[T] extends SGNode[T]  {
   /**
    * This method add a new node to the current container node
    */
-  def node[NT <: SGNode[T]](content: NT) : NT
+  def node[NT <: SGNode[T]](content: NT) : NT = {
+    content.parent = this.asInstanceOf[SGGroup[T]]
+    content
+  }
 
   /**
    * Alias to node(SGNode[T])

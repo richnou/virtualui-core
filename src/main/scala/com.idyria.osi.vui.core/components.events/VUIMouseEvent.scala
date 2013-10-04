@@ -24,3 +24,10 @@ class VUIMouseEvent extends VUIComponentEvent {
   var previousY : Int = -1
 
 }
+
+class VUIClickEvent extends VUIMouseEvent {
+  
+  var clickCount = 1
+  
+  
+}

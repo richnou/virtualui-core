@@ -91,7 +91,10 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
 
                                 // Prepare list 
                                 stepsList = list {
-                                    l => this.view.foreach(v => l.add(v.name))
+                                    l => 
+                                      
+                                      
+                                      //this.view.foreach(v => l..add(v.name))
                                 }
 
                                 // Create Column

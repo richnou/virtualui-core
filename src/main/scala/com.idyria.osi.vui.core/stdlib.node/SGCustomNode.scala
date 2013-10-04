@@ -28,6 +28,8 @@ import scala.language.implicitConversions
  */
 abstract class SGCustomNode[T] extends SGNode[T] {
 
+  type Self = SGCustomNode[T]
+  
   /**
    * ui result will be stored here
    */
@@ -40,6 +42,8 @@ abstract class SGCustomNode[T] extends SGNode[T] {
 
   def revalidate = this.getUi.revalidate
 
+  def setName(str: String) = this.getUi.setName(str)
+  
   /**
    * This must be defined by sublass.
    */
@@ -59,6 +63,6 @@ abstract class SGCustomNode[T] extends SGNode[T] {
 }
 object SGCustomNode {
 
-  implicit def convertSGCustomNodeToSGNode[T](wrapper: SGCustomNode[T]): SGNode[T] = wrapper.uiNode
+ // implicit def convertSGCustomNodeToSGNode[T](wrapper: SGCustomNode[T]): SGNode[T] = wrapper.uiNode
 
 }

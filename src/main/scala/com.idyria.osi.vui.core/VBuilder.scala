@@ -46,6 +46,7 @@ trait VBuilderBase[T]  {
   def textArea : VUIInputText[T] = VUIBuilder.selectedImplementation[T].textArea()
   
   def list(implicit cl: VUIList[T] => Unit): VUIList[T] =   apply(VUIBuilder.selectedImplementation[T].list(),cl)
+  def comboBox : VUIComboBox[T] =   VUIBuilder.selectedImplementation[T].comboBox
 
   
   

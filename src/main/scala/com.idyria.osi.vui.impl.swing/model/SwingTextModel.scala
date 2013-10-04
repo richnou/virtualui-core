@@ -10,10 +10,9 @@ import com.idyria.osi.tea.swing._
  
 trait SwingTextModelSupport  extends  TextModelSupport {
 
+	//var textModel : TextModel = new DefaultTextModel()
+  
     def getDocument() : Document
-
-    /// Set Text model
-    var vuiModel : TextModel = null
 
     /// Set to true to avoid Listener trigger loop update, when events are send from one of the listeners to the other listener
     var listenerActive = false
@@ -23,30 +22,30 @@ trait SwingTextModelSupport  extends  TextModelSupport {
 
         def changedUpdate(e: javax.swing.event.DocumentEvent): Unit =  {
 
-            if (listenerActive || SwingTextModelSupport.this.vuiModel==null)
+            if (listenerActive || SwingTextModelSupport.this.modelImpl==null)
                 return
 
             listenerActive = true
-            SwingTextModelSupport.this.vuiModel.setText(e.getDocument.getText(0,e.getDocument.getLength))
+            SwingTextModelSupport.this.modelImpl.setText(e.getDocument.getText(0,e.getDocument.getLength))
             listenerActive = false
 
         }
         def insertUpdate(e: javax.swing.event.DocumentEvent): Unit =  {
 
-            if (listenerActive || SwingTextModelSupport.this.vuiModel==null)
+            if (listenerActive || SwingTextModelSupport.this.modelImpl==null)
                 return
 
             listenerActive = true
-            SwingTextModelSupport.this.vuiModel.setText(e.getDocument.getText(0,e.getDocument.getLength))
+            SwingTextModelSupport.this.modelImpl.setText(e.getDocument.getText(0,e.getDocument.getLength))
             listenerActive = false
         }
         def removeUpdate(e: javax.swing.event.DocumentEvent): Unit =  {
 
-            if (listenerActive || SwingTextModelSupport.this.vuiModel==null)
+            if (listenerActive || SwingTextModelSupport.this.modelImpl==null)
                 return
 
             listenerActive = true
-            SwingTextModelSupport.this.vuiModel.setText(e.getDocument.getText(0,e.getDocument.getLength))
+            SwingTextModelSupport.this.modelImpl.setText(e.getDocument.getText(0,e.getDocument.getLength))
             listenerActive = false
         }
 
@@ -71,16 +70,5 @@ trait SwingTextModelSupport  extends  TextModelSupport {
 
     //-------------
 
-    /**
-        Define Text and set listening closure
-
-    */
-    def setModel(model : TextModel ) = {
-
-        this.vuiModel = model
-
-        this.vuiModel.onWith("model.setText")(this.setTextClosure)
-
-    }
 
 }

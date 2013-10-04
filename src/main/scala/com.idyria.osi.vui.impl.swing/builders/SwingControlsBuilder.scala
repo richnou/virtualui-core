@@ -55,6 +55,9 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       
     	//-- Line wrap per default
     	this.base.setLineWrap(true)
+    	this.base.setWrapStyleWord(true)
+    	
+   
       
         // Text
         //--------------
@@ -195,6 +198,22 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       
       this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
       
+       
+      // Listeners for clicks and selection
+      //-----------------------------------------
+      
+      /*this.delegate.addMouseListener(new MouseAdapter {
+        
+        def mouseClicked(MouseEvent e)
+        
+      })*/
+      
+      // Selection
+      //----------------
+      def getSelection : Iterable[TreeNode] = {
+        this.delegate.getSelectionModel().getSelectionPaths().map{path => path.getLastPathComponent().asInstanceOf[TreeNode]}
+      }
+      
       /**
        * Change Model
        */
@@ -219,6 +238,13 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
             this.base.setRootVisible(false)
         }
       } 
+      
+      def getModel : TreeModel = this.model.model
+      
+     
+      // Model Change
+      //------------------------
+      
       
     
         

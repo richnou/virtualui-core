@@ -24,9 +24,22 @@ trait VUIComponent[T] extends SGNode[T] {
   //----------------------
 
   /**
-    To be overriden is the component can be disabled
+    To be overriden if the component can be disabled
   */
   def disable : Unit 
+  
+  /**
+   *  To be overriden if the component can be enabled
+   */
+  def enable
+  
+  /**
+   * Calls disable/enable based on provided state
+   */
+  def setEnabled(state: Boolean) = state match {
+    case true => enable
+    case false => disable
+  }
 
   //----------------------
   // Actions  
@@ -44,12 +57,26 @@ trait VUIComponent[T] extends SGNode[T] {
   /**
    * The provided closure is to be executed on the click event
    */
-  def onClicked(action: => Any) = {}
+  def onClicked(action: => Any) : Unit = this.onClicked{e : VUIClickEvent => action}
 
   /**
     Alias for @see #onClicked
   */
-  def onClick(action: => Any) = onClicked(action)
+  def onClick(action: => Any) : Unit = onClicked(action)
+  
+  def onClicked(action: VUIClickEvent => Any) : Unit = {  }
+  
+  def onClick(action: VUIClickEvent => Any) : Unit = onClicked(action)
+  
+  /**
+   * Special Double click function
+   */
+  def onDoubleClick(action: => Any) : Unit = onClicked {
+    e : VUIClickEvent => e.clickCount match {
+      case 2 => action
+      case _ => 
+    }
+  }
   
   /**
    * The drag event is triggered when the mouse is hold and moved on the object

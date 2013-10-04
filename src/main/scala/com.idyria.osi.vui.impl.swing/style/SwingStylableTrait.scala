@@ -19,7 +19,7 @@ trait SwingComponentStyleSupport extends StylableTrait with SwingComponentDelega
     
     this.fixedConstraints.foreach{  c =>
       
-      println(s"Trying to match constraint: ${c.name}")
+      //println(s"Trying to match constraint: ${c.name}")
       c match {
      
       case Constraint("border",value) => 

@@ -18,6 +18,8 @@ trait FormBuilder[T] {
     
   def list() : VUIList[T]
   
+  def comboBox : VUIComboBox[T]
+  
   // Text Inputs
   //----------------
   

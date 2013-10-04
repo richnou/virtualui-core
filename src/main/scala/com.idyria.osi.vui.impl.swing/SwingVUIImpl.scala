@@ -53,6 +53,9 @@ class SwingVUIImpl
         // Per default dispose
         base.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 
+        def setName(str: String) = this.title(str)
+        def getName : String = base.getTitle
+        
         // Add A Container node per default
         //----------
         var topNode =  SwingVUIImpl.this.panel
@@ -104,8 +107,10 @@ class SwingVUIImpl
         /**
          * Add a node to this node container
          */
-        def node[NT <: SGNode[Component]](ndef: NT) : NT = {
+        override def node[NT <: SGNode[Component]](ndef: NT) : NT = {
 
+          super.node(ndef)
+          
           (topNode == ndef) match {
 
             case true => 

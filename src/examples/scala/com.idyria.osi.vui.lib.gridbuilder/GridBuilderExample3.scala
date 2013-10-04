@@ -73,7 +73,7 @@ object GridBuilderExample3 extends App with GridBuilder {
 
             }
 
-            "bottom2" row grid("expandWidth"->true,"spread"->true) {
+            "bottom2" row subgrid("expandWidth"->true,"spread"->true) {
 
               //println("Text ")
               "input" row {textInput using ("expandWidth" -> true,"align"->"left")}

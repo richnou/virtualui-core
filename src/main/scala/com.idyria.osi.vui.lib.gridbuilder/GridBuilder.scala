@@ -90,12 +90,22 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
         var currentColumnLevel = 0
 
-    
-        left.asInstanceOf[SGGroup[Any]] layout grid
+     
+       //  left.asInstanceOf[SGGroup[Any]].l
+        
+        left.asInstanceOf[SGGroup[Any]] layout grid()
 
         // Content to be executed
         var content : ( () => Any ) = { () => }
 
+        
+        /*def apply(c: Constraints) : Grid = {
+          
+          this
+        }
+        def apply(cl: => Any) : Grid = {
+          this
+        }*/
         
         override def doResolve() = {
 
@@ -108,6 +118,11 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
             groupsStack.push(this)
             content()
             groupsStack.pop
+            
+            // If Nothing comes after the grid (alone on its row), then set to spread over all columns
+            if (this.nextElement==null) {
+              this.group(spread,expandWidth)
+            }
 
         }
     }
@@ -138,7 +153,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
     
     
-    def subgrid(c:Constraints)(cl: => Any) : Grid = {
+    /*def subgrid(c:Constraints)(cl: => Any) : Grid = {
 
         // Create a new group
         //---------------------------
@@ -156,7 +171,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         // Push on stack to execute closure
         //----------------------------------
         grid
-    }
+    }*/
     
     def subgrid(cl: => Any) : Grid = {
       
@@ -180,7 +195,27 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
 
 
 
+   /* class ContentLanguageElement extends Column(null) {
+      
+       var content : ( () => Any ) = { () => }
 
+        
+        override def doResolve() = {
+
+            content()
+
+        }
+      
+    }
+    implicit def convertContentToLanguageElement(cl: => Any) : ContentLanguageElement = {
+      
+      var content = new ContentLanguageElement
+      content.content = {
+        () => cl
+      }
+      content
+    }*/
+    
 
     // Constraining Language
     //------------------------------------------------
@@ -201,10 +236,15 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
                 }
 
         }
+        
+        
 
     }
     
-    def apply(constraints:Constraints) = {
+    /**
+     * Apply given constraints to top Grid Element
+     */
+    def use(constraints:Constraints) = {
       
       groupsStack.headOption match {
         case Some(top) => top.group(constraints)
@@ -358,6 +398,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         // Language Right to "row" keyword
         //---------------------
         
+        
         def row(right: LanguageChainElement) : Row  = {
             //languageElements = languageElements :+ right
 
@@ -421,7 +462,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
           
         def doResolve : Unit  = {
 
-            println(s"-> Adding column content(${left.toString}#${left.base.hashCode} at row ${groupsStack.head.currentRow} ")
+           // println(s"-> Adding column content(${left.toString}#${left.base.hashCode} at row ${groupsStack.head.currentRow} ")
 
             // Add 
             //-------------
@@ -437,6 +478,13 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
             // Increment Column
             groupsStack.head.currentColumn+=1
 
+        }
+        
+        // Add to previous row
+        //--------------
+        def ::(r: Row) : Unit = {
+          
+          r.row(this)
         }
 
         // Constraining Language

@@ -16,11 +16,16 @@ import com.idyria.osi.vui.core.constraints.Constrainable
  */
 trait SGNode[+T] extends ListeningSupport with Constrainable  {
 
+   var parent : SGGroup[_] = null
+  
     /**
         Optional ID for the Node
     */
     var id : String = ""
 
+    def setName(str: String)
+	
+   
     def base : T
 
     /**
@@ -31,4 +36,17 @@ trait SGNode[+T] extends ListeningSupport with Constrainable  {
 
     //def apply[NT <: SGNode[T]](cl : (NT => Unit))
 
+   /**
+   * When constraints of element are updated, call on layout manager of container to update constraints if needed
+   */
+  this.on("constraints.updated") {
+    
+    this.parent match {
+      case null => 
+      case p if (p.layout!=null) => p.asInstanceOf[SGGroup[T]].layout.applyConstraints(this, this.fixedConstraints)
+      case _ =>
+    }
+    
+  }
+    
 }

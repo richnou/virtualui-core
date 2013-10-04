@@ -6,9 +6,14 @@ import com.idyria.osi.vui.lib.view._
 
 class ViewButton( var view : View, var delegate : VUIButton[Any]) extends VUIButton[Any] {
 
+	  // node
+	  //-----------------
+	def setName(str: String) = delegate.setName(str)
+			
     // Global
     //-----------------
     override def disable = delegate.disable
+    override def enable = delegate.enable
 
     // Action Wrapping
     //--------------------

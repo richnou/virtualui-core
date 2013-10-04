@@ -15,6 +15,8 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.styling._
 import com.idyria.osi.vui.core.constraints.Constraints
 import com.idyria.osi.vui.core.constraints.Constrainable
+import java.awt.Insets
+import javax.swing.JComponent
 
 /**
  * @author rleys
@@ -88,7 +90,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
       // No need to do anything
       def nodeAdded(node : SGNode[Component]) = {
-
+    	  this.applyConstraints(node,new Constraints)
       }
 
       override def applyConstraints(node: SGNode[Component],inputConstraints:Constraints) = {
@@ -120,10 +122,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
           case _ => 
         }
 
-        println(s"Component is at: y:${gridbagConstraints.gridy}, x: ${gridbagConstraints.gridx}")
-        
-       
-
+        //println(s"Component is at: y:${gridbagConstraints.gridy}, x: ${gridbagConstraints.gridx}")
         //println(s"Applying GridBagLayout Constraints $row:$column")
 
         // Anchor
@@ -153,7 +152,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
         constraints.getOption("rowspan") match {
           case Some(rowSpan) => 
             
-            println(s"---------> rowspan $rowSpan")
+            //println(s"---------> rowspan $rowSpan")
             
               gridbagConstraints.gridheight = rowSpan.asInstanceOf[Int]
           
@@ -163,18 +162,11 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
         // Expand & push
         //------------------
 
-        constraints.getOption("expand") match {
-          case Some(colSpan) => 
-              gridbagConstraints.weightx = 1
-              gridbagConstraints.weighty = 1
-              gridbagConstraints.fill = GridBagConstraints.BOTH
-          
-          case None => 
-        }
+       
 
         constraints.getOption("expandHeight") match {
           case Some(colSpan) => 
-              gridbagConstraints.weighty = 1
+              gridbagConstraints.weighty = 1.0
               gridbagConstraints.fill = GridBagConstraints.VERTICAL
           
           case None => 
@@ -183,7 +175,7 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
         constraints.getOption("expandWidth") match {
           case Some(colSpan) => 
 
-              println("------> Expand Width")
+              //println("------> Expand Width")
 
               gridbagConstraints.weightx = 1.0
               gridbagConstraints.fill = GridBagConstraints.HORIZONTAL
@@ -193,16 +185,31 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
 
               //gridbagConstraints.gridwidth = GridBagConstraints.RELATIVE
         }
-
-        constraints.getOption("pushRight") match {
-          case Some(pushRight) => 
-              gridbagConstraints.weightx = 1
-              gridbagConstraints.anchor = GridBagConstraints.EAST
-               println(s"------> pushRight on ${node.toString}#${node.base.hashCode}")
+        
+         constraints.getOption("expand") match {
+          case Some(colSpan) => 
+            
+              gridbagConstraints.weightx = 1.0
+              gridbagConstraints.weighty = 1.0
+              gridbagConstraints.fill = GridBagConstraints.BOTH
+              
+              println(s"Doing Expand on ${node.base.asInstanceOf[JComponent].getName()}")
           
           case None => 
         }
 
+        constraints.getOption("pushRight") match {
+          case Some(pushRight) => 
+            
+              gridbagConstraints.weightx = 1
+              gridbagConstraints.anchor = GridBagConstraints.EAST
+              
+               //println(s"------> pushRight on ${node.toString}#${node.base.hashCode}")
+          
+          case None => 
+        }
+
+        
        
 
         // Spread -> Means the grid width is remainder to take all the available columns
@@ -212,20 +219,29 @@ trait SwingLayoutBuilder extends LayoutBuilder[Component] {
           case Some(spread) =>
 
                   gridbagConstraints.gridwidth = GridBagConstraints.REMAINDER
-                   println("------> Spread")
+                  //gridbagConstraints.gridheight = GridBagConstraints.REMAINDER
+                  // println("------> Spread")
+          
           case None =>    
 
         }
 
       
         
-
+        // Add Default Insets
+        //------------------------
+        gridbagConstraints.insets = new Insets(5,5,5,5)
         
 
+        node.base match {
+          case e : JComponent => e.setToolTipText(s"name: ${e.getName()}, row: ${gridbagConstraints.gridy} , column: ${gridbagConstraints.gridx}, weight:(${gridbagConstraints.weightx},${gridbagConstraints.weighty})")
+          case _ =>
+        }
+        
         // Apply
         //-----------------------
         this.layout.setConstraints(node.base, gridbagConstraints)
-        this.layout.invalidateLayout(node.base.getParent)
+        //this.layout.invalidateLayout(node.base.getParent)
       }
 
     }

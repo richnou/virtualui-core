@@ -28,7 +28,7 @@ trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T] with VBuilderBase[T]
    * Not overridable anymore, because implementation switches to calls giving title
    * and/or applying closure for tab component
    */
-  final def node [NT <: SGNode[T]](content: NT) : NT = node[NT]("")(content)
+  final override def node [NT <: SGNode[T]](content: NT) : NT = node[NT]("")(content)
   final def <=[NT <: SGNode[T]](title:String,content:NT)  = node[NT](title)(content)
 
   /**

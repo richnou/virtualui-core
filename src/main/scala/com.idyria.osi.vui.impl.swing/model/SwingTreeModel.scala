@@ -2,6 +2,7 @@ package com.idyria.osi.vui.impl.swing.model
 
 import com.idyria.osi.vui.core.components.controls.TreeModel
 import com.idyria.osi.vui.core.components.controls.TreeNode
+import javax.swing.event.TreeModelEvent
 
 /**
  * This class is an adapater to convert from VUI TreeModel specification to Swing Implementation
@@ -11,12 +12,31 @@ class SwingTreeModelAdapter(var model: TreeModel)  extends javax.swing.tree.Tree
   
   // Root infos
   //-----------------
+ 
   
+  // Reload and stuff
+  //-----------------
+  model.onWith("node.reload") {
+    e : TreeNode => 
+      
+      var event = new TreeModelEvent(e,e.pathToParent.asInstanceOf[Array[Object]])
+      
+      listeners.foreach {
+        l => 
+          l.treeNodesChanged(event)
+           l.treeStructureChanged(event)
+      }
+      
+      
+  }
   
   // Listeners
   //---------------------
-  def addTreeModelListener(x$1: javax.swing.event.TreeModelListener): Unit = {
-
+  
+  var listeners = List[javax.swing.event.TreeModelListener]()
+  
+  def addTreeModelListener(l: javax.swing.event.TreeModelListener): Unit = {
+	  listeners = l :: listeners
   }
 
   def removeTreeModelListener(x$1: javax.swing.event.TreeModelListener): Unit = {
@@ -48,35 +68,4 @@ class SwingTreeModelAdapter(var model: TreeModel)  extends javax.swing.tree.Tree
   
 
 }
-/*
-class SwingTreeNode(var node: TreeNode) extends javax.swing.tree.TreeNode {
-
-  // Local Infos
-  //------------------------
-
-  // Children Infos
-  //--------------------
-
-
-
-  def children(): java.util.Enumeration = node.
-  def getAllowsChildren(): Boolean = {
-    0
-  }
-  def getChildAt(x$1: Int): javax.swing.tree.TreeNode = {
-    0
-  }
-  def getChildCount(): Int = {
-    0
-  }
-  def getIndex(x$1: javax.swing.tree.TreeNode): Int = {
-    0
-  }
-  def getParent(): javax.swing.tree.TreeNode = {
-    0
-  }
-  def isLeaf(): Boolean = {
-    0
-  }
-
-}*/
+  
