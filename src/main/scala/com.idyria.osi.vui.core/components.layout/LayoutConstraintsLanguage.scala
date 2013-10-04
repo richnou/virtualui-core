@@ -12,4 +12,6 @@ trait LayoutConstraintsLanguage {
     def expandHeight = LayoutConstraint("expandHeight"->true)
     def expand = LayoutConstraint("expand"->true)
 
+    def top = LayoutConstraint("align"->"top")
+    
 }

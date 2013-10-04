@@ -20,8 +20,10 @@ trait LayoutContainer[T] extends SGGroup[T] {
     /**
      * Add The node to the jpanel
      */
-    def node[NT <: SGNode[T]](nd: NT): NT = {
+    override def node[NT <: SGNode[T]](nd: NT): NT = {
 
+      super.node(nd)
+      
       // If we have a layout, notify it
       if (definedLayout!=null) {
         definedLayout nodeAdded nd
