@@ -69,7 +69,7 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
         this.view.foreach {
             v => println(s"--> Available: ${v.id}")
         }*/
-        this.view.find(nextView == _.id.toString) match {
+        this.views.find(nextView == _.id.toString) match {
             case Some(view) => 
                 this.changeView(view)
                 @->("view.progressTo",view)
@@ -83,7 +83,7 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
         Progress to first view
     */
     def resetProgress = {
-        this.view.headOption match {
+        this.views.headOption match {
             case Some(view) => progressTo(view.id)
             case None => 
         }
@@ -93,7 +93,7 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
         Return String if of reset view, for usage inside action
     */
     def resetView : String = {
-        this.view.headOption match {
+        this.views.headOption match {
             case Some(view) => view.id
             case None => null
         }
@@ -105,8 +105,8 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
     def nextView : String = {
 
         currentView match {
-
-            case v if (v!=null && this.view.isDefinedAt(this.view.indexOf(v)+1)) => this.view.get(this.view.indexOf(v)+1).get.name
+ 
+            case v if (v!=null && this.views.isDefinedAt(this.views.indexOf(v)+1)) => this.views.get(this.views.indexOf(v)+1).get.name
             case _ => this.resetView
         }
    
@@ -118,7 +118,7 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
     */
     def progressToErrorView( e : Throwable) = {
 
-        this.view.find("error" == _.id.toString) match {
+        this.views.find("error" == _.id.toString) match {
             case Some(view) => 
                 //println("Found error view with listeners: "+view.content.listeningPointsWith.size)
                 view.content.@->("error",e)

@@ -1,11 +1,9 @@
-package com.idyria.osi.vui.lib.view.wizard.default
+package com.idyria.osi.vui.lib.view.wizard
 
 import com.idyria.osi.vui.lib.view.wizard._
 import com.idyria.osi.vui.lib.view._
-
 import com.idyria.osi.vui.core.components.form._
 import com.idyria.osi.vui.lib.placeholder._
-
 import com.idyria.osi.vui.lib.gridbuilder._
 
 class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder {
@@ -46,7 +44,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
         this.initDialog
 
         // Place first view
-        this.view.headOption match {
+        this.views.headOption match {
             case Some(view) => ->(view.name)
             case None       => throw new RuntimeException("Showing Default Wizard with no defined views....")
         }

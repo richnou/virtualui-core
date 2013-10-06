@@ -22,7 +22,7 @@ trait ViewGroup extends ViewGroupTrait with ViewBuilder {
 
             println(s"Added view with id : ${view.id}")
 
-            this.view+=view
+            this.views+=view
     }
 
 

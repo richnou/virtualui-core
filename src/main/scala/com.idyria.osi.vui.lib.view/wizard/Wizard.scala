@@ -20,7 +20,7 @@ class WizardDialog extends Wizard {
         dialog {
             f =>
                 f layout vbox
-                f <= this.view.head.content 
+                f <= this.views.head.content 
 
         }
 
