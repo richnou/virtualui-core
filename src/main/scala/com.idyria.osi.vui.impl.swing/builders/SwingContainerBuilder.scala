@@ -4,7 +4,6 @@
 package com.idyria.osi.vui.impl.swing.builders
 
 import java.awt.Component
-
 import com.idyria.osi.vui.core.components.containers.ContainerBuilder
 import com.idyria.osi.vui.core.components.containers.VUIPanel
 import com.idyria.osi.vui.core.components.containers.VUITabPane
@@ -12,9 +11,9 @@ import com.idyria.osi.vui.core.components.layout.VUILayout
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.scenegraph.SceneGraphBuilder
-
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
+import javax.swing.JComponent
 /**
  * @author rleys
  *
@@ -38,11 +37,8 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
           content
         }
 
-        /**
-          Returns nothing
-        */
-        def layout : VUILayout[Component] = null
-
+       
+        
 
     }
 
@@ -66,13 +62,25 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
         //-----------------------------
         // Scene Graph
 
-        var definedLayout : VUILayout[Component] = null
+        //var definedLayout : VUILayout[Component] = null
   
+        
+        /**
+         * Node Add
+         */
+        this.onWith("child.added") {
+          nd : SGNode[Component] => 
+         
+            delegate.add(nd.base)
+            revalidate
+            
+        }
+        
 
         /**
          * Add The node to the jpanel
          */
-        override def node[NT <: SGNode[Component]](nd: NT): NT = {
+        /*override def node[NT <: SGNode[Component]](nd: NT): NT = {
 
           super.node(nd)
           
@@ -93,20 +101,20 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
           nd
 
         }
-
+*/
         /*def clear = {
           delegate.removeAll
           delegate.revalidate
         }*/
 
-        def layout(l: VUILayout[Component]) = {
+        /*def layout(l: VUILayout[Component]) = {
 
            this.definedLayout = l
            l.setTargetGroup(this)
 
         }
 
-        def layout : VUILayout[Component] = this.definedLayout
+        def layout : VUILayout[Component] = this.definedLayout*/
 
       }
 

@@ -27,16 +27,20 @@ abstract class VUIBuilder[T] extends  ContainerBuilder[T]
 
 object VUIBuilder {
 
+  var actualImplementation : VUIBuilder[_] = (new SwingVUIImpl).asInstanceOf[VUIBuilder[_]]
+  
 
   /**
    * Returns the currently selected application by current thread
    */
   def selectedImplementation[T] : VUIBuilder[T] = {
 
-    return VUIBuilder.findImplementations.head.asInstanceOf[VUIBuilder[T]]
+    //return VUIBuilder.findImplementations.head.asInstanceOf[VUIBuilder[T]]
 
     //return SwingVUIImpl.asInstanceOf[VUIBuilder[T]]
 
+    return actualImplementation.asInstanceOf[VUIBuilder[T]]
+    
   }
 
   def findImplementations : Set[VUIBuilder[_]] = {

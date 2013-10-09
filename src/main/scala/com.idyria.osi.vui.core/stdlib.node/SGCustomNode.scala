@@ -42,7 +42,7 @@ abstract class SGCustomNode[T] extends SGNode[T] {
 
   def revalidate = this.getUi.revalidate
 
-  def setName(str: String) = this.getUi.setName(str)
+  override def setName(str: String) = this.getUi.setName(str)
   
   /**
    * This must be defined by sublass.

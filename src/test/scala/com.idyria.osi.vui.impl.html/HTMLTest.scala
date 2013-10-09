@@ -9,11 +9,30 @@ class HTMLTest extends FunSuite with HtmlTreeBuilder {
     
     var html = this.html {
       
-      this.head {
+      head {
+        
+         title("Page title")
+        
+        link {
+          attribute ("rel" -> "stylesheet")
+          
+        }
+        
+       
+        
+        this.genericElt {
+          
+        }
+        this.genericElt("tt")
         
       }
       
-      this.body {
+      body {
+        
+        h1("Test Title") 
+        
+        
+        
         
       }
       

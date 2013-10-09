@@ -5,38 +5,56 @@ import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.components.layout._
 import com.idyria.osi.vui.lib.gridbuilder._
 
-trait PlaceHolder extends VBuilder {
+trait PlaceHolder[NT <: SGNode[Any]] {
 
-    var placeHolders = Map[String,SGGroup[Any]]()
+    var placeHolders = Map[String,NT]()
 
     /**
         Create a Group for the given placeholder
     */
-    def placeHolder(name  : String ) : SGGroup[Any] = {
+    def placeHolder(name  : String ) : NT = {
 
-        var newGroup = group
-        newGroup layout grid
-        placeHolders = placeHolders + (name -> newGroup)
-        newGroup
+    	this.placeHolders.get(name) match {
+            case Some(node) => node
+            case None => 
+              
+           /*   var newGroup = group
+	        newGroup layout grid
+	        placeHolders = placeHolders + (name -> newGroup)
+	        newGroup*/
+              
+              throw new IllegalArgumentException(s"Could not Retrieve component @$name because place does not exist")
+              
+    	}
+      
+        
 
     }
 
     /**
         Place a component to defined place holder
     */
-    def place(name: String)(component: SGNode[Any]) = {
-
-        this.placeHolders.get(name) match {
+    def place(name: String)(component: NT) = {
+    	
+       placeHolders = placeHolders + (name -> component)
+      
+        /*this.placeHolders.get(name) match {
             case Some(placeHolder) => 
-                    placeHolder.clear
-                    placeHolder<=component
+                    //placeHolder.clear
+                    //placeHolder<=component
 
                     //placeHolder.layout.applyConstraints(component,LayoutConstraints("expand"->true))
 
-                    placeHolder.revalidate
-            case None  => throw new IllegalArgumentException(s"Could not place component @$name because place does not exist")
+                    //placeHolder.revalidate
+              
+              		placeHolders = placeHolders + (name -> component)
+              
+            case None  => 
+              
+              
+              //throw new IllegalArgumentException(s"Could not place component @$name because place does not exist")
         }
-
+		*/
     }
     
 }

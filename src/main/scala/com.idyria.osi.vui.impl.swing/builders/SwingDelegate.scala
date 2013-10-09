@@ -25,12 +25,29 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
   // Node
   //---------------------------------------
 
-  def setName(str: String) = delegate.setName(str)
-  
+  override def setName(str: String) = {
+    //super.setName(str)
+    delegate.setName(str)
+  }
+
   def base: DT = delegate
   override def revalidate = delegate.revalidate
 
   def clear = { delegate.removeAll; delegate.revalidate; delegate.validate }
+
+  /**
+   *
+   */
+  /*def removeChild(c: SGNode[Component]) = {
+
+  }*/
+
+  /**
+   * Do not return anything
+   */
+  def children: Seq[SGNode[Component]] = {
+    Nil
+  }
 
   //---------------------------------------
   // General
@@ -38,8 +55,6 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
   override def disable = delegate.setEnabled(false)
   override def enable = delegate.setEnabled(true)
 
-  
-  
   //---------------------------------------
   // Actions
   //---------------------------------------
@@ -49,7 +64,7 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
     delegate.addMouseListener(new MouseAdapter() {
 
       override def mousePressed(e: MouseEvent) = {
-        action(populateVUIMouseEvent(e,new VUIMouseEvent))
+        action(populateVUIMouseEvent(e, new VUIMouseEvent))
       }
 
     })
@@ -61,7 +76,7 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
     delegate.addMouseMotionListener(new MouseMotionAdapter() {
 
       override def mouseDragged(ev: MouseEvent) = {
-       action(populateVUIMouseEvent(ev,new VUIMouseEvent))
+        action(populateVUIMouseEvent(ev, new VUIMouseEvent))
       }
 
       /*override def mouseDrag(evt, x, y) = {
@@ -72,7 +87,7 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
 
   }
 
-  override def onClicked(action:VUIClickEvent => Any) = delegate.addMouseListener(new MouseAdapter() {
+  override def onClicked(action: VUIClickEvent => Any) = delegate.addMouseListener(new MouseAdapter() {
     override def mouseClicked(e: MouseEvent) = SwingUtilities.invokeLater(new Runnable {
 
       override def run() = action(e)
@@ -130,23 +145,23 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
   def convertMouseEventToVUIDragEvent(ev: MouseEvent): VUIDragEvent = {
     this.populateVUIMouseEvent[VUIDragEvent](ev, new VUIDragEvent)
   }
-  
+
   //-- Mouse Events
   //-----------------------
   implicit def convertMouseEventToVUIMouseEvent(ev: MouseEvent): VUIMouseEvent = {
     this.populateVUIMouseEvent[VUIMouseEvent](ev, new VUIMouseEvent)
   }
-  
+
   implicit def convertMouseEventToClickEvent(ev: MouseEvent): VUIClickEvent = {
-    
+
     // Common
     var click = this.populateVUIMouseEvent[VUIClickEvent](ev, new VUIClickEvent)
-    
+
     // Click
     click.clickCount = ev.getClickCount()
     click
   }
-  
+
   private def populateVUIMouseEvent[ET <: VUIMouseEvent](srcEvent: MouseEvent, targetEvent: ET): ET = {
 
     // Fill in positions
@@ -156,9 +171,7 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
 
     // Click counts and button
     //-------------------
-    
-    
-    
+
     targetEvent
   }
 

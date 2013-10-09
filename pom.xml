@@ -61,7 +61,7 @@
         </plugins>
     </build>
 
-    <!-- Repositories to find Native4J and OSI packages -->
+    <!-- Repositories to find packages -->
     <!-- ############################################## -->
     <pluginRepositories>
         <pluginRepository>

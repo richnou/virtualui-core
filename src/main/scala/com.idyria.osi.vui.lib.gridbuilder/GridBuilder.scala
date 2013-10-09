@@ -93,7 +93,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
      
        //  left.asInstanceOf[SGGroup[Any]].l
         
-        left.asInstanceOf[SGGroup[Any]] layout grid()
+        left.asInstanceOf[SGGroup[Any]] layout = grid()
 
         // Content to be executed
         var content : ( () => Any ) = { () => }

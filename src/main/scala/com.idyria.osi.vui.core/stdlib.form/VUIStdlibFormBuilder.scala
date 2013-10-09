@@ -26,7 +26,7 @@ trait VUIStdlibFormBuilder[T] extends VBuilderBase[T] {
 
     	p =>
 
-    	  p layout vbox
+    	  p layout = vbox
 
     	  //-- Input List
 	      var inputList =  list

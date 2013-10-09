@@ -1,12 +1,17 @@
 package com.idyria.osi.vui.lib.view.wizard
 
-import com.idyria.osi.vui.lib.view.wizard._
-import com.idyria.osi.vui.lib.view._
-import com.idyria.osi.vui.core.components.form._
-import com.idyria.osi.vui.lib.placeholder._
-import com.idyria.osi.vui.lib.gridbuilder._
+import com.idyria.osi.vui.lib.view.wizard.WizardDialog
+import com.idyria.osi.vui.lib.gridbuilder.GridBuilder
+import com.idyria.osi.vui.core.components.form.VUIList
+import com.idyria.osi.vui.lib.placeholder.PlaceHolder
+import com.idyria.osi.vui.lib.view.View
+import com.idyria.osi.vui.core.components.form.VUIList
+import com.idyria.osi.vui.lib.gridbuilder.GridBuilder
+import com.idyria.osi.vui.lib.view.wizard.WizardDialog
+import com.idyria.osi.vui.impl.swing.builders.SwingJComponentCommonDelegate
 
-class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder {
+
+class DefaultWizardDialog extends WizardDialog with PlaceHolder[SwingJComponentCommonDelegate[_]] with GridBuilder {
 
     // Configuration
     //--------------------
@@ -23,7 +28,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
     override def changeView (view:View) = {
 
         // Change Placeholder
-        place("middle")(view.content)
+        //place("middle")(view.content)
 
         // Try to highlight in list
         if (stepsList!=null) {
@@ -64,7 +69,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder with GridBuilder
         this.dialog {
             dialog => 
 
-                dialog layout vbox
+                dialog layout = vbox
 
                 dialog <= grid {
                     

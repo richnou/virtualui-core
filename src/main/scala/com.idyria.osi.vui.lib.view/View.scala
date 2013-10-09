@@ -1,6 +1,7 @@
 package com.idyria.osi.vui.lib.view
 
 import com.idyria.osi.vui.core._
+import com.idyria.osi.vui.core.styling.ApplyTrait
 
 /**
     Functional Trait mixed in Static view definition
@@ -8,7 +9,7 @@ import com.idyria.osi.vui.core._
     A View has per default an internal Scene Graph Group node
 
 */
-class View extends VBuilder with ViewTrait {
+class View extends VBuilder with ViewTrait with ApplyTrait {
 
     /**
         Base content of a view is a group

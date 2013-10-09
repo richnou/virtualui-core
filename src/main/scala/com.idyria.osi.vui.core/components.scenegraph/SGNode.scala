@@ -14,39 +14,67 @@ import com.idyria.osi.vui.core.constraints.Constrainable
  * @author rleys
  *
  */
-trait SGNode[+T] extends ListeningSupport with Constrainable  {
+trait SGNode[+T] extends ListeningSupport with Constrainable {
 
-   var parent : SGGroup[_] = null
-  
-    /**
-        Optional ID for the Node
-    */
-    var id : String = ""
+  /**
+   * base implementatino class, if the node is wrapping
+   */
+  def base: T
 
-    def setName(str: String)
-	
-   
-    def base : T
+  var parent: SGGroup[Any] = null
 
-    /**
-    * This method is a high level call to ask the underlying implementation
-    * to make sure the node has been redrawn
-    */
-    def revalidate
+  /**
+   * Optional ID for the Node
+   */
+  var id: String = ""
 
-    //def apply[NT <: SGNode[T]](cl : (NT => Unit))
+  /**
+   * Optional Name for the node
+   */
+  var name: String = ""
 
-   /**
+  /**
+   * Set the name
+   */
+  def setName(str: String) = this.name = str
+
+  /**
+   * parent setup
+   */
+  def setParent(p: SGGroup[Any]) = {
+
+    // Remove from actual if in one
+    //---------
+    this.parent match {
+      case null =>
+      case p =>
+        p.removeChild(this)
+    }
+
+    // Set
+    this.parent = p
+
+  }
+
+  /**
+   * This method is a high level call to ask the underlying implementation
+   * to make sure the node has been redrawn
+   */
+  def revalidate
+
+  //def apply[NT <: SGNode[T]](cl : (NT => Unit))
+
+  /**
    * When constraints of element are updated, call on layout manager of container to update constraints if needed
    */
   this.on("constraints.updated") {
-    
+
     this.parent match {
-      case null => 
-      case p if (p.layout!=null) => p.asInstanceOf[SGGroup[T]].layout.applyConstraints(this, this.fixedConstraints)
-      case _ =>
+      case null                    =>
+      case p if (p.layout != null) => p.asInstanceOf[SGGroup[T]].layout.applyConstraints(this, this.fixedConstraints)
+      case _                       =>
     }
-    
+
   }
-    
+
 }
