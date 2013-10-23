@@ -24,7 +24,7 @@ object WizardExample1 extends App {
 
             node  => 
 
-                node layout vbox
+                node layout = vbox
 
                 node <= label("View A")
                 node <= button("Go to B") {
@@ -43,7 +43,7 @@ object WizardExample1 extends App {
             node => 
 
 
-               node layout vbox
+               node layout = vbox
 
                // node <= label("View B")
                 node <= button("Go to C") {
@@ -70,7 +70,7 @@ object WizardExample1 extends App {
             node => 
 
 
-                node layout vbox
+                node layout = vbox
 
                // node <= label("View C grats!")
                 node <= button("Reset") {
@@ -86,7 +86,7 @@ object WizardExample1 extends App {
             node => 
 
 
-                node layout vbox
+                node layout = vbox
 
                // var msg = node <= label("Error View")
                 node <= button("Reset") {

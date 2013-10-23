@@ -1,6 +1,5 @@
 package com.idyria.osi.vui.lib.view
 
-
 import com.idyria.osi.tea.listeners.ListeningSupport
 
 import com.idyria.osi.vui.core._
@@ -12,83 +11,103 @@ import com.idyria.osi.vui.core.components.scenegraph._
 
 import scala.language.implicitConversions
 
-
 /**
-    A Trait to mixin lamguage to create Views
-*/
-trait ViewBuilder extends  VBuilder with ListeningSupport {
+ * A Trait to mixin lamguage to create Views
+ */
+trait ViewBuilder extends VBuilder with ListeningSupport {
 
-    var currentView : View = null
+  var currentView: View = null
 
-    override def button(text: String)(implicit cl: VUIButton[Any] => Unit) : VUIButton[Any] = {
+  override def button(text: String)(implicit cl: VUIButton[Any] => Unit): VUIButton[Any] = {
 
-        var button = new ViewButton(currentView,super.button(text))
-        apply(button,cl);
-        button
+    var button = new ViewButton(currentView, super.button(text))
+    apply(button, cl);
+    button
+
+  }
+  
+  // View creation language
+  //-------------
+  def view(id:String) : ViewDefinitionWrapper = new ViewDefinitionWrapper(id)
+  
+
+  // Define a View
+  //-------------------------
+  class ViewDefinitionWrapper(left: View) {
+
+    @->("view.created", left)
+
+    def apply(content: View => Unit) = {
+      
+      ViewBuilder.this.currentView = left
+      
+      // Build Closure
+      //----------------
+      content(left)
+      
+    }
+    
+    def view(content: View => Unit) = {
+
+      ViewBuilder.this.currentView = left
+
+      // Build Closure
+      //----------------
+      content(left)
+      
+    }
+
+    def is(content: SGGroup[Any] => Unit) = {
+
+      // Add View To Group
+      //-----------------------
+      //ViewGroup.this.view += left
+      ViewBuilder.this.currentView = left
+
+      @->("view.current", left)
+
+      // Build Closure
+      //----------------
+      content(left.content)
 
     }
 
-    // Define a View
-    //-------------------------
-    class ViewDefinitionWrapper(left:View) {
+    def is(node: SGGroup[Any]) = {
 
+      // Add View To Group
+      //-----------------------
+      //ViewGroup.this.view += left
+      ViewBuilder.this.currentView = left
 
-        def is(content: SGGroup[Any] => Unit ) = {
+      @->("view.current", left)
 
-            // Add View To Group
-            //-----------------------
-            //ViewGroup.this.view += left
-            ViewBuilder.this.currentView = left
-
-            @->("view.current",left)
-
-            
-
-            // Build Closure
-            //----------------
-            content(left.content)
-
-        }
-
-        def is(node: SGGroup[Any] ) = {
-
-            // Add View To Group
-            //-----------------------
-            //ViewGroup.this.view += left
-            ViewBuilder.this.currentView = left
-
-            @->("view.current",left)
- 
-            
-
-            // Set content to view
-            //----------------
-            left.content = node
-
-
-        }
-        
-    }
-
-    implicit def stringtoViewDefinitionWrapper(str: String) : ViewDefinitionWrapper = {
-
-        var view = new View 
-        view.name = str
-        view.id = str 
-
-        new ViewDefinitionWrapper(view) 
+      // Set content to view
+      //----------------
+      left.content = node
 
     }
-    implicit def viewtoViewDefinitionWrapper(view: View) : ViewDefinitionWrapper = new ViewDefinitionWrapper(view) 
-    implicit def stringToView(str:String) : View = {
-        var view = new View 
-        view.name = str
-        view.id = str 
 
-        view
-    }
+  }
 
-    /*override def button(text: String)(cl: => String) : VUIButton[Any] = {
+  implicit def stringtoViewDefinitionWrapper(str: String): ViewDefinitionWrapper = {
+
+    var view = new View
+    view.name = str
+    view.id = str
+
+    new ViewDefinitionWrapper(view)
+
+  }
+  implicit def viewtoViewDefinitionWrapper(view: View): ViewDefinitionWrapper = new ViewDefinitionWrapper(view)
+  implicit def stringToView(str: String): View = {
+    var view = new View
+    view.name = str
+    view.id = str
+
+    view
+  }
+
+  /*override def button(text: String)(cl: => String) : VUIButton[Any] = {
 
         // Create Button
         var button = new ViewButton(super.button(text))

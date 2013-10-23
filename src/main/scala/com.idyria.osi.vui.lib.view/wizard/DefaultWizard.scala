@@ -1,13 +1,11 @@
 package com.idyria.osi.vui.lib.view.wizard
 
-import com.idyria.osi.vui.lib.view.wizard.WizardDialog
 import com.idyria.osi.vui.lib.gridbuilder.GridBuilder
 import com.idyria.osi.vui.core.components.form.VUIList
 import com.idyria.osi.vui.lib.placeholder.PlaceHolder
 import com.idyria.osi.vui.lib.view.View
 import com.idyria.osi.vui.core.components.form.VUIList
 import com.idyria.osi.vui.lib.gridbuilder.GridBuilder
-import com.idyria.osi.vui.lib.view.wizard.WizardDialog
 import com.idyria.osi.vui.impl.swing.builders.SwingJComponentCommonDelegate
 
 

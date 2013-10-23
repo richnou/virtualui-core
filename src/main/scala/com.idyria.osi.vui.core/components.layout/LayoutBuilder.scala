@@ -29,6 +29,12 @@ trait LayoutBuilder[T] {
    */
   def none : VUIFreeLayout[T]
 
+  /**
+   * To be overriden
+   */
+  def stack : VUIStackPane[T] = {
+    throw new RuntimeException("Unsupported layout")
+  }
 
 
 }

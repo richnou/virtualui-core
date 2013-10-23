@@ -5,11 +5,12 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.lib.placeholder.PlaceHolder
 import com.idyria.osi.tea.listeners.ListeningSupport
 import scala.annotation.tailrec
+import com.idyria.osi.vui.core.components.table.SGTable
 
 /**
  * Base Class for an HTML Node
  */
-abstract class HTMLNode(var htmlNodeName : String = "undefined") extends SGGroup[Any] {
+abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[Any] {
 
   // Parameters
   // var name: String = null
@@ -25,7 +26,7 @@ abstract class HTMLNode(var htmlNodeName : String = "undefined") extends SGGroup
    * Clear Children
    */
   def clear: Unit = {
-    this.childrenSeq = this.childrenSeq.filter(_ => true)
+    this.childrenSeq = this.childrenSeq.filter(_ ⇒ true)
   }
 
   /**
@@ -33,11 +34,11 @@ abstract class HTMLNode(var htmlNodeName : String = "undefined") extends SGGroup
    */
   override def removeChild(n: SGNode[Any]) = {
     this.children.contains(n) match {
-      case true  => this.childrenSeq = this.children diff Seq(n)
-      case false =>
+      case true  ⇒ this.childrenSeq = this.children diff Seq(n)
+      case false ⇒
     }
   }
-  
+
   /**
    * Returns all children
    */
@@ -68,26 +69,26 @@ abstract class HTMLNode(var htmlNodeName : String = "undefined") extends SGGroup
    * Placeholder mechanism
    */
   def waitFor(id: String) = {
-    
+
     this.onWith(id) {
-      content : Any => 
-        
-       // println("*** Adding content: "+id+" of type: "+content.getClass)
-        
+      content: Any ⇒
+
+        // println("*** Adding content: "+id+" of type: "+content.getClass)
+
         content match {
-        	case node : SGNode[Any] => this <= node
-        	case nodes if (nodes.isInstanceOf[Iterable[_]])=> nodes.asInstanceOf[Iterable[_]].foreach( n => this <= n.asInstanceOf[SGNode[Any]])
-        	case _ => 
+          case node: SGNode[Any] ⇒ this <= node
+          case nodes if (nodes.isInstanceOf[Iterable[_]]) ⇒ nodes.asInstanceOf[Iterable[_]].foreach(n ⇒ this <= n.asInstanceOf[SGNode[Any]])
+          case _ ⇒
         }
     }
-    
+
     /*this.onWith(id) {
       node: SGNode[Any] => this <= node
     }*/
   }
-  
+
   def place(id: String)(cl: HTMLNode) = {
-    this.@->(id,cl)
+    this.@->(id, cl)
   }
 
   // HTML Stuff
@@ -108,18 +109,18 @@ abstract class HTMLNode(var htmlNodeName : String = "undefined") extends SGGroup
 
   // Render
   //----------------
-  
+
   /**
-   * FIXME : Optimise this ? 
+   * FIXME : Optimise this ?
    */
-  final def indentCount(nd:SGNode[Any]) : Int= {
-    if (nd.parent==null)
+  final def indentCount(nd: SGNode[Any]): Int = {
+    if (nd.parent == null)
       0
     else {
-       1 + indentCount(nd.parent)
-     }
+      1 + indentCount(nd.parent)
+    }
   }
-  
+
   /**
    * Renders HTML Node structure as String
    */
@@ -127,10 +128,10 @@ abstract class HTMLNode(var htmlNodeName : String = "undefined") extends SGGroup
 
     // Prepare attributes
     //-------------------------
-    var attrs = attributes.map { t => s"""${t._1}="${t._2}"""" }.mkString(" ", " ", "")
-    		
-    var indentString = for (i <- 0 to this.indentCount(this)) yield "    "
-    
+    var attrs = attributes.map { t ⇒ s"""${t._1}="${t._2}"""" }.mkString(" ", " ", "")
+
+    var indentString = for (i ← 0 to this.indentCount(this)) yield "    "
+
     s"""
 ${indentString.mkString}<$htmlNodeName$attrs>
 ${indentString.mkString}    ${textContent}
@@ -152,12 +153,10 @@ class GenericHTMLElement(nodeName: String, textC: String = "") extends HTMLNode(
 //------------------
 class HTMLTextNode(var content: String) extends HTMLNode("") {
 
-
   /*def base: Any = this
   def revalidate: Unit = {
 
   }*/
- 
 
   // Render
   //----------------
@@ -177,18 +176,13 @@ class HTMLTextNode(var content: String) extends HTMLNode("") {
  */
 class Html extends HTMLNode("html") {
 
-
-
 }
 
 class Body extends HTMLNode("body") {
 
-
-
 }
 
 class Head extends HTMLNode("head") {
-
 
 }
 
@@ -197,11 +191,9 @@ class Head extends HTMLNode("head") {
 
 class Div extends HTMLNode("div") with ListeningSupport {
 
-
 }
 
 class Span extends HTMLNode("span") {
-
 
 }
 
@@ -229,55 +221,61 @@ class A(var text: String, var destination: String) extends HTMLNode("a") {
   this.textContent = text
 }
 
-
 // List
 //-----------------
 class Ul extends HTMLNode("ul")
 class Ol extends HTMLNode("ol")
 class Li extends HTMLNode("li")
 
-
 // Form
 //------------
 class Form extends HTMLNode("form")
 
-abstract class FormInput(lname:String) extends HTMLNode("input") {
+abstract class FormInput(lname: String) extends HTMLNode("input") {
   this.setName(lname)
-  this("name"->lname)
+  this("name" -> lname)
 }
 
 /**
  * <input type="hidden" name="name" value="value"
  */
-class FormParameter(p: (String,String)) extends FormInput(p._1) {
-  this("type"->"hidden")
-  this("value"->p._2)
+class FormParameter(p: (String, String)) extends FormInput(p._1) {
+  this("type" -> "hidden")
+  this("value" -> p._2)
 }
 
-	/**
-	 * input type text
-	 */
-	class InputText(lname:String) extends FormInput(lname) {
-	  
-	  this("type"->"text")
-	  
-	}
+/**
+ * input type text
+ */
+class InputText(lname: String) extends FormInput(lname) {
 
-	/**
-	 * input type password
-	 */
-	class InputPassword(lname:String) extends FormInput(lname) {
-	  
-	  this("type"->"password")
-	  
-	}
+  this("type" -> "text")
+
+}
+
+/**
+ * input type password
+ */
+class InputPassword(lname: String) extends FormInput(lname) {
+
+  this("type" -> "password")
+
+}
+
+class FormSubmit(value: String) extends HTMLNode("input") {
+  this("type" -> "submit")
+  this("value" -> value)
+
+}
+
 	
-	class FormSubmit(value: String) extends HTMLNode("input") {
-	  this("type"->"submit")
-	  this("value"->value)
-	  
-	  
-	}
-
+// Table
+//--------------------
+class Table extends HTMLNode("table") with SGTable[Any] {
+   
+  
+  
+}
+	
 
 

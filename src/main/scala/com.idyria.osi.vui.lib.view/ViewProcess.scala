@@ -40,11 +40,12 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
 
         try {
             var res = act 
-            if (res!=null)
+            if (res!=null && res!="")
                 this.progressTo(res.toString)
         } catch {
             case e : Throwable => 
                 println(s"Seen Error from View process: ${e}")
+                e.printStackTrace()
                 progressToErrorView(e)
         }
         
@@ -65,14 +66,18 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
 
         // Search
         //----------
-        /*println(s"Trying to go to $nextView")
-        this.view.foreach {
+        println(s"Trying to go to $nextView")
+        this.views.foreach {
             v => println(s"--> Available: ${v.id}")
-        }*/
+        }
         this.views.find(nextView == _.id.toString) match {
             case Some(view) => 
+              
                 this.changeView(view)
                 @->("view.progressTo",view)
+                
+                println("----> Found: "+this.hashCode())
+                
             case None => throw new RuntimeException(s"Could not change to whished view: $nextView")
         }
 
@@ -132,7 +137,9 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
     /**
         To be Implemented by the class responsible for changing the view content
     */
-    def changeView(view: View)
+    def changeView(view: View) = {
+      
+    }
 
 
     

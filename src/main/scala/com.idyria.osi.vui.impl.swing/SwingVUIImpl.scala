@@ -174,6 +174,3 @@ class SwingVUIImpl
   }
 
 }
-object SwingVUIImpl {
-
-}

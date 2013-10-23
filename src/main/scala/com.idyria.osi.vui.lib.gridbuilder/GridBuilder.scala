@@ -398,6 +398,15 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
         // Language Right to "row" keyword
         //---------------------
         
+        /**
+         * Create a row with a sub grid
+         */
+        def grid(cl: => Any) : Row = {
+          
+          this.row(subgrid(cl))
+          this
+          
+        }
         
         def row(right: LanguageChainElement) : Row  = {
             //languageElements = languageElements :+ right

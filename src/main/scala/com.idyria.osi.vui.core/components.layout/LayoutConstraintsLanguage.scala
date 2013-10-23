@@ -6,6 +6,9 @@ trait LayoutConstraintsLanguage {
 
     def alignLeft = LayoutConstraint("align" -> "left")
     def alignRight = LayoutConstraint("align" -> "right")
+    def alignCenter = LayoutConstraint("align" -> "center")
+    
+    
     def spread = LayoutConstraint("spread"->true)
     def pushRight = LayoutConstraint("pushRight" -> true)
     def expandWidth = LayoutConstraint("expandWidth"->true)

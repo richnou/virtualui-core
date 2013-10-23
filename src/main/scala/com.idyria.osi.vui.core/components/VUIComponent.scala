@@ -23,6 +23,8 @@ trait VUIComponent[T] extends SGNode[T] {
   // General Control
   //----------------------
 
+  //-- Enable/Disable
+  
   /**
     To be overriden if the component can be disabled
   */
@@ -41,6 +43,11 @@ trait VUIComponent[T] extends SGNode[T] {
     case false => disable
   }
 
+  //-- Visible/Invisible
+  def setVisible(state:Boolean) : Unit = {
+    throw new RuntimeException("Not Implemented")
+  }
+  
   //----------------------
   // Actions  
   //----------------------

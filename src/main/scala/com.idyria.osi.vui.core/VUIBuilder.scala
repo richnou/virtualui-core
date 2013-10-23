@@ -11,6 +11,8 @@ import com.idyria.osi.vui.core.components.main.MainBuilder
 import com.idyria.osi.vui.core.components.scenegraph.SceneGraphBuilder
 import com.idyria.osi.vui.core.components.layout.LayoutBuilder
 import com.idyria.osi.vui.core.components.form.FormBuilder
+import scala.reflect.runtime.universe._
+import scala.reflect.ClassTag
 
 /**
  * @author rleys
@@ -21,13 +23,26 @@ abstract class VUIBuilder[T] extends  ContainerBuilder[T]
 							with LayoutBuilder[T]
 							with SceneGraphBuilder[T]
 							with MainBuilder[T]
-							with FormBuilder[T]{
+							with FormBuilder[T] with UtilsTrait {
 
+  
+  
 }
 
 object VUIBuilder {
 
-  var actualImplementation : VUIBuilder[_] = (new SwingVUIImpl).asInstanceOf[VUIBuilder[_]]
+  var defaultImplementation : VUIBuilder[_] = (new SwingVUIImpl).asInstanceOf[VUIBuilder[_]]
+  
+  var selectedImplementations = Map[Thread,VUIBuilder[_]]()
+  
+  /**
+   * 
+   */
+  def setImplementationForCurrentThread(impl: VUIBuilder[_]) = {
+    
+    selectedImplementations = selectedImplementations + (Thread.currentThread() -> impl)
+    
+  }
   
 
   /**
@@ -35,11 +50,16 @@ object VUIBuilder {
    */
   def selectedImplementation[T] : VUIBuilder[T] = {
 
+    selectedImplementations.get(Thread.currentThread()) match {
+      case Some(impl) => impl.asInstanceOf[VUIBuilder[T]]
+      case None => defaultImplementation.asInstanceOf[VUIBuilder[T]]
+    }
+    
     //return VUIBuilder.findImplementations.head.asInstanceOf[VUIBuilder[T]]
 
     //return SwingVUIImpl.asInstanceOf[VUIBuilder[T]]
 
-    return actualImplementation.asInstanceOf[VUIBuilder[T]]
+    //return actualImplementation.asInstanceOf[VUIBuilder[T]]
     
   }
 
@@ -48,6 +68,18 @@ object VUIBuilder {
     return Set(new SwingVUIImpl)
 
 
+  }
+  
+  // Implementation getters
+  //---------------
+  def as[T](implicit tag : ClassTag[T]) : T = {
+    
+    tag.runtimeClass.isAssignableFrom(this.selectedImplementation.getClass()) match {
+      case true => this.selectedImplementation.asInstanceOf[T]
+      case false => throw new RuntimeException("Currently selected implementation does not support interface "+tag)
+    }
+    
+ 
   }
 
 

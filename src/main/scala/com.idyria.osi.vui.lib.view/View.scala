@@ -2,6 +2,7 @@ package com.idyria.osi.vui.lib.view
 
 import com.idyria.osi.vui.core._
 import com.idyria.osi.vui.core.styling.ApplyTrait
+import com.idyria.osi.vui.core.components.scenegraph.SGNode
 
 /**
     Functional Trait mixed in Static view definition
@@ -16,6 +17,39 @@ class View extends VBuilder with ViewTrait with ApplyTrait {
     */
     var content = group
         
+    // Rendering
+    //--------------
+    
+    var renderClosure : ( () => SGNode[Any]) = null
+    
+    /**
+     * Renders the content, per default uses a content closure
+     */
+    def render : SGNode[Any] = {
+      renderClosure match {
+        case null => null
+        case cl => cl()
+      }
+    }
+    
+    /**
+     * Set the render closure
+     * Usage example with view builder:
+     * 
+     *  view("foo") {
+     *  	v => 
+     *   		v.render {
+     *     			
+     *        		
+     *     		}
+     *  } 
+     * 
+     */
+    def onRender(cl: => SGNode[Any]) = renderClosure= {()=>cl}
+    
+    // View Process Connection
+    //--------------------------
+    
     /**
         A Reference to the view Process currently running, if any
     */

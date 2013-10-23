@@ -25,6 +25,17 @@ trait VBuilderBase[T]  {
 
   def apply[NT <: SGNode[T]](content: NT,cl : (NT => Unit)) : NT
 
+  // Utils
+  //--------------------
+  
+  /**
+   * The provided closure should run on the UI thread
+   * The default implementation just runs the closure on current Thread
+   * 
+   * Should be overriden by implementors
+   */
+  def onUIThread(cl: => Unit) = VUIBuilder.selectedImplementation[T].onUIThread({cl})
+  
   // Main
   //-------------------------
   def frame(implicit cl : VuiFrame[T] => Unit) : VuiFrame[T] = apply(VUIBuilder.selectedImplementation[T].frame,cl);
@@ -61,6 +72,7 @@ trait VBuilderBase[T]  {
   def hbox : VUIHBoxLayout[T] = VUIBuilder.selectedImplementation[T].hbox
   def grid : VUIGridLayout[T] = VUIBuilder.selectedImplementation[T].grid
   def none : VUIFreeLayout[T] = VUIBuilder.selectedImplementation[T].none
+  def stack : VUIStackPane[T] = VUIBuilder.selectedImplementation[T].stack
 
   // Containers
   //----------------
