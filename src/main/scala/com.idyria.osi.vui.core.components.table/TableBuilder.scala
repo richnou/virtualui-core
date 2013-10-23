@@ -3,6 +3,7 @@ package com.idyria.osi.vui.core.components.table
 import com.idyria.osi.vui.core.components.VUIComponent
 import com.idyria.osi.vui.core.styling.ApplyTrait
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
+import com.idyria.osi.vui.core.VUIBuilder
 
 
 
@@ -13,9 +14,9 @@ trait TableBuilderInterface[T] {
 }
 
 
-trait TableBuilder[Any] extends TableBuilderInterface[T] {
+trait TableBuilder extends TableBuilderInterface[Any] {
   
-  
+  def table[CT]: SGTable[CT,Any] = VUIBuilder.as[TableBuilderInterface[Any]].table
   
 }
 

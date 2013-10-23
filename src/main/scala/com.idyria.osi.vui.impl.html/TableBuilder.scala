@@ -8,9 +8,9 @@ import com.idyria.osi.vui.impl.html.components.Table
 trait TableBuilder extends TableBuilderInterface[Any] {
   
   
-  def table : SGTable[Any] = {
+  def table[OT] : SGTable[OT,Any] = {
     
-    return new Table {
+    return new Table[OT] {
       
     }
     

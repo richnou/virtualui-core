@@ -271,7 +271,7 @@ class FormSubmit(value: String) extends HTMLNode("input") {
 	
 // Table
 //--------------------
-class Table extends HTMLNode("table") with SGTable[Any] {
+class Table[OT] extends HTMLNode("table") with SGTable[OT,Any] {
    
   
   
