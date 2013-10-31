@@ -4,6 +4,8 @@
 package com.idyria.osi.vui.core.components.scenegraph
 
 import com.idyria.osi.vui.core.components.layout.VUILayout
+import com.idyria.osi.vui.core.styling.ApplyTrait
+import scala.collection.mutable.Stack
 
 /**
  * A Group of nodes
@@ -13,8 +15,12 @@ import com.idyria.osi.vui.core.components.layout.VUILayout
  */
 trait SGGroup[T] extends SGNode[T] {
 
-  def apply[NT <: SGNode[T]](content: NT, cl: (NT => Unit)): NT = { node(content); cl(content); content }
+  //type Self = SGGroup[T]
+  
+  //def apply[NT <: SGNode[T]](content: NT, cl: (NT => Unit)): NT = { node(content); cl(content); content }
 
+  var sgChildren  = List[SGNode[T]]()
+  
   /**
    * This method add a new node to the current container node
    *
@@ -23,10 +29,14 @@ trait SGGroup[T] extends SGNode[T] {
    */
   def node[NT <: SGNode[T]](content: NT): NT = {
     
+    
+    
     // Change parent
     content.setParent(this.asInstanceOf[SGGroup[Any]])
     content.@->("parent.changed")
     content.@->("parent.changed",this)
+    
+    sgChildren = sgChildren :+ content
     
     // Return and call added
     this.@->("child.added",content)
@@ -44,31 +54,68 @@ trait SGGroup[T] extends SGNode[T] {
   /**
    * Returns the list of children
    */
-  def children : Seq[SGNode[T]]
+  def children : List[SGNode[T]] = this.sgChildren 
   
   /**
    * Clear Children components
    */
-  def clear
+  def clear : Unit = this.sgChildren.filter(_ ⇒ true)
   
-  /**
-   * Remove a child from current group
-   */
-  def removeChild(c: SGNode[T]) = {
-    
+  def removeChild(n: SGNode[Any]) = {
+    this.sgChildren.contains(n) match {
+      case true  ⇒ this.sgChildren = this.sgChildren diff Seq(n)
+      case false ⇒
+    }
   }
   
 
-  def apply[NT <: SGNode[T]](g: SGGroup[T]) = {
+  /*def apply[NT <: SGNode[T]](g: SGGroup[T]) = {
 
     this.node(g)
 
   }
-
-  def apply[NT <: SGNode[T]](cl: SGGroup[T] => Unit) {
+*/
+  /*def apply[NT <: SGNode[T]](cl: SGGroup[T] => Unit) {
     cl(this)
-  }
+  }*/
 
+  // Tree Processing
+  //---------------------------
+  
+  /**
+   * Executes closure on all Subnodes
+   */
+  def onSubNodes(cl: SGNode[T] => Unit) : Unit = {
+    this.onSubNodesMatch {
+      case n => cl(n)
+    }
+  }
+  
+  def onSubNodesMatch(f : PartialFunction[SGNode[T],Unit]) : Unit = {
+    
+    // Stack of nodes to process
+    //------------------
+    var nodes = Stack[SGNode[T]]()
+    this.children.foreach(nodes.push(_))
+    
+    while(nodes.isEmpty==false) {
+      
+      // Take current
+      var current = nodes.pop
+      
+      // Execute function
+      f(current)
+      
+      // Add Children if some
+      current match {
+        case g : SGGroup[T] => g.children.foreach(nodes.push(_)) 
+        case _ => 
+      }
+      
+    }
+    
+  }
+  
   // Layout and constraints
   //----------------------------
 
