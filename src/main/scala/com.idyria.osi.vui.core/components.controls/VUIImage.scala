@@ -3,10 +3,11 @@
  */
 package com.idyria.osi.vui.core.components.controls
 
+import com.idyria.osi.vui.core.styling.ApplyTrait
 import com.idyria.osi.vui.core.components.VUIComponent
-import com.idyria.osi.vui.core.components.scenegraph.SGNode
-import com.idyria.osi.vui.core._
 import com.idyria.osi.vui.core.styling.StylableTrait
+
+
 
 /**
  *
@@ -14,7 +15,7 @@ import com.idyria.osi.vui.core.styling.StylableTrait
  * @author rleys
  *
  */
-trait VUIImage[T] extends VUIComponent[T] with StylableTrait {
+trait VUIImage[T] extends VUIComponent[T] with StylableTrait with ApplyTrait {
 
   type Self = VUIImage[T]
 

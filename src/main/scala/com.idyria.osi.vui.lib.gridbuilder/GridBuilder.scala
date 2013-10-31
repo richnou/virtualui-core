@@ -76,7 +76,7 @@ trait GridBuilder extends VBuilder with LayoutConstraintsLanguage with TLogSourc
     //------------------------------------------------
     // Main grid Interface
     //------------------------------------------------
-
+ 
     /**
         Represents a grid
         The language functions are adding nodes to the current grid on the stack, which holds its current Row/Columns informations

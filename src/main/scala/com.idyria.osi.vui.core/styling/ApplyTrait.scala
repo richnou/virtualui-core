@@ -22,3 +22,12 @@ trait ApplyTrait extends  CommonVUIElementTrait {
     this.asInstanceOf[Self]
   }
 }
+
+trait ApplyParamTrait[T] {
+  
+  def apply(cl: T => Unit) : T = {
+    cl(this.asInstanceOf[T])
+    this.asInstanceOf[T]
+  }
+  
+}

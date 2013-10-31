@@ -12,12 +12,11 @@ import com.idyria.osi.vui.core.components.main.VuiFrame
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.impl.VuiTypeWrapper
 import com.idyria.osi.vui.impl.swing.builders._
-
 import javax.swing.JFrame
 import javax.swing.WindowConstants
 import com.idyria.osi.vui.core.VUIBuilder
-
 import com.idyria.osi.vui.core.components.layout.VUILayout
+import com.idyria.osi.vui.impl.swing.main.SwingFrame
 
 /**
  * @author rleys
@@ -31,16 +30,22 @@ class SwingVUIImpl
     with SwingSceneGraphBuilder
     with SwingFormBuilder {
 
+  
+  def frame(): VuiFrame[Component] = {
+    
+    return new SwingFrame
+  }
+  
   /**
    * From PreImpl
    */
-  def frame(): VuiFrame[Component] = {
+ /* def frame(): VuiFrame[Component] = {
 
     //- -Create Frame
     val swingFrame = new JFrame()
 
     //-- Return FrameView Container
-    new VuiTypeWrapper[JFrame](swingFrame) with SwingContainerTrait with VuiFrame[Component] {
+    new VuiTypeWrapper[JFrame](swingFrame) with VuiFrame[Component] {
 
       // Node
       //---------------
@@ -171,6 +176,6 @@ class SwingVUIImpl
 
     }
 
-  }
+  }*/
 
 }

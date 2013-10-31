@@ -31,12 +31,10 @@ class ViewProcessPanel extends SGCustomNode[Any] with GridBuilder {
       println("----> Switching view")
       
         // Update View Panels container
-        viewsPanel {
-          g ⇒
-            g.clear
-            g <= v.render
-            g.revalidate
-        }
+        viewsPanel.clear
+        viewsPanel <= v.render
+        viewsPanel.revalidate
+    
 
     }
     println("----> Listening on: "+vp.hashCode())
@@ -49,10 +47,8 @@ class ViewProcessPanel extends SGCustomNode[Any] with GridBuilder {
   //-----------------
 
   //-- Base GUI
-  val viewsPanel = group {
-    g => g.layout = stack
-
-  }
+  val viewsPanel = group
+  viewsPanel.layout = stack
   
   //-- On Base GUI child add, make the component grow
   viewsPanel.onWith("child.added") {

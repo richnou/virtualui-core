@@ -20,10 +20,7 @@ import java.net._
  */
 trait VBuilderBase[T]  {
 
-  implicit val defaultClosure : (SGNode[T] => Unit) = { t => }
 
-
-  def apply[NT <: SGNode[T]](content: NT,cl : (NT => Unit)) : NT
 
   // Utils
   //--------------------
@@ -38,13 +35,13 @@ trait VBuilderBase[T]  {
   
   // Main
   //-------------------------
-  def frame(implicit cl : VuiFrame[T] => Unit) : VuiFrame[T] = apply(VUIBuilder.selectedImplementation[T].frame,cl);
+  def frame : VuiFrame[T] = VUIBuilder.selectedImplementation[T].frame
 
   // Controls
   //--------------------
-  def button(text: String)(implicit cl: VUIButton[T] => Unit) : VUIButton[T] = apply(VUIBuilder.selectedImplementation[T].button(text),cl);
+  def button(text: String) : VUIButton[T] = VUIBuilder.selectedImplementation[T].button(text)
   def label(text:String) : VUILabel[T] = VUIBuilder.selectedImplementation[T].label(text)
-  def image(path: URL)(implicit cl: VUIImage[T] => Unit) :  VUIImage[T] = apply(VUIBuilder.selectedImplementation[T].image(path),cl);
+  def image(path: URL) :  VUIImage[T] = VUIBuilder.selectedImplementation[T].image(path)
   def text :  VUIText[T] = VUIBuilder.selectedImplementation[T].text;
   def tree : VUITree[T] = VUIBuilder.selectedImplementation.tree
   
@@ -56,7 +53,7 @@ trait VBuilderBase[T]  {
   def textInput : VUIInputText[T] =  VUIBuilder.selectedImplementation[T].textInput()
   def textArea : VUIInputText[T] = VUIBuilder.selectedImplementation[T].textArea()
   
-  def list(implicit cl: VUIList[T] => Unit): VUIList[T] =   apply(VUIBuilder.selectedImplementation[T].list(),cl)
+  def list: VUIList[T] =  VUIBuilder.selectedImplementation[T].list()
   def comboBox : VUIComboBox[T] =   VUIBuilder.selectedImplementation[T].comboBox
 
   
@@ -64,7 +61,7 @@ trait VBuilderBase[T]  {
   // Scene Graph
   //--------------------------
 
-  def group(implicit cl : SGGroup[T] => Unit ) : SGGroup[T] = apply(VUIBuilder.selectedImplementation[T].group(),cl)
+  def group : SGGroup[T] = VUIBuilder.selectedImplementation[T].group()
 
   // Layouts
   //-------------------
@@ -76,8 +73,8 @@ trait VBuilderBase[T]  {
 
   // Containers
   //----------------
-  def tabpane(implicit cl: VUITabPane[T] => Unit) : VUITabPane[T] = apply(VUIBuilder.selectedImplementation[T].tabpane,cl);
-  def panel(implicit cl: VUIPanel[T] => Unit) : VUIPanel[T] = {apply(VUIBuilder.selectedImplementation[T].panel,cl)}
+  def tabpane : VUITabPane[T] = VUIBuilder.selectedImplementation[T].tabpane
+  def panel : VUIPanel[T] = VUIBuilder.selectedImplementation[T].panel
 
   //def switch(content: VuiSwitchLayout[Any] => Unit) : VuiSwitchLayout[Any] = VUIBuilder.selectedImplementation[Any].switch(content)
 }

@@ -45,9 +45,9 @@ class SwingJComponentCommonDelegate[DT <: JComponent](val delegate: DT) extends 
   /**
    * Do not return anything
    */
-  def children: Seq[SGNode[Component]] = {
+  /*def children: Seq[SGNode[Component]] = {
     Nil
-  }
+  }*/
 
   //---------------------------------------
   // General

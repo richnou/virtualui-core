@@ -18,10 +18,9 @@ trait ViewBuilder extends VBuilder with ListeningSupport {
 
   var currentView: View = null
 
-  override def button(text: String)(implicit cl: VUIButton[Any] => Unit): VUIButton[Any] = {
+  override def button(text: String) : VUIButton[Any] = {
 
     var button = new ViewButton(currentView, super.button(text))
-    apply(button, cl);
     button
 
   }

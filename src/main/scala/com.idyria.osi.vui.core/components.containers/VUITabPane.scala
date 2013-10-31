@@ -19,7 +19,7 @@ import com.idyria.osi.vui.core.styling.StylableTrait
  */
 trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T] with VBuilderBase[T] with StylableTrait {
 
-   type Self = VUITabPane[T]
+   type Self = VUITabPane[T] 
   
   // Overrides The normal add functions to be able to add a title
   //------------------------
@@ -45,7 +45,7 @@ trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T] with VBuilderBase[T]
   def <= (title:String)(ct: SGGroup[T] ) : SGGroup[T] = {
 
     // Create  group
-    var tabgroup  =  this <=(title,group{g => })
+    var tabgroup  =  this <=(title,group)
 
     tabgroup
 

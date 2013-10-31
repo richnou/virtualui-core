@@ -4,11 +4,10 @@
 package com.idyria.osi.vui.core.components
 
 import com.idyria.osi.vui.core.components.events._
-
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.styling.StylableTrait
-
 import com.idyria.osi.vui.core._
+import com.idyria.osi.vui.core.styling.ApplyTrait
 
 /**
  *
@@ -16,7 +15,7 @@ import com.idyria.osi.vui.core._
  * @author rleys
  *
  */
-trait VUIComponent[T] extends SGNode[T] {
+trait VUIComponent[T] extends SGNode[T]  with ApplyTrait {
 
 
   //----------------------
@@ -71,6 +70,9 @@ trait VUIComponent[T] extends SGNode[T] {
   */
   def onClick(action: => Any) : Unit = onClicked(action)
   
+  /**
+   * To be overrided
+   */
   def onClicked(action: VUIClickEvent => Any) : Unit = {  }
   
   def onClick(action: VUIClickEvent => Any) : Unit = onClicked(action)

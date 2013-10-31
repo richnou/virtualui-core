@@ -22,6 +22,8 @@ trait VUIStdlibFormBuilder[T] extends VBuilderBase[T] {
    */
   def editableList(cl:(VUIInputText[T] , VUIList[T]) => Unit ) : SGNode[T] = {
 
+ 
+    
     var res = panel {
 
     	p =>

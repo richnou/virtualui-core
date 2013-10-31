@@ -10,14 +10,14 @@ abstract class Wizard  extends ViewProcess with ViewBuilder {
 
 
 
-}
+} 
 class WizardDialog extends Wizard {
 
     // Prepare Frame
     //--------------------
     var dialog =  frame 
 
-    def initDialog() = {
+    def initDialog() : Unit = {
 
         dialog {
             f =>

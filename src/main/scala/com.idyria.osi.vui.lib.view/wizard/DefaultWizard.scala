@@ -5,7 +5,6 @@ import com.idyria.osi.vui.core.components.form.VUIList
 import com.idyria.osi.vui.lib.placeholder.PlaceHolder
 import com.idyria.osi.vui.lib.view.View
 import com.idyria.osi.vui.core.components.form.VUIList
-import com.idyria.osi.vui.lib.gridbuilder.GridBuilder
 import com.idyria.osi.vui.impl.swing.builders.SwingJComponentCommonDelegate
 
 
@@ -62,7 +61,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder[SwingJComponentC
     override def initDialog() = {
 
         var expandConstraint = new Tuple2("expand",true)
-
+ 
         println("Preparing default wizard")
         this.dialog {
             dialog => 
@@ -91,12 +90,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder[SwingJComponentC
                             "middle" row  {
 
                                 // Prepare list 
-                                stepsList = list {
-                                    l => 
-                                      
-                                      
-                                      //this.view.foreach(v => l..add(v.name))
-                                }
+                                stepsList = list
 
                                 // Create Column
                                 (stepsList using expandHeight) | (placeHolder("middle") using expand)

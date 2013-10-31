@@ -28,11 +28,15 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
 
     return new SwingJComponentCommonDelegate[JTabbedPane](new JTabbedPane) with VUITabPane[Component]  {
 
+       override def clear = {
+         super.clear
+       }
+      
         /**
          * Node method override to add components as tabs
          */
         def node[NT <: SGNode[Component]](title:String)(content:NT) : NT = {
-
+        	super.node(content)
           delegate.addTab(title,content.base)
           content
         }
@@ -64,6 +68,10 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
 
         //var definedLayout : VUILayout[Component] = null
   
+        
+       override def clear = {
+         super.clear
+       }
         
         /**
          * Node Add

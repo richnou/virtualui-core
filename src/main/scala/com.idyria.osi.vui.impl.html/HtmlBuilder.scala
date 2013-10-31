@@ -3,13 +3,14 @@ package com.idyria.osi.vui.impl.html
 import com.idyria.osi.vui.impl.html.components.HTMLNode
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.impl.html.components._
-
 import scala.language.implicitConversions
+import com.idyria.osi.vui.core.components.table.SGTable
+import com.idyria.osi.vui.impl.html.js.JScript
 
 /**
  * Builder for main html elements
  */
-trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] {
+trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
 
   def createNode(name: String): SGNode[Any] = {
 
@@ -68,8 +69,6 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] {
   def head(cl: => Any) = switchToNode(new Head, cl)
 
   def link(cl: => Any) = switchToNode(new GenericHTMLElement("link"), cl)
-
-  def script(cl: => Any) = switchToNode(new GenericHTMLElement("script"), cl)
    
   def title(str:String) = switchToNode(new GenericHTMLElement("title"), { currentNode.textContent = s"$str" })
   
@@ -118,6 +117,11 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] {
   def li(cl: => Any) =  switchToNode(new Li, cl)
   
   
+  // Button
+  //----------------
+  def button(text:String) = switchToNode(new Button,{ currentNode.textContent = text})
+  def button(text:String,cl : =>Any) = switchToNode(new Button,{ currentNode.textContent = text ; cl})
+  
   // Form
   //----------------
   def form(cl: => Any) = switchToNode(new Form, cl)
@@ -126,5 +130,25 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] {
   def formSubmit(text:String)(cl: => Any) = switchToNode(new FormSubmit(text), cl)
   def formParameter(p:(String,String))(cl: => Any)  = switchToNode(new FormParameter(p), cl)
   
+  def submit(text:String)(cl: => Any) = formSubmit(text)(cl)
+  def parameter(p:(String,String))(cl: => Any) = formParameter(p)(cl)
+  
+  def label(target: String,txt:String)(cl: => Any) : Label = switchToNode(new Label,{ attribute("for" -> target);text(txt);cl })
+  
+  // Table
+  //---------
+  override def table[OT] : SGTable[OT,Any] = switchToNode(super.table[OT].asInstanceOf[HTMLNode], {}).asInstanceOf[SGTable[OT,Any]]
+  
+  def thead(cl: => Any) = switchToNode(new GenericHTMLElement("thead"), cl)
+  def tbody(cl: => Any) = switchToNode(new GenericHTMLElement("thead"), cl)
+  def tr(cl: => Any) = switchToNode(new GenericHTMLElement("tr"), cl)
+  def td(cl: => Any) = switchToNode(new GenericHTMLElement("td"), cl)
+  def th(cl: => Any) = switchToNode(new GenericHTMLElement("th"), cl)
+  
+  
+  // Scripting
+  //------------------
+  def script(cl: => Any) =  switchToNode(new Script, cl)
+  def jscript(s:String) = new JScript(s)
   
 }
