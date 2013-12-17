@@ -119,7 +119,24 @@ abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[
   
   // Attributes
   //-----------------
-  def apply(attr: (String, String)) = this.attributes = attributes + attr
+  def apply(attr: (String, String)) = {
+    
+    
+    this.attributes = attributes + attr
+  }
+  def attributeAppend(attr: (String,String)) = {
+    
+    this.attributes.get(attr._1) match {
+      case None => 
+        
+        this.attributes = attributes +  attr
+        
+      case Some(actualValue) => 
+        
+        this.attributes = attributes + (attr._1 ->  s"$actualValue ${attr._2}")
+    }
+    
+  }
 
   // Render
   //----------------
@@ -144,7 +161,7 @@ abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[
     //-------------------------
     var attrs = attributes.size match { case 0 ⇒ "" case _ ⇒ attributes.map { t ⇒ s"""${t._1}="${t._2}"""" }.mkString(" ", " ", "") }
 
-    var indentString = for (i ← 0 to this.indentCount(this)) yield "    "
+    var indentString = for (i ← 0 to this.indentCount(this)-1) yield "    "
 
     s"""
 ${indentString.mkString}<$htmlNodeName$attrs>
@@ -200,6 +217,10 @@ class Head extends HTMLNode("head") {
 
 }
 
+class Meta extends HTMLNode("meta") {
+  
+}
+
 // Containers
 //---------------
 
@@ -210,6 +231,15 @@ class Div extends HTMLNode("div") with ListeningSupport {
 class Span extends HTMLNode("span") {
 
 }
+
+class Paragraph extends HTMLNode("p") {
+  
+}
+
+/**
+ * Definition for Pre formated container
+ */
+class Pre extends HTMLNode("pre")
 
 // Titles
 //------------
@@ -315,7 +345,14 @@ class Label extends HTMLNode("label") {
   
 }
 
-abstract class FormInput(lname: String) extends HTMLNode("input") with ValidationSupport {
+/**
+ * Just a type marker
+ */
+trait FormInput {
+  
+}
+
+abstract class FormInputNode(lname: String) extends HTMLNode("input") with ValidationSupport with FormInput {
   this.setName(lname)
   this("name" -> lname)
 }
@@ -323,7 +360,7 @@ abstract class FormInput(lname: String) extends HTMLNode("input") with Validatio
 /**
  * <input type="hidden" name="name" value="value"
  */
-class FormParameter(p: (String, String)) extends FormInput(p._1) {
+class FormParameter(p: (String, String)) extends FormInputNode(p._1) {
   this("type" -> "hidden")
   this("value" -> p._2)
 }
@@ -331,7 +368,7 @@ class FormParameter(p: (String, String)) extends FormInput(p._1) {
 /**
  * input type text
  */
-class InputText(lname: String) extends FormInput(lname) {
+class InputText(lname: String) extends FormInputNode(lname)  with FormInput  {
 
   this("type" -> "text")
 
@@ -340,10 +377,29 @@ class InputText(lname: String) extends FormInput(lname) {
 /**
  * input type password
  */
-class InputPassword(lname: String) extends FormInput(lname) {
+class InputPassword(lname: String) extends FormInputNode(lname)  with FormInput  {
 
   this("type" -> "password")
 
+}
+
+/**
+ * textarea
+ */
+class Textarea(lname: String) extends HTMLNode("textarea") with ValidationSupport  with FormInput  {
+
+  this("name" -> lname)
+  
+
+}
+
+class Select(lname:String) extends HTMLNode("select")  with FormInput  {
+  this("name" -> lname)
+}
+
+class SelectOption(name:String,value:String) extends HTMLNode("option") {
+  this("value" -> value)
+  this.textContent = name
 }
 
 class FormSubmit(value: String) extends Button("input") {

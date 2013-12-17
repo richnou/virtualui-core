@@ -72,6 +72,8 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
    
   def title(str:String) = switchToNode(new GenericHTMLElement("title"), { currentNode.textContent = s"$str" })
   
+  def meta(cl: => Any) = switchToNode(new Meta,cl)
+  
   //-- Extras
   //--------------------
   
@@ -96,6 +98,15 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   def div(cl: => Any) = switchToNode(new Div, cl)
   def span(cl: => Any) = switchToNode(new Span, cl)
 
+  def pre(cl: => Any) = switchToNode(new Pre,cl)
+  
+    
+  implicit def stringToSpan(str:String) : Span = {
+    span {
+      text(str)
+    }
+  }
+  
   def h1(t: String) = switchToNode(new H1(t), {})
   def h2(t: String) = switchToNode(new H2(t), {})
   def h3(t: String) = switchToNode(new H3(t), {})
@@ -125,8 +136,14 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   // Form
   //----------------
   def form(cl: => Any) = switchToNode(new Form, cl)
+  
   def inputText(name:String)(cl: => Any)  = switchToNode(new InputText(name), cl)
   def inputPassword(name:String)(cl: => Any)  = switchToNode(new InputPassword(name), cl)
+  def textArea(name:String)(cl: => Any) : Textarea = switchToNode(new Textarea(name), cl)
+  
+  def select(name:String)(cl: => Any) = switchToNode(new Select(name), cl)
+  def option(name:String,value:String)(cl: => Any) = switchToNode(new SelectOption(name,value), cl)
+  
   def formSubmit(text:String)(cl: => Any) = switchToNode(new FormSubmit(text), cl)
   def formParameter(p:(String,String))(cl: => Any)  = switchToNode(new FormParameter(p), cl)
   
@@ -149,6 +166,11 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   // Scripting
   //------------------
   def script(cl: => Any) =  switchToNode(new Script, cl)
+  def javaScript(path:String) =  switchToNode(new Script, {attribute("src" -> path)})
   def jscript(s:String) = new JScript(s)
+  
+}
+
+class TestBuilder extends HtmlTreeBuilder {
   
 }

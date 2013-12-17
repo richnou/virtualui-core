@@ -62,6 +62,8 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
     return node
 
   }
+  
+
 
   /*
   def applyDynamic(name:String)(cl: => Any) : SGNode[Any] = {
@@ -104,5 +106,7 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
     return node
     
   }*/
+  
+  
 
 }
