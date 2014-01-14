@@ -13,9 +13,9 @@
     <!-- SCM -->
     <!-- ### -->
      <scm>
-        <connection>scm:git:git://bitbucket.org/osi/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:git@bitbucket.org:osi/${project.artifactId}.git</developerConnection>
-        <url>http://bitbucket.org/osi/${project.artifactId}.git</url>
+        <connection>scm:git:git://bitbucket.org/osi/virtualui-core.git</connection>
+        <developerConnection>scm:git:git@bitbucket.org:osi/virtualui-core.git</developerConnection>
+        <url>http://bitbucket.org/osi/virtualui-core.git</url>
     </scm>
 
     <build>
