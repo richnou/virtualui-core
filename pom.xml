@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.idyria.osi.vui</groupId>
     <artifactId>vui-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC1</version>
     <name>VUI Library</name>
     <parent>
         <groupId>com.idyria.osi</groupId>
@@ -16,7 +16,8 @@
         <connection>scm:git:git://bitbucket.org/osi/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:osi/${project.artifactId}.git</developerConnection>
         <url>http://bitbucket.org/osi/${project.artifactId}.git</url>
-    </scm>
+      <tag>vui-core-1.0.0-RC1</tag>
+  </scm>
 
     <build>
         <!-- Add Examples folder to compilation and resources -->
