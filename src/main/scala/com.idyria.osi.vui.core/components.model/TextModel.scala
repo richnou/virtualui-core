@@ -4,19 +4,18 @@ import com.idyria.osi.tea.listeners._
 
 trait ModelSupport[M] extends ListeningSupport {
 
-  var modelImpl : M = _
-
+  var modelImpl: M = _
 
   /**
    *    Set the text model of this component
    */
   def model_=(model: M) = {
-    
+
     this.modelImpl = model
-    
-    @->("model.changed",model)
-    
-  } 
+
+    @->("model.changed", model)
+
+  }
 
   /**
    * Return the text model of this component
@@ -32,7 +31,7 @@ trait ModelSupport[M] extends ListeningSupport {
 trait TextModelSupport extends ModelSupport[TextModel] {
 
   modelImpl = new DefaultTextModel
-  
+
 }
 
 /**
@@ -42,6 +41,19 @@ trait TextModelSupport extends ModelSupport[TextModel] {
 trait TextModel extends ListeningSupport {
 
   private var textContent = ""
+
+  // Listen for changes
+  //----------
+
+  /**
+   * Triggers when the model text is updated (model.setText) event
+   */
+  def onTextUpdate(cl: String => Any) = {
+    onWith("model.setText") {
+      text: String =>
+        cl(text)
+    }
+  }
 
   /**
    * Set Text Value, and notify listeners

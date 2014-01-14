@@ -13,8 +13,6 @@ trait UtilsTrait {
    * 
    * Should be overriden by implementors
    */
-  def onUIThread(cl: => Unit) =  {
-    cl
-  }
+  def onUIThread(cl: => Unit) 
   
 }

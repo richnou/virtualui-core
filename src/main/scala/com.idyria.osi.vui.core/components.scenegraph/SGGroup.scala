@@ -59,7 +59,12 @@ trait SGGroup[T] extends SGNode[T] {
   /**
    * Clear Children components
    */
-  def clear : Unit = this.sgChildren.filter(_ ⇒ true)
+  def clear : Unit = {
+    
+    this.sgChildren.filter(_ ⇒ true)
+     //super.clear
+    
+  } 
   
   def removeChild(n: SGNode[Any]) = {
     this.sgChildren.contains(n) match {

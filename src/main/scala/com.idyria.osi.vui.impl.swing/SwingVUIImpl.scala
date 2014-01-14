@@ -17,6 +17,7 @@ import javax.swing.WindowConstants
 import com.idyria.osi.vui.core.VUIBuilder
 import com.idyria.osi.vui.core.components.layout.VUILayout
 import com.idyria.osi.vui.impl.swing.main.SwingFrame
+import javax.swing.SwingUtilities
 
 /**
  * @author rleys
@@ -30,6 +31,17 @@ class SwingVUIImpl
     with SwingSceneGraphBuilder
     with SwingFormBuilder {
 
+  
+  // Utils
+  //------------
+  override def onUIThread(cl: => Unit) {
+
+    SwingUtilities.invokeLater(new Runnable() {
+      def run = cl
+    })
+  
+
+  }
   
   def frame(): VuiFrame[Component] = {
     

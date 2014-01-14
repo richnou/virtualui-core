@@ -26,5 +26,10 @@ trait TextTrait extends CommonVUIElementTrait {
    * Set text of this input text
    */
   def setText(str: String)
+   
+  /**
+   * Get the text of this element
+   */
+  def getText : String
   
 }

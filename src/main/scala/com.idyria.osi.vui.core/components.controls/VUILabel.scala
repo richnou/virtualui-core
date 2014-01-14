@@ -8,6 +8,7 @@ import com.idyria.osi.vui.core.components.scenegraph._
 import com.idyria.osi.vui.core.styling.StylableTrait
 import com.idyria.osi.vui.core.components.traits.TextTrait
 import com.idyria.osi.vui.core.styling.ApplyTrait
+import com.idyria.osi.vui.core.styling.CSSStylable
 
 /**
  *
@@ -15,7 +16,7 @@ import com.idyria.osi.vui.core.styling.ApplyTrait
  * @author rleys
  *
  */
-trait VUILabel[T] extends VUIComponent[T] with StylableTrait with TextTrait with ApplyTrait   {
+trait VUILabel[T] extends VUIComponent[T] with CSSStylable with TextTrait with ApplyTrait   {
 
   type Self = VUILabel[T]
   

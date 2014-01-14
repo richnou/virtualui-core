@@ -4,6 +4,7 @@ package com.idyria.osi.vui.core.constraints
 import scala.language.implicitConversions
 import com.idyria.osi.vui.core.styling.CommonVUIElementTrait
 import com.idyria.osi.tea.listeners.ListeningSupport
+import scala.util.matching.Regex
 
 
 /**
@@ -19,12 +20,19 @@ trait Constrainable extends CommonVUIElementTrait with ListeningSupport {
   // Constraints Setting
   //----------------
   def apply(constraint: Constraint*): Self = {
-    constraint.foreach(this.fixedConstraints(_))
+    constraint.foreach{c => 
+      this.fixedConstraints(c)
+      @->("constraints.set",c)
+    }
     @->("constraints.updated")
     this.asInstanceOf[Self]
   }
   def apply(constraints: Constraints): Self = {
-    constraints.constraints.foreach(c => this.fixedConstraints(c._2))
+    constraints.constraints.foreach {
+      c => 
+        this.fixedConstraints(c._2)
+        @->("constraints.set",c._2)
+    }
     @->("constraints.updated")
     this.asInstanceOf[Self]
   }
@@ -61,6 +69,8 @@ object Constraint  {
     
     Some((c.name,c.value)) 
   }
+  
+ 
   
   
   /**

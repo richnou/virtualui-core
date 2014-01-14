@@ -13,6 +13,8 @@ trait ViewProcess extends ViewGroup with ViewProcessTrait {
 
     // View Definitions
     //---------------------------
+  
+  
     onWith("view.current") {
         view : View => 
 

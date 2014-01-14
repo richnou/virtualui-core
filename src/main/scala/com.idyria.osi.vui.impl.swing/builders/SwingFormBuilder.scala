@@ -173,7 +173,8 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       
       def getDocument: Document = delegate.getDocument
       def setText(str: String) = delegate.setText(str)
-
+      def getText = delegate.getText
+      
       // Text Return
       //----------------------
       override def toString: String = "Field: " + delegate.getText()
@@ -201,7 +202,7 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       ta.setAutoscrolls(true)
       
       def setText(str: String) = ta.setText(str)
-      
+      def getText = ta.getText()
       def getDocument() = ta.getDocument()
       
       
@@ -230,6 +231,7 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       def setText(str: String) = {
         this.delegate.setText(str)
       } 
+      def getText = delegate.getText()
 
     }
     

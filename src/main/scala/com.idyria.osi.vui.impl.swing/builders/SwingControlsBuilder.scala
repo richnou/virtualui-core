@@ -38,7 +38,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
         // Text
         //--------------
         def setText(str: String) = delegate.setText(str)
-
+        def getText = delegate.getText
     }
   }
   
@@ -62,7 +62,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
         // Text
         //--------------
         def setText(str: String) = delegate.setText(str)
-
+        def getText = delegate.getText
     }
   }
 

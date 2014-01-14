@@ -161,7 +161,10 @@ abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[
     //-------------------------
     var attrs = attributes.size match { case 0 ⇒ "" case _ ⇒ attributes.map { t ⇒ s"""${t._1}="${t._2}"""" }.mkString(" ", " ", "") }
 
-    var indentString = for (i ← 0 to this.indentCount(this)-1) yield "    "
+    var indentString = this.indentCount(this) match {
+      case 0 => List("")
+      case indentCount => for (i ← 1 to indentCount) yield "    "
+    }
 
     s"""
 ${indentString.mkString}<$htmlNodeName$attrs>

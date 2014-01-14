@@ -94,8 +94,23 @@ trait VUIComponent[T] extends SGNode[T]  with ApplyTrait {
 
   //---------------------------------
   //-- Keyboard listener
+  
+  /**
+   * Called when the Enter key has been pressed
+   */
   def onEnter( action : => Unit) = {}
 
+  /**
+   * Called when a key has been pressed, but not already released
+   * Provided char is the pressed key
+   */
+  def onKeyPressed(action: Char => Unit) = {}
+  
+  /**
+   * Called when a key has been pressed and released
+   */
+  def onKeyTyped(action: Char => Unit) = {}
+  
   //----------------------
   //-- Geometry listeners
 
