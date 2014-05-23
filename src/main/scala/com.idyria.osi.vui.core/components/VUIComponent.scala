@@ -8,6 +8,7 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.styling.StylableTrait
 import com.idyria.osi.vui.core._
 import com.idyria.osi.vui.core.styling.ApplyTrait
+import com.idyria.osi.tea.thread.ThreadLanguage
 
 /**
  *
@@ -15,7 +16,7 @@ import com.idyria.osi.vui.core.styling.ApplyTrait
  * @author rleys
  *
  */
-trait VUIComponent[T] extends SGNode[T]  with ApplyTrait {
+trait VUIComponent[T] extends SGNode[T]  with ApplyTrait with ThreadLanguage {
 
 
   //----------------------
@@ -76,6 +77,21 @@ trait VUIComponent[T] extends SGNode[T]  with ApplyTrait {
   def onClicked(action: VUIClickEvent => Any) : Unit = {  }
   
   def onClick(action: VUIClickEvent => Any) : Unit = onClicked(action)
+  
+  /**
+   * Forked click execute action in a separate Thread
+   * @warning: Use with caution because some UI frameworks require UI components interactions to be on the UI thread
+   */
+  def onClickFork(action:  => Any) : Unit = {
+    
+    this.onClick {
+      fork {
+        //println(s"**** Running forked action on thread: ${Thread.currentThread().getName()}")
+        action
+      }
+    }
+    
+  }
   
   /**
    * Special Double click function

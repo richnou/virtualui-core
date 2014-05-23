@@ -20,7 +20,7 @@ import com.idyria.osi.vui.impl.swing.model.SwingTreeModelAdapter
  * @author rleys
  *
  */
-trait SwingControlsBuilder extends ControlsBuilder[Component] {
+trait SwingControlsBuilder extends ControlsBuilderInterface[Component] {
 
  
 
@@ -196,6 +196,8 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
 
       var model : SwingTreeModelAdapter = null
       
+    
+      
       this.delegate.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.black))
       
        
@@ -217,7 +219,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
       /**
        * Change Model
        */
-      def setModel(model: TreeModel) = {
+      override def setModel(model: TreeModel) = {
         
         // Set
         //--------------
@@ -239,7 +241,7 @@ trait SwingControlsBuilder extends ControlsBuilder[Component] {
         }
       } 
       
-      def getModel : TreeModel = this.model.model
+      override def getModel : TreeModel = this.model.model
       
      
       // Model Change

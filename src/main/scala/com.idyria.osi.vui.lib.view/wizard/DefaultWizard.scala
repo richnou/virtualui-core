@@ -18,7 +18,7 @@ class DefaultWizardDialog extends WizardDialog with PlaceHolder[SwingJComponentC
         @group configuration
     */
     var displayListOfSteps = true
-    var stepsList : VUIList[Any] = null
+    var stepsList : VUIList[String,Any] = null
 
     // Place Holder
     //------------------------

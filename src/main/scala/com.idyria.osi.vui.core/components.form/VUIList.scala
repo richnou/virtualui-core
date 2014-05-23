@@ -10,33 +10,52 @@ import com.idyria.osi.vui.core.components.model.ListModel
 import com.idyria.osi.vui.core.components.model.ComboBoxModelSupport
 import com.idyria.osi.vui.core.components.model.DefaultListModel
 import com.idyria.osi.vui.core.components.model.DefaultComboBoxModel
+import com.idyria.osi.vui.core.VUIBuilder
+
+
+trait ListBuilder[T] extends ListBuilderInterface[T] {
+    
+  def list[CT]: VUIList[CT,T] =  VUIBuilder.as[ListBuilderInterface[T]].list[CT]
+  def comboBox[CT] : VUIComboBox[CT,T] =   VUIBuilder.as[ListBuilderInterface[T]].comboBox[CT]
+}
+
+trait ListBuilderInterface[T] {
+  
+  def list[CT] : VUIList[CT,T]
+  def comboBox[CT]: VUIComboBox[CT,T]
+  
+}
 
 /**
  * @author rleys
  *
  */
-trait VUIList[T] extends VUIComponent[T] with StylableTrait with ListModelSupport {
+trait VUIList[CT,T] extends VUIComponent[T] with StylableTrait with ListModelSupport[CT] {
 
-  type Self = VUIList[T]
+  type Self = VUIList[CT,T]
 
   //var modelImpl = new DefaultListModel
   
   // Selection Interface
   //-------------------------
-  def select(obj: AnyRef)
+  def select(obj: CT)
   def clearSelection
 
 }
 
-trait VUIComboBox[T] extends VUIComponent[T] with StylableTrait with ComboBoxModelSupport {
+trait VUIComboBox[CT,T] extends VUIComponent[T] with StylableTrait with ComboBoxModelSupport[CT] {
 
-  type Self = VUIComboBox[T]
+  type Self = VUIComboBox[CT,T]
 
   //var modelImpl = new DefaultComboBoxModel
     
   /**
    * Called when selected an element
    */
-  def onSelected(cl: Any => Unit)
+  def onSelected(cl: CT => Unit)
+  
+  def select(obj: CT): Unit = {
+    throw new RuntimeException("Not Implemented")
+  } 
   
 }

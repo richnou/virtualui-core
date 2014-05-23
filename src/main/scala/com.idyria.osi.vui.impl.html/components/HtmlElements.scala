@@ -20,6 +20,7 @@ import com.idyria.osi.vui.core.validation.ValidationSupport
  */
 abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[Any] {
 
+
   // Parameters
   // var name: String = null
 
@@ -97,6 +98,21 @@ abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[
 
   def place(id: String)(cl: HTMLNode) = {
     this.@->(id, cl)
+  }
+  
+  // Tree Location
+  //-----------------
+  
+  /**
+   * Remove from parent if any
+   */
+  def orphan = {
+    this.parent match {
+      case null => 
+      case _ => this.parent.removeChild(this)
+    }
+    this
+    
   }
 
   // HTML Stuff
@@ -244,6 +260,8 @@ class Paragraph extends HTMLNode("p") {
  */
 class Pre extends HTMLNode("pre")
 
+//class P extends HTMLNode("p")
+
 // Titles
 //------------
 class Htitle(var level: Int, text: String) extends HTMLNode(s"h$level") {
@@ -264,12 +282,20 @@ class H6(text: String = "") extends Htitle(6, text)
 
 class A(var text: String, var destination: String) extends HTMLNode("a") {
 
+  
+  
   this("href" -> destination)
   this.textContent = text
+  
+  def toBlank : A = {
+    this.apply(("target","_blank"))
+    this
+  }
 }
 
 class Button(n: String = "button") extends HTMLNode(n) with VUIButton[Any] {
 
+  
   // Clicks
   //---------------
 
@@ -434,6 +460,12 @@ class Table[OT] extends HTMLNode("table") with SGTable[OT, Any] with HtmlTreeBui
       // Add Column header
       //--------------
       theadElement <= th {
+      	
+      	// Special Attributes
+        if(c.colSpan>1) {
+          attribute("colSpan" -> c.colSpan.toString)
+        }
+      
         text(c.name)
       }
 

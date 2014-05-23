@@ -68,6 +68,11 @@ trait TextModel extends ListeningSupport {
 
   def getText() = this.textContent
 
+  def insertText(str:String) = {
+    this.textContent = s"$textContent$str"
+    @->("model.insertText", str)
+  }
+  
 }
 
 /**

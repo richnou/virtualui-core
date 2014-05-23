@@ -19,6 +19,32 @@ trait ControlsBuilder[T] {
   /**
    * Contstruct a simple text display
    */
+  def label(text:String) : VUILabel[T] = VUIBuilder.as[ControlsBuilderInterface[T]].label(text)
+ 
+  /**
+    Construct an Image
+  */
+  def image(text: URL) : VUIImage[T] = VUIBuilder.as[ControlsBuilderInterface[T]].image(text)
+
+  /**
+   * Constructs a simple button
+   */
+  def button(text: String) : VUIButton[T] = VUIBuilder.as[ControlsBuilderInterface[T]].button(text)
+
+  /**
+   * Construct an area that can hold more text
+   */
+  def text : VUIText[T] = VUIBuilder.as[ControlsBuilderInterface[T]].text
+  
+ 
+
+}
+
+trait ControlsBuilderInterface[T] {
+  
+   /**
+   * Contstruct a simple text display
+   */
   def label(text:String) : VUILabel[T]
  
   /**
@@ -36,9 +62,10 @@ trait ControlsBuilder[T] {
    */
   def text : VUIText[T]
   
-  /**
-   * Construct a tree component
-   */
-  def tree : VUITree[T]
-
+  
+  
+  
+  
 }
+
+

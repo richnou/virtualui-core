@@ -20,7 +20,7 @@ trait VUIStdlibFormBuilder[T] extends VBuilderBase[T] {
    * Creates an input text with a list under it.
    * The provided closure allows the user to provide behaviours
    */
-  def editableList(cl:(VUIInputText[T] , VUIList[T]) => Unit ) : SGNode[T] = {
+  def editableList[CT](cl:(VUIInputText[T] , VUIList[CT,T]) => Unit ) : SGNode[T] = {
 
  
     
@@ -31,7 +31,7 @@ trait VUIStdlibFormBuilder[T] extends VBuilderBase[T] {
     	  p layout = vbox
 
     	  //-- Input List
-	      var inputList =  list
+	      var inputList =  list[CT]
 
           //-- Input text list
           var inputField = textInput

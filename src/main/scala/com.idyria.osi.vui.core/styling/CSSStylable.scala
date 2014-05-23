@@ -39,7 +39,7 @@ trait CSSStylable extends StylableTrait with TLogSource {
     //---------------------
     case Constraint("css.class", cssClass) =>
 
-      println(s"Setting CSS class $cssClass to element")
+      logFine(s"Setting CSS class $cssClass to element")
 
       CSSStyle.classes.get(cssClass.toString) match {
         case Some(values) =>
@@ -57,7 +57,7 @@ trait CSSStylable extends StylableTrait with TLogSource {
     //---------------------
     case Constraint(cssP(name), value) =>
 
-      println(s"Setting CSS Single Property " + name)
+      logFine(s"Setting CSS Single Property " + name)
       applyCss(name, value.toString)
 
     case _ =>
@@ -78,7 +78,7 @@ trait CSSStylable extends StylableTrait with TLogSource {
 
         var size = value.replaceAll("""[a-zA-z]""", "").toFloat
 
-        println(s"[ApplyCSS] Setting font size: " + size)
+        logFine(s"[ApplyCSS] Setting font size: " + size)
         cssFontSize(size)
       case _ =>
     }
@@ -98,14 +98,14 @@ trait CSSStylable extends StylableTrait with TLogSource {
 
 }
 
-object CSSStyle extends RegexParsers {
+object CSSStyle extends RegexParsers with TLogSource {
 
   var classes = Map[String, List[(String, String)]]()
 
   var classParser = "." ~> """([\w_-]+)""".r ~ ("{" ~> properties.? <~ "}") ^^ {
     res =>
 
-      println(s"Found Class: " + res._1)
+      logFine(s"Found Class: " + res._1)
 
       res._2 match {
         case Some(vals) => classes = classes + (res._1 -> vals)
@@ -137,7 +137,7 @@ object CSSStyle extends RegexParsers {
     parseAll(classParser, content) match {
       case Success(result, _) => result
       case failure: NoSuccess =>
-        println("Error while parsing CSS: " + failure)
+        logError("Error while parsing CSS: " + failure)
     }
   }
 

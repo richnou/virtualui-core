@@ -10,23 +10,28 @@ class Axis {
   var name : String = ""
   
 }
+trait Chart[T,DT <: Dataset]  extends VUIComponent[T] with ApplyTrait {
+  
+  var datasets = List[DT]()
+  
+  /**
+   * Stores the dataset internaly and calls an event
+   */
+  def addDataSet(ds:DT) = {
+    datasets = datasets :+ ds
+    this.@->("dataset.added", ds)
+  }
+  
+}
 
-trait XYChart[T] extends VUIComponent[T] with ApplyTrait {
+trait XYChart[T] extends Chart[T,XYDataset[_,_]] {
+ 
   
   var xAxis = new Axis
   
   var yAxis = new Axis
   
-  var datasets = List[XYDataset[_,_]]()
-  
-  /**
-   * Stores the dataset internaly and calls an event
-   */
-  def addDataSet(ds:XYDataset[_,_]) = {
-    datasets = datasets :+ ds
-    this.@->("dataset.added", ds)
-  }
-  
+
 }
 
 /**
@@ -39,16 +44,30 @@ trait LineChart[T] extends XYChart[T] {
   
 }
 
+trait CustomChart[T,DT <: Dataset] extends Chart[T,DT] {
+	type Self = CustomChart[T,DT]
+	
+	
+	def extraValue(cl:(Number,Number) => Option[Any])
+	
+}
+  
 
 trait ChartBuilderInterface[T] {
   
   def lineChart : LineChart[T]
+  
+  
+  def customChart[DT <: Dataset] : CustomChart[T,DT]  = {
+    throw new RuntimeException("Not implemented")
+  }
 }
 
 
-trait ChartBuilder extends ChartBuilderInterface[Any] {
+trait ChartBuilder[T] extends ChartBuilderInterface[T] {
   
-  def lineChart : LineChart[Any] = VUIBuilder.as[ChartBuilderInterface[Any]].lineChart
+  def lineChart : LineChart[T] = VUIBuilder.as[ChartBuilderInterface[T]].lineChart
   
+  override def customChart[DT <: Dataset] : CustomChart[T,DT] = VUIBuilder.as[ChartBuilderInterface[T]].customChart[DT]
   
 }

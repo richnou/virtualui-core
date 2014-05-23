@@ -1,9 +1,11 @@
 package com.idyria.osi.vui.core.components.model
 
+import com.idyria.osi.tea.listeners.ListeningSupport
 
-trait ListModelSupport extends ModelSupport[ListModel] {
+
+trait ListModelSupport[CT] extends ModelSupport[ListModel[CT]] {
   
-  modelImpl = new DefaultListModel
+  modelImpl = new DefaultListModel[CT]
   
   
 
@@ -11,39 +13,56 @@ trait ListModelSupport extends ModelSupport[ListModel] {
   
 }
 
-trait ComboBoxModelSupport extends ModelSupport[ComboBoxModel] {
+trait ComboBoxModelSupport[CT] extends ModelSupport[ComboBoxModel[CT]] {
   
-  modelImpl = new DefaultComboBoxModel
+  modelImpl = new DefaultComboBoxModel[CT]
   
 }
 
-trait ListModel {
+trait ListModel[CT] extends ListeningSupport {
  
-  var data  = List[Object]()
+  var data  = List[CT]()
   
   /**
    * Add an object to the model
    */
-  def add(o: Object) = data = o :: data
+  def add(o: CT) = {
+    data = o :: data
+    this.@->("added", o)
+  } 
   
   /**
    * If the object is already in the list
    */
-  def contains(o: Object) : Boolean = data.contains(o)
+  def contains(o: CT) : Boolean = data.contains(o)
   
+  /**
+   * Remove the provided object if necessary
+   */
+  def remove(o:CT) : Boolean = data.contains(o) match {
+    case true => 
+      data = data.filterNot(_ == o)
+       this.@->("removed", o)
+      true
+    case false => false
+  }
+  
+  def clear = {
+    data.foreach(remove(_))
+  }
+  
+} 
+
+trait ComboBoxModel[CT] extends ListModel[CT] {
+  
+  var selected : CT = _
   
 }
 
-trait ComboBoxModel extends ListModel {
-  
-  var selected : Any = null
+class DefaultListModel[CT] extends ListModel[CT] {
   
 }
 
-class DefaultListModel extends ListModel {
-  
-}
-
-class DefaultComboBoxModel extends  ComboBoxModel {
+class DefaultComboBoxModel[CT] extends  ComboBoxModel[CT]  with ListeningSupport {
   
 }

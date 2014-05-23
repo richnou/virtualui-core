@@ -13,14 +13,13 @@ import com.idyria.osi.vui.lib.view.ViewProcessBuilder
  */
 class ViewProcessPanel extends SGCustomNode[Any] with GridBuilder with ViewProcessBuilder {
 
-  
   // View Process Connection
   //----------
 
   var _viewProcess: ViewProcess = null
-  
+
   //-- Default Process
-  this.viewProcess = new ViewProcess{}
+  this.viewProcess = new ViewProcess {}
 
   /**
    * Set New View process
@@ -33,37 +32,34 @@ class ViewProcessPanel extends SGCustomNode[Any] with GridBuilder with ViewProce
 
     this._viewProcess.onWith("view.progressTo") {
       v: View ⇒
-
-      println("----> Switching view on: "+viewsPanel.base)
-      
-        // Update View Panels container
-        viewsPanel.clear
-        viewsPanel <= v.render
-        viewsPanel.revalidate
-    
+        onUIThread {
+          // Update View Panels container
+          viewsPanel.clear
+          viewsPanel <= v.render
+          viewsPanel.revalidate
+        }
+        logFine("----> Switching view on: " + viewsPanel.base)
 
     }
-    println("----> Listening on: "+vp.hashCode())
+    logFine("----> Listening on: " + vp.hashCode())
 
   }
 
   def viewProcess: ViewProcess = this._viewProcess
 
-  
   // Views building in case of class extension
   //-------------
- 
-  
+
   // View Change
   //-----------------
 
   //-- Base GUI
   val viewsPanel = group
   viewsPanel.layout = stack
-  
+
   //-- On Base GUI child add, make the component grow
   viewsPanel.onWith("child.added") {
-    n : SGNode[_] => n(expand,alignCenter) 
+    n: SGNode[_] => n(expand, alignCenter)
   }
 
   /**
@@ -92,7 +88,7 @@ class ViewProcessPanel extends SGCustomNode[Any] with GridBuilder with ViewProce
  *
  *     	view("name") {
  *
- *			...
+ * 			...
  *
  *     	}
  *
@@ -107,6 +103,26 @@ object ViewProcessPanel {
     var vPanel = new ViewProcessPanel
     vPanel.viewProcess = vp
     vPanel
+  }
+
+}
+
+trait ViewProcessPanelBuilder extends ViewProcessBuilder {
+
+  def viewProcessPanel(cl: => Any): ViewProcessPanel = {
+
+    var panel = new ViewProcessPanel
+
+    //-- Put panel Process on stack
+    this.processStack.push(panel.viewProcess)
+
+    //-- Execute closure
+    cl
+
+    this.processStack.pop
+
+    panel
+
   }
 
 }

@@ -1,10 +1,10 @@
 package com.idyria.osi.vui.lib.view.components
 
 import com.idyria.osi.vui.core.components.controls._
-
 import com.idyria.osi.vui.lib.view._
+import com.idyria.osi.tea.logging.TLogSource
 
-class ViewButton(var view: View, var delegate: VUIButton[Any]) extends VUIButton[Any] {
+class ViewButton(var view: View, var delegate: VUIButton[Any]) extends VUIButton[Any] with TLogSource {
 
   // node
   //-----------------
@@ -24,7 +24,7 @@ class ViewButton(var view: View, var delegate: VUIButton[Any]) extends VUIButton
     //-- Register to delegate
     delegate.onClicked({
 
-      println(s"----> Click from View Button and view $view")
+      logFine(s"----> Click from View Button and view $view")
       view.action({ action })
 
     })

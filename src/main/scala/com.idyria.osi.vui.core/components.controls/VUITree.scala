@@ -5,7 +5,21 @@ import com.idyria.osi.vui.core.styling.StylableTrait
 import com.idyria.osi.tea.listeners.ListeningSupport
 import com.idyria.osi.vui.core.styling.ApplyTrait
 import com.idyria.osi.tea.listeners.ListeningSupport
+import com.idyria.osi.vui.core.VUIBuilder
+import scala.reflect.ClassTag
 
+
+trait TreeBuilderInterface[T] extends TreeModelBuilder {
+
+  def tree: VUITree[T]
+}
+
+trait TreeBuilder[T] extends TreeBuilderInterface[T] {
+
+  
+  def tree : VUITree[T] = VUIBuilder.as[TreeBuilderInterface[T]].tree
+
+}
 
 /**
  * Common trait for Tree component
@@ -18,7 +32,25 @@ import com.idyria.osi.tea.listeners.ListeningSupport
 trait VUITree[T] extends VUIComponent[T] with StylableTrait with ApplyTrait  {
 
   type Self = VUITree[_]
+   
+  // Node Representation
+  //------------------------
+  var nodesViews = Map[Class[_],(AnyRef  =>  Any)]()
+  /**
+   * Records a mapping function for a specific node data type
+   */
+  def nodeView[T:ClassTag](cl: T => Any)(implicit tag: ClassTag[T]) = {
+    
+    var r = tag.runtimeClass
+    nodesViews = nodesViews + (r -> { o => cl(o.asInstanceOf[T])})
+    
+  }
   
+  
+  var modelImpl : TreeModel = new DefaultTreeModel
+  modelImpl.root = new DefaultTreeNode {
+    this.show = false
+  }
   
    // Listeners for clicks and selection
    //-----------------------------------------
@@ -38,9 +70,9 @@ trait VUITree[T] extends VUIComponent[T] with StylableTrait with ApplyTrait  {
   // Model
   //----------------
   
-  def setModel(m: TreeModel)
+  def setModel(m: TreeModel) = modelImpl=m
   
-  def getModel : TreeModel
+  def getModel : TreeModel = modelImpl
  
   // Selection
   //---------------
@@ -48,12 +80,21 @@ trait VUITree[T] extends VUIComponent[T] with StylableTrait with ApplyTrait  {
   
 }
 
-trait TreeModel extends ListeningSupport {
+/**
+ * Interface for the Nodes of a VUITree to provide special functions
+ */
+trait VUITreeItem {
+  
+  var nodeModel : TreeNode = null
+  
+}
+
+trait TreeModel extends TreeNode with ListeningSupport {
   
   /**
    * A tree model must have a node root
    */
-  var root : TreeNode 
+  var root : TreeNode  = null
   
   
 }
@@ -66,7 +107,7 @@ trait TreeNode extends ListeningSupport {
    */
   var show  = true
   
-  var children : List[TreeNode]
+  var children =  List[TreeNode]()
   
   var parentNode : TreeNode = null
   
@@ -78,6 +119,7 @@ trait TreeNode extends ListeningSupport {
   def <=(child: TreeNode) : TreeNode = {
     this.children = child :: this.children
     child.parentNode = this
+    this.@->("node.added", child)
     child
   }
   
@@ -100,20 +142,37 @@ trait TreeNode extends ListeningSupport {
 
     
   }
+  
  
   
 }
 
-trait DefaultTreeModel extends TreeModel {
+class DefaultTreeModel extends TreeModel {
   
-  var root : TreeNode = null
+
   
 }
 
-
-trait DefaultTreeNode extends TreeNode {
+class DefaultTreeNode extends TreeNode {
   
-  var children : List[TreeNode] = List[TreeNode]()
+ 
+  
+}
+
+class DataTreeNode[T](var data : T) extends TreeNode with ApplyTrait {
+ 
+  type Self = DataTreeNode[T]
+  
+  override def toString = data.toString
+  
+}
+
+/**
+ * A trait containing utility methods to build a tree model
+ */
+trait TreeModelBuilder {
+  
+  def treeNode[T](data:T) : DataTreeNode[T] = new DataTreeNode(data)
   
 }
 

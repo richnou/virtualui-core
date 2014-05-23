@@ -4,14 +4,14 @@ import com.idyria.osi.vui.core.components.model.ListModel
 import com.idyria.osi.vui.core.components.model.ComboBoxModel
 
 
-class SwingListModelAdapter(var listModel : ListModel) extends javax.swing.ListModel[Object] {
+class SwingListModelAdapter[CT](var listModel : ListModel[CT]) extends javax.swing.ListModel[CT] {
   
   var listeners = List[javax.swing.event.ListDataListener]()
   
   
   def  addListDataListener(x: javax.swing.event.ListDataListener): Unit = listeners = x :: listeners
   
-  def getElementAt(index: Int): Object = listModel.data(index)
+  def getElementAt(index: Int): CT = listModel.data(index)
   
   def getSize(): Int = listModel.data.size
   
@@ -20,12 +20,12 @@ class SwingListModelAdapter(var listModel : ListModel) extends javax.swing.ListM
 }
 
 
-class SwingComboBoxModelModelAdapter(var comboBoxModel : ComboBoxModel) extends SwingListModelAdapter(comboBoxModel) with javax.swing.ComboBoxModel[Object] {
+class SwingComboBoxModelModelAdapter[CT](var comboBoxModel : ComboBoxModel[CT]) extends SwingListModelAdapter[CT](comboBoxModel) with javax.swing.ComboBoxModel[CT] {
   
   
   def getSelectedItem(): Object = comboBoxModel.selected.asInstanceOf[Object]
   
-  def setSelectedItem(s: Any): Unit = comboBoxModel.selected = s
+  def setSelectedItem(s: Any): Unit = comboBoxModel.selected = s.asInstanceOf[CT]
   
   /*def  addListDataListener(x$1: javax.swing.event.ListDataListener): Unit = ??? 
   def getElementAt(x$1: Int): Object = ??? 

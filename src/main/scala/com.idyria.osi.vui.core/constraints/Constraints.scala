@@ -17,17 +17,39 @@ trait Constrainable extends CommonVUIElementTrait with ListeningSupport {
    */
   var fixedConstraints: Constraints = Constraints()
 
+  var _debugConstraints = false
+  
   // Constraints Setting
   //----------------
   def apply(constraint: Constraint*): Self = {
-    constraint.foreach{c => 
+    
+    if (_debugConstraints) {
+      println(s"Setting constraints to "+this)
+      println(s"FROM: "+Thread.currentThread.getStackTrace()(2).getMethodName())
+      var ex = new Exception
+      ex.printStackTrace()
+    }
+    
+    constraint.foreach{ c => 
+      
       this.fixedConstraints(c)
       @->("constraints.set",c)
+      
     }
+    
     @->("constraints.updated")
+    
     this.asInstanceOf[Self]
   }
   def apply(constraints: Constraints): Self = {
+    
+    if (_debugConstraints) {
+      println(s"Setting constraints to "+this)
+      println(s"FROM: "+Thread.currentThread.getStackTrace()(2).getMethodName())
+      var ex = new Exception
+      ex.printStackTrace()
+    }
+    
     constraints.constraints.foreach {
       c => 
         this.fixedConstraints(c._2)

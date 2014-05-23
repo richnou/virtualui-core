@@ -14,39 +14,53 @@ import com.idyria.osi.vui.core.components.scenegraph.SceneGraphBuilder
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
 import javax.swing.JComponent
+import com.idyria.osi.vui.core.components.containers.VUITab
+import com.idyria.osi.vui.core.components.layout.LayoutConstraintsLanguage
 /**
  * @author rleys
  *
  */
-trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphBuilder[Component] {
-
+trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphBuilder[Component] with LayoutConstraintsLanguage {
 
   /**
    * Creates a tabpane component to store nodes into panes
    */
-  def tabpane : VUITabPane[Component] = {
+  def tabpane: VUITabPane[Component] = {
 
-    return new SwingJComponentCommonDelegate[JTabbedPane](new JTabbedPane) with VUITabPane[Component]  {
+    return new SwingJComponentCommonDelegate[JTabbedPane](new JTabbedPane) with VUITabPane[Component] {
 
-       override def clear = {
-         super.clear
-       }
-      
-        /**
-         * Node method override to add components as tabs
-         */
-        def node[NT <: SGNode[Component]](title:String)(content:NT) : NT = {
-        	super.node(content)
-          delegate.addTab(title,content.base)
-          content
+      override def clear = {
+        super.clear
+      }
+
+      /**
+       * Node method override to add components as tabs
+       */
+      def node[NT <: SGNode[Component]](title: String)(content: NT): NT = {
+        super.node(content)
+        delegate.addTab(title, content.base)
+        content
+      }
+
+      def addTab[NT <: SGNode[Component]](tabname: String)(node: NT): VUITab[Component] = {
+
+        // Prepare Tab
+        //-----------
+        var tab = new VUITab[Component] {
+
+          def setClosable(v: Boolean) = {
+
+          }
+
         }
+        //node(expand)
+        delegate.addTab(tabname, node.base)
 
-       
-        
+        tab
+
+      }
 
     }
-
-   
 
   }
 
@@ -57,38 +71,36 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
   def group(): SGGroup[Component] = panel
 
   /**
-    Build panel
-  */
-  def panel : VUIPanel[Component] = {
+   * Build panel
+   */
+  def panel: VUIPanel[Component] = {
 
-      return new SwingJComponentCommonDelegate[JPanel](new JPanel) with VUIPanel[Component] {
+    return new SwingJComponentCommonDelegate[JPanel](new JPanel) with VUIPanel[Component] {
 
-        //-----------------------------
-        // Scene Graph
+      //-----------------------------
+      // Scene Graph
 
-        //var definedLayout : VUILayout[Component] = null
-  
-        
-       override def clear = {
-         super.clear
-       }
-        
-        /**
-         * Node Add
-         */
-        this.onWith("child.added") {
-          nd : SGNode[Component] => 
-         
-            delegate.add(nd.base)
-            revalidate
-            
-        }
-        
+      //var definedLayout : VUILayout[Component] = null
 
-        /**
-         * Add The node to the jpanel
-         */
-        /*override def node[NT <: SGNode[Component]](nd: NT): NT = {
+      override def clear = {
+        super.clear
+      }
+
+      /**
+       * Node Add
+       */
+      this.onWith("child.added") {
+        nd: SGNode[Component] =>
+
+          delegate.add(nd.base)
+          revalidate
+
+      }
+
+      /**
+       * Add The node to the jpanel
+       */
+      /*override def node[NT <: SGNode[Component]](nd: NT): NT = {
 
           super.node(nd)
           
@@ -110,12 +122,12 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
 
         }
 */
-        /*def clear = {
+      /*def clear = {
           delegate.removeAll
           delegate.revalidate
         }*/
 
-        /*def layout(l: VUILayout[Component]) = {
+      /*def layout(l: VUILayout[Component]) = {
 
            this.definedLayout = l
            l.setTargetGroup(this)
@@ -124,10 +136,9 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
 
         def layout : VUILayout[Component] = this.definedLayout*/
 
-      }
+    }
 
-    
-/*
+    /*
     new JPanel() with VUIPanel[Component] with SwingStylableTrait {
 
       //-----------------------------
@@ -191,7 +202,5 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
     new JTab
 
   }*/
-
-
 
 }

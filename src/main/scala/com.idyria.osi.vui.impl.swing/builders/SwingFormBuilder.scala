@@ -25,19 +25,23 @@ import javax.swing.JComboBox
 import javax.swing.DefaultComboBoxModel
 import java.awt.event.ItemListener
 import java.awt.event.ItemEvent
+import com.idyria.osi.vui.core.components.form.FormBuilderInterface
+import com.idyria.osi.vui.core.components.controls.VUIRadioButton
+import javax.swing.JRadioButton
+import com.idyria.osi.vui.core.components.controls.ToggleGroup
 
 /**
  * @author rleys
  *
  */
-trait SwingFormBuilder extends FormBuilder[Component] {
+trait SwingFormBuilder extends FormBuilderInterface[Component] {
 
   // Data
   //--------------------------
   
-  def list(): VUIList[Component] = {
+  def list[CT]: VUIList[CT,Component] = {
 
-    return new SwingJComponentCommonDelegate[JList[Object]](new JList[Object]()) with VUIList[Component] {
+    return new SwingJComponentCommonDelegate[JList[CT]](new JList[CT]()) with VUIList[CT,Component] {
 
        
       
@@ -45,10 +49,10 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       //-------------------
     	
       //-- Default
-      this.delegate.setModel(new SwingListModelAdapter(modelImpl))
+      this.delegate.setModel(new SwingListModelAdapter[CT](modelImpl))
         
       onWith("model.changed") {
-        m : ListModel => 
+        m : ListModel[CT] => 
           this.delegate.setModel(new SwingListModelAdapter(m))
       }
       
@@ -58,7 +62,7 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       /**
        * Select the object if contained into model
        */
-      def select(obj: AnyRef) = {
+      def select(obj: CT) = {
 
         this.delegate.setSelectedValue(obj, true)
 
@@ -69,13 +73,13 @@ trait SwingFormBuilder extends FormBuilder[Component] {
 
       def clearSelection = delegate.clearSelection
 
-    }.asInstanceOf[VUIList[Component]]
+    }.asInstanceOf[VUIList[CT,Component]]
 
   }
   
-  def comboBox : VUIComboBox[Component] = {
+  def comboBox[CT] : VUIComboBox[CT,Component] = {
     
-    return new SwingJComponentCommonDelegate[JComboBox[Object]](new JComboBox[Object]()) with VUIComboBox[Component] {
+    return new SwingJComponentCommonDelegate[JComboBox[CT]](new JComboBox[CT]()) with VUIComboBox[CT,Component] {
 
      
       
@@ -83,11 +87,11 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       //-------------------
     	
       //-- Default
-      this.delegate.setModel(new SwingComboBoxModelModelAdapter(modelImpl))
+      this.delegate.setModel(new SwingComboBoxModelModelAdapter[CT](modelImpl))
         
       onWith("model.changed") {
-        m : ComboBoxModel => 
-          this.delegate.setModel(new SwingComboBoxModelModelAdapter(m))
+        m : ComboBoxModel[CT] => 
+          this.delegate.setModel(new SwingComboBoxModelModelAdapter[CT](m))
       }
       
 
@@ -95,14 +99,14 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       //--------------
       
       //FIXME
-      def onSelected(cl: Any => Unit)= {
+      def onSelected(cl: CT => Unit)= {
         
         this.delegate.addItemListener(new ItemListener {
           
           
           def itemStateChanged( e : ItemEvent) = {
             
-            cl(e)
+            cl(e.getItem().asInstanceOf[CT])
             
           }
           
@@ -119,7 +123,7 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       /**
        * Select the object if contained into model
        */
-      def select(obj: AnyRef) = {
+      override def select(obj: CT) : Unit = {
 
         this.delegate.setSelectedItem(obj)
 
@@ -127,7 +131,7 @@ trait SwingFormBuilder extends FormBuilder[Component] {
       
       //def clearSelection = delegate.clearSelection
 
-    }.asInstanceOf[VUIComboBox[Component]]
+    }.asInstanceOf[VUIComboBox[CT,Component]]
     
     
   }
@@ -235,6 +239,31 @@ trait SwingFormBuilder extends FormBuilder[Component] {
 
     }
     
+  }
+  
+  def radioButton : VUIRadioButton[Component] = {
+    
+    return new SwingJComponentCommonDelegate[JRadioButton](new JRadioButton()) with VUIRadioButton[Component] {
+
+    	
+      // State
+      //--------------
+      def isChecked = this.delegate.isSelected()
+      def setChecked(b:Boolean) = this.delegate.setSelected(true)
+      
+      // Text
+      //-----------
+      def setText(str: String) = {
+        this.delegate.setText(str)
+      } 
+      def getText = delegate.getText()
+
+    }
+    
+  }
+  
+  def toggleGroup : ToggleGroup = {
+    return new ToggleGroup {}
   }
 
 }
