@@ -27,6 +27,7 @@ class SwingVUIImpl
     extends VUIBuilder[Component]
     with SwingControlsBuilder
     with SwingContainerBuilder
+    with SwingScrollPaneInterface
     with SwingLayoutBuilder
     with SwingSceneGraphBuilder
     with SwingFormBuilder {

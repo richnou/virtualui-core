@@ -29,12 +29,16 @@ import com.idyria.osi.vui.core.components.form.FormBuilderInterface
 import com.idyria.osi.vui.core.components.controls.VUIRadioButton
 import javax.swing.JRadioButton
 import com.idyria.osi.vui.core.components.controls.ToggleGroup
+import java.util.Collection
+import javax.swing.event.ListSelectionListener
+import javax.swing.event.ListSelectionEvent
+import com.idyria.osi.vui.core.components.form.ListBuilderInterface
 
 /**
  * @author rleys
  *
  */
-trait SwingFormBuilder extends FormBuilderInterface[Component] {
+trait SwingFormBuilder extends FormBuilderInterface[Component] with ListBuilderInterface[Component] {
 
   // Data
   //--------------------------
@@ -72,6 +76,28 @@ trait SwingFormBuilder extends FormBuilderInterface[Component] {
       //-----------------
 
       def clearSelection = delegate.clearSelection
+      
+      def onSelected(cl: Seq[CT] => Unit) = {
+        
+        this.delegate.addListSelectionListener(new ListSelectionListener {
+          
+          def valueChanged( e : ListSelectionEvent ): Unit = {
+           
+            //-- Gather Selection
+            e.getValueIsAdjusting() match {
+              case true => 
+              case false => 
+                
+                //-- Call the closure with values
+                cl(delegate.getSelectedValues().toSeq.asInstanceOf[Seq[CT]])
+            }
+            
+          }
+
+          
+        })
+        
+      }
 
     }.asInstanceOf[VUIList[CT,Component]]
 

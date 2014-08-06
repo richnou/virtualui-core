@@ -16,11 +16,16 @@ import javax.swing.JTabbedPane
 import javax.swing.JComponent
 import com.idyria.osi.vui.core.components.containers.VUITab
 import com.idyria.osi.vui.core.components.layout.LayoutConstraintsLanguage
+import com.idyria.osi.vui.core.components.containers.ScrollPaneBuilderInterface
+import javax.swing.JScrollPane
+import com.idyria.osi.vui.core.components.containers.SplitPaneBuilderInterface
+import javax.swing.JSplitPane
+import com.idyria.osi.vui.core.components.containers.VUISplitPane
 /**
  * @author rleys
  *
  */
-trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphBuilder[Component] with LayoutConstraintsLanguage {
+trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphBuilder[Component] with SplitPaneBuilderInterface[Component] with LayoutConstraintsLanguage {
 
   /**
    * Creates a tabpane component to store nodes into panes
@@ -202,5 +207,91 @@ trait SwingContainerBuilder extends ContainerBuilder[Component] with SceneGraphB
     new JTab
 
   }*/
+
+  def splitpane: VUISplitPane[Component] = {
+    return new SwingJComponentCommonDelegate(new JSplitPane()) with VUISplitPane[Component] {
+
+      // Initial Interface
+      //------------------------------
+      this.delegate.setLeftComponent(null)
+      this.delegate.setRightComponent(null)
+      this.delegate.setTopComponent(null)
+      this.delegate.setTopComponent(null)
+
+      override def clear = {
+        super.clear
+      }
+
+      def setVertical = {
+        this.delegate.setOrientation(JSplitPane.VERTICAL_SPLIT)
+      }
+      def setHorizontal = {
+        this.delegate.setOrientation(JSplitPane.HORIZONTAL_SPLIT)
+      }
+
+      // Child Add
+      //------------------
+      /**
+       * Node Add
+       */
+      this.onWith("child.added") {
+        nd: SGNode[Component] =>
+
+          this.delegate.getOrientation() match {
+            case JSplitPane.VERTICAL_SPLIT if (this.delegate.getTopComponent() == null) => this.delegate.setTopComponent(nd.base)
+            case JSplitPane.VERTICAL_SPLIT => this.delegate.setBottomComponent(nd.base)
+            case JSplitPane.HORIZONTAL_SPLIT if (this.delegate.getLeftComponent() == null) => this.delegate.setLeftComponent(nd.base)
+            case JSplitPane.HORIZONTAL_SPLIT => this.delegate.setRightComponent(nd.base)
+          }
+
+          revalidate
+
+      }
+
+    }
+  }
+
+}
+
+trait SwingScrollPaneInterface extends ScrollPaneBuilderInterface[Component] {
+
+  def scrollpane: com.idyria.osi.vui.core.components.containers.VUIPanel[Component] = {
+    return new SwingJComponentCommonDelegate(new JScrollPane()) with VUIPanel[Component] {
+
+      // Add Content Panel
+      //-----------------
+      //var pane = new Pane
+      //this.delegate.setContent(pane)
+      // this.delegate.fitToHeightProperty().set(true)
+      //this.delegate.fitToWidthProperty().set(true)
+      /*this.delegate.fitToHeightProperty().set(true)
+      this.delegate.fitToWidthProperty().set(true)
+      this.delegate.setPrefViewportWidth( javafx.scene.layout.Region.USE_COMPUTED_SIZE)
+      this.delegate.setPrefWidth(javafx.scene.layout.Region.USE_COMPUTED_SIZE)*/
+
+      // Add node
+      //----------------
+      this.onMatch("child.added") {
+
+        case n: SGNode[_] ⇒
+
+          this.delegate.setViewportView(n.base.asInstanceOf[Component])
+          this.revalidate
+        //pane.getChildren().add(n.base.asInstanceOf[Node])
+
+        //println(s"****** Adding nodes to ${this.delegate}: " + n.base+" which has children: "+n.base.asInstanceOf[GridPane].getChildren().size())
+
+        case _ ⇒
+      }
+
+      // Conflicts resolution
+      override def clear: Unit = {
+
+        this.delegate.removeAll()
+        super.clear
+      }
+
+    }
+  }
 
 }

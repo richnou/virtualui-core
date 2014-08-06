@@ -11,6 +11,7 @@ import com.idyria.osi.vui.core.components.model.ComboBoxModelSupport
 import com.idyria.osi.vui.core.components.model.DefaultListModel
 import com.idyria.osi.vui.core.components.model.DefaultComboBoxModel
 import com.idyria.osi.vui.core.VUIBuilder
+import java.util.Collection
 
 
 trait ListBuilder[T] extends ListBuilderInterface[T] {
@@ -38,6 +39,12 @@ trait VUIList[CT,T] extends VUIComponent[T] with StylableTrait with ListModelSup
   
   // Selection Interface
   //-------------------------
+  
+  /**
+   * Called when selected an element
+   */
+  def onSelected(cl: Seq[CT] => Unit)
+  
   def select(obj: CT)
   def clearSelection
 
