@@ -26,19 +26,19 @@ import scala.language.implicitConversions
  * @author rleys
  *
  */
-abstract class SGCustomNode[T] extends SGNode[T] {
+trait SGCustomNode extends SGNode[Any] {
 
-  type Self = SGCustomNode[T]
+  type Self = SGCustomNode
   
   /**
    * ui result will be stored here
    */
-  protected var uiNode : SGNode[T] = null
+  protected var uiNode : SGNode[Any] = null
 
   /**
    * Returns the base of created ui
    */
-  def base : T = this.getUi.base
+  def base : Any = this.getUi.base
 
   def revalidate = this.getUi.revalidate
 
@@ -47,7 +47,7 @@ abstract class SGCustomNode[T] extends SGNode[T] {
   /**
    * This must be defined by sublass.
    */
-  def getUi : SGNode[T] = {
+  def getUi : SGNode[Any] = {
 
     // Create UI if none
     if (this.uiNode==null)
@@ -58,11 +58,11 @@ abstract class SGCustomNode[T] extends SGNode[T] {
    /**
    * This must be defined by sublass.
    */
-  protected def createUI : SGNode[T]
+  protected def createUI : SGNode[Any]
 
 }
 object SGCustomNode {
 
- // implicit def convertSGCustomNodeToSGNode[T](wrapper: SGCustomNode[T]): SGNode[T] = wrapper.uiNode
+ // implicit def convertSGCustomNodeToSGNode[Any](wrapper: SGCustomNode[Any]): SGNode[Any] = wrapper.uiNode
 
 }

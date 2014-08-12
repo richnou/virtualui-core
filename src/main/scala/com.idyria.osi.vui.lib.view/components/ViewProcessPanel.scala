@@ -11,7 +11,7 @@ import com.idyria.osi.vui.lib.view.ViewProcessBuilder
  * The View Process Panel is a SGNode component that manages the graphical connection to
  * a running view process
  */
-class ViewProcessPanel extends SGCustomNode[Any] with GridBuilder with ViewProcessBuilder {
+class ViewProcessPanel extends SGCustomNode with GridBuilder with ViewProcessBuilder {
 
   // View Process Connection
   //----------

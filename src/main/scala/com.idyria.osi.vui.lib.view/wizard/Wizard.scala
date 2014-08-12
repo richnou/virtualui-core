@@ -48,7 +48,7 @@ class WizardDialog extends Wizard {
 
 
 
-class WizardPanel extends SGCustomNode[Any] with GridBuilder {
+class WizardPanel extends SGCustomNode with GridBuilder {
   
   def apply(vp: ViewProcess) = {
     
