@@ -36,5 +36,12 @@ trait VUIInputText[T] extends VUIComponent[T] with TextModelSupport with TextTra
   def println(str: String) = {
     this.model.insertText(s"$str\n")
   } 
+  
+  
+  // Special Key Listeners
+  //--------------------
+  def onEnterKey(cl: => Any) : Unit = {
+    throw new NotImplementedException
+  }
 
 }
