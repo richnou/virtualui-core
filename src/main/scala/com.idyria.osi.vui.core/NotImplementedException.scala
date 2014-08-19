@@ -6,7 +6,8 @@ package com.idyria.osi.vui.core
 */
 class NotImplementedException( message : String) extends RuntimeException(message) {
 
-
+  def this() = this("The current method was not implemented for the selected UI layer")
+  
 }
 object NotImplementedException {
 
