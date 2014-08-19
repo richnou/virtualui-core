@@ -59,6 +59,11 @@ trait ToggleGroup {
 
   var buttons = List[VUIRadioButton[_]]()
 
+  
+  def clear = {
+    buttons = List[VUIRadioButton[_]]()
+  }
+  
   /**
    * Listener triggered when a selection changed in the group 
    */
