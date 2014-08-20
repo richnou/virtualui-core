@@ -30,7 +30,7 @@ trait VUIButton[T] extends VUIComponent[T] with StylableTrait with ApplyTrait wi
   // API Control
   //-----------------
   def click: Unit = {
-    throw new NotImplementedException("")
+    throw new NotImplementedException
   }
 
   /**
