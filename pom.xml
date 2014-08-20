@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.idyria.osi.vui</groupId>
     <artifactId>vui-core</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>VUI Library</name>
     <parent>
         <groupId>com.idyria.osi</groupId>
@@ -16,7 +16,7 @@
         <connection>scm:git:git://bitbucket.org/osi/virtualui-core.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:osi/virtualui-core.git</developerConnection>
         <url>http://bitbucket.org/osi/virtualui-core.git</url>
-      <tag>HEAD</tag>
+      <tag>vui-core-1.1.0</tag>
   </scm>
 
     <build>
