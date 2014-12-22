@@ -57,6 +57,10 @@ class SwingFrame extends VuiTypeWrapper[JFrame](new JFrame) with VuiFrame[Compon
         base.setVisible(true)
 
       }
+      
+      def close () = {
+        this.base.dispose()
+      }
 
       //------------------
       //-- Events

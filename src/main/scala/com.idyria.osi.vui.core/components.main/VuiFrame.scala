@@ -31,6 +31,7 @@ trait VuiFrame[T] extends SGGroup[T] with ApplyTrait {
   def width(width: Int);
   def height(height: Int);
   def show();
+  def close();
 
 
 }
