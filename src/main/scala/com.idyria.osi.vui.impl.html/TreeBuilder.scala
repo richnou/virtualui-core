@@ -7,51 +7,70 @@ import scala.collection.immutable.Stack
 
 trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
 
-  var nodesStack = Stack[SGGroup[Any]]()
+  var nodesStack = scala.collection.mutable.Stack[SGGroup[Any]]()
+  var topNodes = List[BT]()
 
-  var currentNode : BT = _
-  
+  var currentNode: BT = _
+
   def createNode(name: String): SGNode[Any]
 
   /**
-   * Add an already build node to current 
+   * Add an already build node to current
    */
-  def add [NT <: BT](node: NT) : NT = switchToNode(node,{})
+  def add[NT <: BT](node: NT): NT = switchToNode(node, {})
+
+  def onNode[NT <: BT](node: NT)(cl: => Any) = switchToNode(node,cl)
   
   def switchToNode[NT <: BT](node: NT, cl: => Any): NT = {
 
     // Try to create node based on name
     //-------
-    
+
     currentNode = node
-    
+
     //var node = createNode(name)
     node match {
 
       // If group, add  - stack - execute - destack
       case n: SGGroup[Any] =>
 
-        nodesStack.headOption match {
-          case Some(head) => head <= n
-          case _          =>
+        //println(s"Adding Group NODE "+nodesStack.headOption)
+
+        // Add TO top of stack if necessary
+        //---------------
+        if (n.parent == null) {
+          nodesStack.headOption match {
+            case Some(head) => head <= n
+            case _ =>
+              println(s"--> New top node on ${this.hashCode}")
+              //topNodes = topNodes :+ n.asInstanceOf[BT]
+          }
         }
 
-        nodesStack = nodesStack.push(n)
-
+        //nodesStack = nodesStack.push(n)
+        nodesStack.push(n)
         cl
+        
+        nodesStack.pop()
+       //nodesStack = nodesStack.pop
 
-        nodesStack = nodesStack.pop
+        // Switch back to top of stack
+        // If no nodes, save in top nodes
         nodesStack.headOption match {
           case Some(head) => currentNode = head.asInstanceOf[BT]
-          case _          =>
+          case _ => topNodes = topNodes :+ n.asInstanceOf[BT]
         }
-        
+
       // If node, add - execute
+      // If no nodes, save in top nodes
       case n: SGNode[_] =>
 
-        nodesStack.headOption match {
-          case Some(head) => head <= n
-          case _          =>
+        //println(s"Adding Simple NODE "+nodesStack.headOption)
+        if (n.parent == null) {
+          nodesStack.headOption match {
+            case Some(head) => head <= n
+            case _ => topNodes = topNodes :+ n.asInstanceOf[BT]
+          }
         }
 
         cl
@@ -62,8 +81,6 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
     return node
 
   }
-  
-
 
   /*
   def applyDynamic(name:String)(cl: => Any) : SGNode[Any] = {
@@ -106,7 +123,5 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
     return node
     
   }*/
-  
-  
 
 }

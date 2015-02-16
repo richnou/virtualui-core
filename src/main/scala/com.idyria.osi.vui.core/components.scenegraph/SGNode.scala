@@ -55,7 +55,14 @@ trait SGNode[+T] extends ListeningSupport with Constrainable {
     this.parent = p
 
   }
+  
+  def getParent[NT <: SGGroup[_]] : NT= parent.asInstanceOf[NT]
 
+  def detach = {
+    this.setParent(null)
+    this
+  } 
+  
   /**
    * This method is a high level call to ask the underlying implementation
    * to make sure the node has been redrawn
