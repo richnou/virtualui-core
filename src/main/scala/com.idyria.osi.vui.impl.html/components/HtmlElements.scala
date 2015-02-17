@@ -293,8 +293,9 @@ class A(var text: String, var destination: String) extends HTMLNode("a") {
   }
 }
 
-class Button(n: String = "button") extends HTMLNode(n) with VUIButton[Any] {
+class Button(n: String = "button") extends HTMLNode("button") with VUIButton[Any] {
 
+  this.textContent = n
   
   // Clicks
   //---------------
@@ -412,6 +413,18 @@ class InputPassword(lname: String) extends FormInputNode(lname)  with FormInput 
 
 }
 
+class InputCheckBox(lname: String) extends FormInputNode(lname)  with FormInput  {
+
+  this("type" -> "checkbox")
+
+}
+
+class InputRadioBox(lname: String) extends FormInputNode(lname)  with FormInput  {
+
+  this("type" -> "radio")
+
+}
+
 /**
  * textarea
  */
@@ -431,7 +444,8 @@ class SelectOption(name:String,value:String) extends HTMLNode("option") {
   this.textContent = name
 }
 
-class FormSubmit(value: String) extends Button("input") {
+class FormSubmit(value: String) extends Button("") {
+  this.htmlNodeName = "input"
   this("type" -> "submit")
   this("value" -> value)
 
@@ -510,7 +524,7 @@ class Table[OT] extends HTMLNode("table") with SGTable[OT, Any] with HtmlTreeBui
         c.foreach {
 
           // An HTMLNode -> add as such
-          case content: HTMLNode            ⇒ td { switchToNode(content, {}) }
+          case content: HTMLNode            ⇒ td { switchToNode(content.detach.asInstanceOf[HTMLNode], {}) }
 
           // Anything -> to String
           case content if (content != null) ⇒ td { text(content.toString) }

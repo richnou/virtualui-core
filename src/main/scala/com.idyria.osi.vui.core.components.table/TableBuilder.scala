@@ -148,4 +148,15 @@ class SGTableColumn[CT](var name: String) extends ApplyTrait with ListeningSuppo
     this.contentClosures = contentClosures :+ resCl
     this.contentClosuresResultsType = contentClosuresResultsType + (resCl -> tag.runtimeClass)
   }
+  
+  // Last Row
+  //---------------
+  var lastRowClosures = List[List[CT] => Any]()
+  var lastRowClosuresResultsType = Map[(List[CT] => _),Class[_]]()
+  def lastRow[R : ClassTag](cl: List[CT] ⇒ R)(implicit tag : ClassTag[R]) = {
+    
+    var resCl =  { ct ⇒ cl(ct) }
+    this.lastRowClosures = lastRowClosures :+ resCl
+    this.lastRowClosuresResultsType = lastRowClosuresResultsType + (resCl -> tag.runtimeClass)
+  }
 }

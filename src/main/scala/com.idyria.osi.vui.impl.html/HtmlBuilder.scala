@@ -1,6 +1,7 @@
 package com.idyria.osi.vui.impl.html
 
 import scala.language.implicitConversions
+import scala.language.dynamics
 
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.table.SGTable
@@ -11,8 +12,13 @@ import com.idyria.osi.vui.impl.html.js.JScript
 /**
  * Builder for main html elements
  */
-trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
+trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynamic {
 
+  /*def applyDynamic(name:String)(cl: => Any) = {
+    switchToNode(new HTMLGen, cl)
+  }
+  */
+  
   def createNode(name: String): SGNode[Any] = {
 
     name match {
@@ -28,7 +34,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   // Dynamic handles non defined elements
   //--------------------
   def applyDynamic(name: String)(cl: => Any): HTMLNode = {
-
+println(s"---- applyDynamic DYNAMIC $name----")
     // Create Generic
     var generic = new GenericHTMLElement(name)
 
@@ -36,14 +42,39 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
 
     switchToNode(generic, cl)
   }
+  
+   def updateDynamic(name: String) :  HTMLNode = {
+     new GenericHTMLElement(name)
+   }
+  
+  def updateDynamic(name: String)(value:String) = {
+    println("---- UPDATE DYNAMIC----")
+    attribute(name -> value)
+  }
+  def selectDynamic(name: String) : HTMLNode = {
+    println("---- Select DYNAMIC----")
+    var generic = new GenericHTMLElement(name)
+    generic
+  }
 
   // Generic Stuff like attributes
   //-----------------
 
   /**
+   * Generic node
+   */
+  def element(name:String)(cl: => Any) = {
+    switchToNode(new GenericHTMLElement(name), cl)
+  }
+  
+  /**
    * Set an attribute
    */
   def attribute(attr: (String, String)): Unit = this.currentNode(attr)
+  
+  def attr(attrs:(String,String)*) : Unit = {
+    attrs.foreach(this.currentNode(_))
+  }
 
   /**
    * Set the id of an element
@@ -57,6 +88,19 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
 
   def html(cl: => Any) = switchToNode(new Html, cl)
 
+  // Search
+  //------------
+  def $(id:String)(cl: => Any) {
+    currentNode.children.find { 
+      case n if (n.name.toString == id)=>true
+      case n : HTMLNode => n.attributes.getOrElse("id", "") == id
+      case _ => false
+      } match {
+      case Some(node : HTMLNode)=> switchToNode(node, cl)
+      case _ => 
+    }
+  }
+  
   // Head
   //--------------------
 
@@ -85,7 +129,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   // Styling
   //-----------
   def classes(cl: String*) = {
-    attribute("class" -> cl.mkString(" "))
+    attribute("class" -> (""+currentNode.attributes.getOrElse("class", "") + cl.mkString(" "," "," ")))
   }
 
   // Body 
@@ -93,6 +137,12 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   def body(cl: => Any) = switchToNode(new Body, cl)
 
   def div(cl: => Any) = switchToNode(new Div, cl)
+  def div(addclasses:String*)(cl: => Any) = {
+    switchToNode(new Div, {
+      attribute("class" -> addclasses.mkString(" "))
+      cl
+    })
+  }
   def span(cl: => Any) = switchToNode(new Span, cl)
 
   def pre(cl: => Any) = switchToNode(new Pre, cl)
@@ -127,15 +177,20 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
  
   // Button
   //----------------
-  def button(text: String)(cl: Button => Any) = switchToNode(new Button, { currentNode.textContent = text; cl(currentNode.asInstanceOf[Button]) })
-  def button(text: String, cl: => Any) = switchToNode(new Button, { currentNode.textContent = text; cl })
-
+  //def button(text: String)(cl: Button => Any) = switchToNode(new Button, { currentNode.textContent = text; cl(currentNode.asInstanceOf[Button]) })
+  //def button(text: String, cl: => Any) = switchToNode(new Button, { currentNode.textContent = text; cl })
+  def button(text: String)(cl:  => Any) = switchToNode(new Button, { currentNode.textContent = text; cl })
   // Form
   //----------------
   def form(cl: => Any) = switchToNode(new Form, cl)
 
   def inputText(name: String)(cl: => Any) = switchToNode(new InputText(name), cl)
   def inputPassword(name: String)(cl: => Any) = switchToNode(new InputPassword(name), cl)
+  def inputCheckBox(name:String)(cl: =>Any) = switchToNode(new InputCheckBox(name), cl)
+  def inputCheckBox(name:String,value:String)(cl: =>Any) = switchToNode(new InputCheckBox(name), {cl;attr("value" -> value)})
+  
+  def inputRadioBox(name:String,value:String)(cl: =>Any) = switchToNode(new InputRadioBox(name), {cl;attr("value" -> value);})
+  
   def textArea(name: String)(cl: => Any): Textarea = switchToNode(new Textarea(name), cl)
 
   def select(name: String)(cl: => Any) = switchToNode(new Select(name), cl)
@@ -149,6 +204,9 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
 
   def label(target: String, txt: String)(cl: => Any): Label = switchToNode(new Label, { attribute("for" -> target); text(txt); cl })
 
+  def label(cl: => Any): Label = switchToNode(new Label, {  cl })
+
+  
   // Table
   //---------
   override def table[OT]: SGTable[OT, Any] = switchToNode(super.table[OT].asInstanceOf[HTMLNode], {}).asInstanceOf[SGTable[OT, Any]]
@@ -164,6 +222,10 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder {
   def script(cl: => Any) = switchToNode(new Script, cl)
   def javaScript(path: String) = switchToNode(new Script, { attribute("src" -> path) })
   def jscript(s: String) = new JScript(s)
+  
+  // Attributes
+  //-------------------
+  //ssdef @placeHolder
 
 }
 
