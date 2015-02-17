@@ -452,8 +452,33 @@ class Table[OT] extends HTMLNode("table") with SGTable[OT, Any] with HtmlTreeBui
 
   }
 
+  // Edit
+  //----------------
+  def setEditable(v:Boolean) = {
+    
+  }
+  
   // On Column
   //-----------------
+  def createColumn(name:String) : SGTableColumn[OT] = {
+    
+    // Add Column header
+    //--------------
+    var c = new SGTableColumn[OT](name) {
+      
+    }
+   /* theadElement <= th {
+      
+      // Special Attributes
+      if(c.colSpan>1) {
+        attribute("colSpan" -> c.colSpan.toString)
+      }
+    
+      text(c.name)
+    }*/
+    c
+    
+  }
   this.onWith("column.added") {
     c: SGTableColumn[OT] ⇒
 

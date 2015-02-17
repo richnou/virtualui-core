@@ -12,6 +12,7 @@ trait TableBuilder extends TableBuilderInterface[Any] {
     
     return new Table[OT] {
       
+      
     }
     
   }

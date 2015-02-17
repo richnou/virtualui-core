@@ -5,20 +5,23 @@ import com.idyria.osi.vui.core.styling.ApplyTrait
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import com.idyria.osi.vui.core.VUIBuilder
 import scala.reflect.ClassTag
+import com.idyria.osi.tea.listeners.ListeningSupport
 
 trait TableBuilderInterface[T] {
 
   def table[CT]: SGTable[CT, T]
-
+  //def column[CT](name:String) : SGTableColumn[CT]
 }
 
 trait TableBuilder[T] extends TableBuilderInterface[T] {
 
   def table[CT]: SGTable[CT, T] = VUIBuilder.as[TableBuilderInterface[T]].table
 
+  //def column[CT](name:String) : SGTableColumn[CT] = VUIBuilder.as[TableBuilderInterface[T]].column(name)
+  
 }
 
-trait SGTable[CT, T] extends SGGroup[T] with ApplyTrait {
+trait SGTable[CT, T] extends SGGroup[T] with ApplyTrait with TableBuilder[T] {
 
   type Self = SGTable[CT, T]
 
@@ -31,10 +34,13 @@ trait SGTable[CT, T] extends SGGroup[T] with ApplyTrait {
 
   var columns = List[SGTableColumn[CT]]()
 
+  def createColumn(name:String) : SGTableColumn[CT]
+  
   def column(name: String)(cl: SGTableColumn[CT] => Any): SGTableColumn[CT] = {
 
     //-- Create Column
-    var c = new SGTableColumn[CT](name)
+    var c = createColumn(name)
+    //var c = new SGTableColumn[CT](name)
     cl(c)
     columns = columns :+ c
 
@@ -43,6 +49,9 @@ trait SGTable[CT, T] extends SGGroup[T] with ApplyTrait {
 
     c
   }
+  
+  // Edit 
+  def setEditable(v:Boolean)
 
   // Datas add
   //----------------
@@ -108,7 +117,7 @@ object SGTable {
 
 }
 
-class SGTableColumn[CT](var name: String) extends ApplyTrait {
+class SGTableColumn[CT](var name: String) extends ApplyTrait with ListeningSupport {
   type Self = SGTableColumn[CT]
 
   // Columns Parameters
@@ -116,6 +125,15 @@ class SGTableColumn[CT](var name: String) extends ApplyTrait {
   var rowSpan = 1
   var colSpan = 1
 
+  // Edit
+  //-------------------
+  def setEditable(v:Boolean) = {
+    this.@->("editable", v)
+  }
+  def onEditDone(cl:(CT,String,String) => Any) : Unit = {
+    throw new NotImplementedError
+  }
+  
   // Column contents definition
   // - We store here a list of closures, because a Column definition can be a col span
   //-------------------
