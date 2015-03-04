@@ -8,7 +8,7 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.form.VUIList
 import com.idyria.osi.vui.core.components.form.VUIInputText
 import com.idyria.osi.vui.core.VBuilderBase
-
+import scala.language.postfixOps
 /**
   * @author rleys
   *

@@ -1,7 +1,10 @@
-
+package com.idyria.osi.vui.lib.view
 
 
 import com.idyria.osi.ooxoo.model.out.scala._
+import com.idyria.osi.ooxoo.model.producers
+import com.idyria.osi.ooxoo.model.ModelBuilder
+import com.idyria.osi.ooxoo.model.producer
 
 @producers(Array(
     new producer(value=classOf[ScalaProducer])
@@ -42,7 +45,9 @@ object ViewModel extends ModelBuilder {
     "ViewGroupTrait" is {
         isTrait
         
-        "View" multipleOf(view)
+        importElement("View").maxOccurs = 10
+        
+        //"View" multipleOf(view)
 
        // withTrait("com.idyria.osi.vui.lib.view.ViewGroupTrait")
 

@@ -1,7 +1,7 @@
 package com.idyria.osi.vui.lib.view.wizard
 
 
-
+import scala.language.postfixOps
 
 object DefaultWizardExample1 extends App {
 

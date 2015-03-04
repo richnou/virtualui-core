@@ -13,6 +13,8 @@ import com.idyria.osi.vui.core.constraints.Constrainable
 import scala.collection.AbstractSeq
 import scala.collection.SeqLike
 
+import scala.language.postfixOps
+
 /**
  * Trait to be mixed somewhere, to have access to the grid building language
  *
