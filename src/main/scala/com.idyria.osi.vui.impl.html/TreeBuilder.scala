@@ -42,7 +42,7 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
           nodesStack.headOption match {
             case Some(head) => head <= n
             case _ =>
-              println(s"--> New top node on ${this.hashCode}")
+             // println(s"--> New top node on ${this.hashCode}")
               //topNodes = topNodes :+ n.asInstanceOf[BT]
           }
         }

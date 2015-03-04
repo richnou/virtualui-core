@@ -97,7 +97,10 @@ println(s"---- applyDynamic DYNAMIC $name----")
       case _ => false
       } match {
       case Some(node : HTMLNode)=> switchToNode(node, cl)
-      case _ => 
+      case _ => currentNode.children.foreach {
+        case n : HTMLNode => switchToNode(n, {$(id){cl}})
+        case _ =>
+      }
     }
   }
   
