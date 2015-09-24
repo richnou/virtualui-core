@@ -1,0 +1,125 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>gridbuilder - VUI Library 1.1.1-SNAPSHOT API - com.idyria.osi.vui.lib.gridbuilder</title>
+          <meta name="description" content="gridbuilder - VUI Library 1.1.1 - SNAPSHOT API - com.idyria.osi.vui.lib.gridbuilder" />
+          <meta name="keywords" content="gridbuilder VUI Library 1.1.1 SNAPSHOT API com.idyria.osi.vui.lib.gridbuilder" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.idyria.osi.vui.lib.gridbuilder.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.idyria">idyria</a>.<a href="../../../package.html" class="extype" name="com.idyria.osi">osi</a>.<a href="../../package.html" class="extype" name="com.idyria.osi.vui">vui</a>.<a href="../package.html" class="extype" name="com.idyria.osi.vui.lib">lib</a></p>
+        <h1>gridbuilder</h1><span class="permalink">
+      <a href="../../../../../../index.html#com.idyria.osi.vui.lib.gridbuilder.package" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">gridbuilder</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.idyria.osi.vui.lib.gridbuilder.GridBuilder" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="GridBuilderextendsVBuilderwithLayoutConstraintsLanguagewithCSSConstraintsLanguagewithTLogSource"></a>
+      <a id="GridBuilder:GridBuilder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GridBuilder.html"><span class="name">GridBuilder</span></a><span class="result"> extends <a href="../../core/VBuilder.html" class="extype" name="com.idyria.osi.vui.core.VBuilder">VBuilder</a> with <a href="../../core/components/layout/LayoutConstraintsLanguage.html" class="extype" name="com.idyria.osi.vui.core.components.layout.LayoutConstraintsLanguage">LayoutConstraintsLanguage</a> with <a href="../../core/styling/CSSConstraintsLanguage.html" class="extype" name="com.idyria.osi.vui.core.styling.CSSConstraintsLanguage">CSSConstraintsLanguage</a> with <span class="extype" name="com.idyria.osi.tea.logging.TLogSource">TLogSource</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.idyria.osi.vui.lib.gridbuilder.package@GridBuilderextendsVBuilderwithLayoutConstraintsLanguagewithCSSConstraintsLanguagewithTLogSource" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Trait to be mixed somewhere, to have access to the grid building language</p><div class="fullcomment"><div class="comment cmt"><p>Trait to be mixed somewhere, to have access to the grid building language</p><p>Example:</p><p>object GridBuilderExample2 extends App with GridBuilder {</p><p>var url = getClass.getClassLoader.getResource(&quot;com.idyria.osi.vui.lib.gridbuilder/hd_logo_standard_sw_16cm_rgb.png&quot;)
+var uniLogo = image(url) {
+img =&gt; img size(250,-1)
+}</p><p>var ui = frame { f=&gt;</p><p>f size(800,600)
+f title (&quot;GridBuilderExample1&quot;)</p><p>f &lt;= grid {</p><p>&quot;top&quot; row {</p><p>label(&quot;Top&quot;)</p><p>}</p><p>&quot;login&quot; row {</p><p>uniLogo spanRight {
+&quot;-&quot; row { (label(&quot;Login: &quot;)) | (textInput  using (&quot;expandWidth&quot; -&gt; true)) | label(&quot; OK &quot;)}</p><p>&quot;-&quot; row using(&quot;rowspan&quot;-&gt;3,&quot;expandWidth&quot; -&gt; true) {</p><p>label(&quot;Image Right bottom&quot;)
+}</p><p>&quot;-&quot; row((label(&quot;Image Right bottom&quot;) using (&quot;spread&quot;-&gt; true,&quot;expandWidth&quot; -&gt; true)))
+}</p><p>}</p><p>}</p><p>}</p><p>ui.show</p><p>}</p></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
