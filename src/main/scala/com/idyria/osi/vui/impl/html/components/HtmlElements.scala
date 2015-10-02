@@ -192,6 +192,23 @@ ${indentString.mkString}</$htmlNodeName>
 
 }
 
+// Dummy 
+//---------------
+class DummyNode extends HTMLNode("dummy") {
+  
+  override def toString : String = {
+    
+     var indentString = this.indentCount(this) match {
+      case 0 => List("")
+      case indentCount => for (i ← 1 to indentCount) yield "    "
+    }
+     
+    s"""${indentString.mkString}${this.children.map(_.toString).mkString("\n\n")}"""
+    
+  }
+  
+}
+
 // Generic
 //--------------------
 class GenericHTMLElement(nodeName: String, textC: String = "") extends HTMLNode(nodeName) {
@@ -549,5 +566,13 @@ class Table[OT] extends HTMLNode("table") with SGTable[OT, Any] with HtmlTreeBui
 
 }
 	
+
+// Navigation
+//----------------------
+
+
+class Nav extends HTMLNode("nav") with ListeningSupport {
+
+}
 
 

@@ -60,6 +60,10 @@ println(s"---- applyDynamic DYNAMIC $name----")
   // Generic Stuff like attributes
   //-----------------
 
+  def dummyNode(cl: => Any) = {
+    switchToNode(new DummyNode, cl)
+  }
+  
   /**
    * Generic node
    */
@@ -167,8 +171,7 @@ println(s"---- applyDynamic DYNAMIC $name----")
 
   //--- Linking / Actions
   //--------------
-
-  def a(name: String, dest: String) = switchToNode(new A(name, dest), {})
+  def a(name: String, dest: String)(cl:  => Any) = switchToNode(new A(name, dest), cl)
 
   // Lists
   //--------------------
@@ -230,6 +233,12 @@ println(s"---- applyDynamic DYNAMIC $name----")
   //-------------------
   //ssdef @placeHolder
 
+  // Navigation
+  //-----------------------
+  def nav(cl: => Any) = {
+    switchToNode(new Nav, cl)
+  }
+  
 }
 
 object HtmlTreeBuilder {
