@@ -26,6 +26,7 @@ trait Chart[T,DT <: Dataset]  extends VUIComponent[T] with ApplyTrait {
     
     var dss = datasets
     datasets = List[DT]()
+    
     this.@->("datasets.clean")
     /*datasets.foreach {
       ds => 
@@ -75,7 +76,7 @@ trait ChartBuilderInterface[T] {
 }
 
 
-trait ChartBuilder[T] extends ChartBuilderInterface[T] {
+trait ChartBuilder[T] extends ChartBuilderInterface[T] with DatasetsBuilder {
   
   def lineChart : LineChart[T] = VUIBuilder.as[ChartBuilderInterface[T]].lineChart
   
