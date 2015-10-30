@@ -14,16 +14,63 @@ import com.idyria.osi.vui.core.components.events.VUIClickEvent
 import com.idyria.osi.vui.impl.html.js.JScript
 import javax.swing.text.html.HTML
 import com.idyria.osi.vui.core.validation.ValidationSupport
+import com.idyria.osi.vui.core.components.VUIComponent
 
 /**
  * Base Class for an HTML Node
  */
-abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[Any] {
+ class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[Any] with VUIComponent[Any]{
 
 
   // Parameters
   // var name: String = null
 
+  //----------------------
+  // General Control
+  //----------------------
+
+  //-- Enable/Disable
+  
+  /**
+    To be overriden if the component can be disabled
+  */
+  def disable : Unit = {
+    
+  }
+  
+  /**
+   *  To be overriden if the component can be enabled
+   */
+  def enable = {
+    
+  }
+  
+   //----------------------
+  // Positioning
+  //----------------------
+  /**
+   * Set the position of the component
+   */
+  def setPosition(x:Int,y:Int) = {
+    
+  }
+
+   /**
+   * Get the position of the component
+   */
+  def getPosition : Pair[Int,Int] = {
+    (0,0)
+  }
+  
+
+  def size(width: Int, height: Int) = {
+    apply("style" -> (""+attributes.getOrElse("style", "") + s";width:${width}px;height:${height}px"))
+    
+  }
+
+
+  
+  
   // SGGroup Implementation
   //-------------------
 
@@ -152,6 +199,14 @@ abstract class HTMLNode(var htmlNodeName: String = "undefined") extends SGGroup[
         this.attributes = attributes + (attr._1 ->  s"$actualValue ${attr._2}")
     }
     
+  }
+  
+  /**
+   * Left sid assignment of string adds classes
+   */
+  def ::(cl:String) : HTMLNode = {
+    apply("class" -> (""+attributes.getOrElse("class", "") + " " +cl))
+    this
   }
 
   // Render
@@ -356,7 +411,7 @@ class Button(n: String = "button") extends HTMLNode("button") with VUIButton[Any
 
   }
 
-  def disable: Unit = {
+  /*def disable: Unit = {
 
   }
   def enable: Unit = {
@@ -370,7 +425,7 @@ class Button(n: String = "button") extends HTMLNode("button") with VUIButton[Any
   }
   def size(width: Int, height: Int): Unit = {
 
-  }
+  }*/
 
 }
 

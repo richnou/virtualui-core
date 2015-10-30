@@ -101,6 +101,18 @@ trait SGTable[CT, T] extends SGGroup[T] with ApplyTrait with TableBuilder[T] {
     this.@->("removeAll")
     
   }
+  
+  // Listeners
+  //----------
+  
+  /**
+   * Called when an object is added to the table
+   */
+  def onObjectAdded(cl: CT => Unit) = {
+    this.onWith("object.added") {
+      obj : CT => cl(obj)
+    }
+  }
 
 }
 

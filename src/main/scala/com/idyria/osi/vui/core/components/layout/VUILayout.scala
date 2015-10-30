@@ -76,7 +76,14 @@ trait VUILayout[T] extends Constrainable {
 
   }
 
-  def applyConstraints(node: SGNode[T], constraints: Constraints) = {
+  def applyConstraints(node: SGNode[T], constraints: Constraints) : Unit = {
+    //node.fixedConstraints = node.fixedConstraints.a
+    constraints.foreach {
+      c => node.fixedConstraints(c)
+    }
+    applyConstraints(node)
+  }
+  def applyConstraints(node: SGNode[T]) : Unit = {
 
   }
 

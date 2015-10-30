@@ -18,7 +18,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
     switchToNode(new HTMLGen, cl)
   }
   */
-  
+
   def createNode(name: String): SGNode[Any] = {
 
     name match {
@@ -34,7 +34,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
   // Dynamic handles non defined elements
   //--------------------
   def applyDynamic(name: String)(cl: => Any): HTMLNode = {
-println(s"---- applyDynamic DYNAMIC $name----")
+    println(s"---- applyDynamic DYNAMIC $name----")
     // Create Generic
     var generic = new GenericHTMLElement(name)
 
@@ -42,16 +42,16 @@ println(s"---- applyDynamic DYNAMIC $name----")
 
     switchToNode(generic, cl)
   }
-  
-   def updateDynamic(name: String) :  HTMLNode = {
-     new GenericHTMLElement(name)
-   }
-  
-  def updateDynamic(name: String)(value:String) = {
+
+  def updateDynamic(name: String): HTMLNode = {
+    new GenericHTMLElement(name)
+  }
+
+  def updateDynamic(name: String)(value: String) = {
     println("---- UPDATE DYNAMIC----")
     attribute(name -> value)
   }
-  def selectDynamic(name: String) : HTMLNode = {
+  def selectDynamic(name: String): HTMLNode = {
     println("---- Select DYNAMIC----")
     var generic = new GenericHTMLElement(name)
     generic
@@ -63,20 +63,20 @@ println(s"---- applyDynamic DYNAMIC $name----")
   def dummyNode(cl: => Any) = {
     switchToNode(new DummyNode, cl)
   }
-  
+
   /**
    * Generic node
    */
-  def element(name:String)(cl: => Any) = {
+  def element(name: String)(cl: => Any) = {
     switchToNode(new GenericHTMLElement(name), cl)
   }
-  
+
   /**
    * Set an attribute
    */
   def attribute(attr: (String, String)): Unit = this.currentNode(attr)
-  
-  def attr(attrs:(String,String)*) : Unit = {
+
+  def attr(attrs: (String, String)*): Unit = {
     attrs.foreach(this.currentNode(_))
   }
 
@@ -90,31 +90,46 @@ println(s"---- applyDynamic DYNAMIC $name----")
    */
   def text(str: String) = switchToNode(new HTMLTextNode(str), {})
 
-  def html(cl: => Any) = switchToNode(new Html, cl)
+  def html(cl: => Any): Html = switchToNode(new Html, cl)
 
   // Search
   //------------
-  def $(id:String)(cl: => Any) {
-    currentNode.children.find { 
-      case n if (n.name.toString == id)=>true
-      case n : HTMLNode => n.attributes.getOrElse("id", "") == id
+  def $(id: String)(cl: => Any) {
+    currentNode.children.find {
+      case n if (n.name.toString == id) => true
+      case n: HTMLNode => n.attributes.getOrElse("id", "") == id
       case _ => false
-      } match {
-      case Some(node : HTMLNode)=> switchToNode(node, cl)
+    } match {
+      case Some(node: HTMLNode) => switchToNode(node, cl)
       case _ => currentNode.children.foreach {
-        case n : HTMLNode => switchToNode(n, {$(id){cl}})
+        case n: HTMLNode => switchToNode(n, { $(id) { cl } })
         case _ =>
       }
     }
   }
-  
+
   // Head
   //--------------------
 
   //-- Base
   //---------------
 
-  def head(cl: => Any) = switchToNode(new Head, cl)
+  def head(cl: => Any): Head = {
+
+    currentNode.children.find { n => n.isInstanceOf[Head] } match {
+      case None => switchToNode(new Head, cl)
+      case Some(h: Head) =>
+        onNode(h) {
+          cl
+        }
+        h
+
+      // Won't happen
+      case _ => throw new RuntimeException("Impossible")
+
+    }
+
+  }
 
   def link(cl: => Any) = switchToNode(new GenericHTMLElement("link"), cl)
 
@@ -136,7 +151,14 @@ println(s"---- applyDynamic DYNAMIC $name----")
   // Styling
   //-----------
   def classes(cl: String*) = {
-    attribute("class" -> (""+currentNode.attributes.getOrElse("class", "") + cl.mkString(" "," "," ")))
+    attribute("class" -> ("" + currentNode.attributes.getOrElse("class", "") + cl.mkString(" ", " ", " ")))
+  }
+  def addClasses(cl: String*) = {
+    attribute("class" -> ("" + currentNode.attributes.getOrElse("class", "") + cl.mkString(" ", " ", " ")))
+  }
+
+  def addStyle(styles: (String, String)*) = {
+    attribute("style" -> ("" + currentNode.attributes.getOrElse("class", "") + styles.map { case (k, v) => s"$k=$v" }.mkString(";", ";", "")))
   }
 
   // Body 
@@ -144,7 +166,7 @@ println(s"---- applyDynamic DYNAMIC $name----")
   def body(cl: => Any) = switchToNode(new Body, cl)
 
   def div(cl: => Any) = switchToNode(new Div, cl)
-  def div(addclasses:String*)(cl: => Any) = {
+  def div(addclasses: String*)(cl: => Any) = {
     switchToNode(new Div, {
       attribute("class" -> addclasses.mkString(" "))
       cl
@@ -171,7 +193,7 @@ println(s"---- applyDynamic DYNAMIC $name----")
 
   //--- Linking / Actions
   //--------------
-  def a(name: String, dest: String)(cl:  => Any) = switchToNode(new A(name, dest), cl)
+  def a(name: String, dest: String)(cl: => Any) = switchToNode(new A(name, dest), cl)
 
   // Lists
   //--------------------
@@ -180,23 +202,25 @@ println(s"---- applyDynamic DYNAMIC $name----")
   def ol(cl: => Any) = switchToNode(new Ol, cl)
   def li(cl: => Any) = switchToNode(new Li, cl)
   //def li(s:String) =  switchToNode(new Li,{currentNode.textContent=s})
- 
+
   // Button
   //----------------
   //def button(text: String)(cl: Button => Any) = switchToNode(new Button, { currentNode.textContent = text; cl(currentNode.asInstanceOf[Button]) })
   //def button(text: String, cl: => Any) = switchToNode(new Button, { currentNode.textContent = text; cl })
-  def button(text: String)(cl:  => Any) = switchToNode(new Button, { currentNode.textContent = text; cl })
+
+  def button(text: String)(cl: => Any) = switchToNode(new Button, { currentNode.textContent = text; cl })
+
   // Form
   //----------------
   def form(cl: => Any) = switchToNode(new Form, cl)
 
   def inputText(name: String)(cl: => Any) = switchToNode(new InputText(name), cl)
   def inputPassword(name: String)(cl: => Any) = switchToNode(new InputPassword(name), cl)
-  def inputCheckBox(name:String)(cl: =>Any) = switchToNode(new InputCheckBox(name), cl)
-  def inputCheckBox(name:String,value:String)(cl: =>Any) = switchToNode(new InputCheckBox(name), {cl;attr("value" -> value)})
-  
-  def inputRadioBox(name:String,value:String)(cl: =>Any) = switchToNode(new InputRadioBox(name), {cl;attr("value" -> value);})
-  
+  def inputCheckBox(name: String)(cl: => Any) = switchToNode(new InputCheckBox(name), cl)
+  def inputCheckBox(name: String, value: String)(cl: => Any) = switchToNode(new InputCheckBox(name), { cl; attr("value" -> value) })
+
+  def inputRadioBox(name: String, value: String)(cl: => Any) = switchToNode(new InputRadioBox(name), { cl; attr("value" -> value); })
+
   def textArea(name: String)(cl: => Any): Textarea = switchToNode(new Textarea(name), cl)
 
   def select(name: String)(cl: => Any) = switchToNode(new Select(name), cl)
@@ -210,9 +234,8 @@ println(s"---- applyDynamic DYNAMIC $name----")
 
   def label(target: String, txt: String)(cl: => Any): Label = switchToNode(new Label, { attribute("for" -> target); text(txt); cl })
 
-  def label(cl: => Any): Label = switchToNode(new Label, {  cl })
+  def label(cl: => Any): Label = switchToNode(new Label, { cl })
 
-  
   // Table
   //---------
   override def table[OT]: SGTable[OT, Any] = switchToNode(super.table[OT].asInstanceOf[HTMLNode], {}).asInstanceOf[SGTable[OT, Any]]
@@ -228,7 +251,7 @@ println(s"---- applyDynamic DYNAMIC $name----")
   def script(cl: => Any) = switchToNode(new Script, cl)
   def javaScript(path: String) = switchToNode(new Script, { attribute("src" -> path) })
   def jscript(s: String) = new JScript(s)
-  
+
   // Attributes
   //-------------------
   //ssdef @placeHolder
@@ -238,12 +261,10 @@ println(s"---- applyDynamic DYNAMIC $name----")
   def nav(cl: => Any) = {
     switchToNode(new Nav, cl)
   }
-  
+
 }
 
 object HtmlTreeBuilder {
-
-
 
 }
 

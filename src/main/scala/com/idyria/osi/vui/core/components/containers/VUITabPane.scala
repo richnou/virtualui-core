@@ -16,7 +16,7 @@ import com.idyria.osi.vui.core.styling.StylableTrait
  *
  *
  */
-trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T]  with StylableTrait {
+trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T] with StylableTrait {
 
   type Self = VUITabPane[T]
 
@@ -27,10 +27,13 @@ trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T]  with StylableTrait 
    * Not overridable anymore, because implementation switches to calls giving title
    * and/or applying closure for tab component
    */
-  final override def node[NT <: SGNode[T]](content: NT): NT = {
-    content.name match {
-      case null => node[NT]("")(content)
-      case n    => node[NT](n)(content)
+  override def node[NT <: SGNode[T]](content: NT): NT = {
+    content match {
+      case t: VUITab[_] => super.node(content)
+      case _ => content.name match {
+        case null => node[NT]("")(content)
+        case n => node[NT](n)(content)
+      }
     }
 
   }
@@ -48,7 +51,7 @@ trait VUITabPane[T] extends VUIComponent[T] with SGGroup[T]  with StylableTrait 
 
   def addTab[NT <: SGNode[T]](content: NT): VUITab[T] = content.name match {
     case null => addTab[NT]("")(content)
-    case n    => addTab[NT](n)(content)
+    case n => addTab[NT](n)(content)
   }
 
   /**

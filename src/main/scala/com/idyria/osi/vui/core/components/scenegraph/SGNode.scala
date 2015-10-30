@@ -58,6 +58,15 @@ trait SGNode[+T] extends ListeningSupport with Constrainable {
   
   def getParent[NT <: SGGroup[_]] : NT= parent.asInstanceOf[NT]
 
+  def getRootParent = {
+    var cp = this 
+    while(cp.getParent!=null) {
+      cp = cp.getParent
+    }
+    
+    cp
+  }
+  
   def detach = {
     this.setParent(null)
     this
