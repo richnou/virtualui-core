@@ -22,6 +22,14 @@ trait DatasetsBuilder {
     ds.name = name
     ds
   }
+  
+  def xyDataset[X: ClassTag, Y: ClassTag](name: String,vals:Iterable[Tuple2[X,Y]]): XYDataset[X, Y] = {
+    var ds = new XYDataset[X, Y]
+    ds.name = name
+    ds.addAll(vals)
+    ds
+  }
+  
 
   def xyIntDataset(name: String) = xyDataset[Int, Int](name)
   def xyLongDataset(name: String) = xyDataset[Long,Long](name)

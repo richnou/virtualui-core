@@ -20,18 +20,20 @@ import com.idyria.osi.aib.core.utils.files.FileWatcher
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import com.idyria.osi.vui.core.components.main.VuiFrame
 import com.idyria.osi.vui.core.VBuilder
+import com.idyria.osi.tea.listeners.ListeningSupport
 
 /**
  *
  */
-class AView[T <: SGNode[_]] extends ViewRenderer with PlaceHolder[T] with ApplyTrait with TLogSource  {
+class AView[T <: SGNode[_]] extends ViewRenderer with PlaceHolder[T] with ApplyTrait with TLogSource with ListeningSupport {
 
   type Self = AView[T]
 
   // Recompilation interface
   //---------------
   def replaceWith(v: AView[_ <: SGNode[Any]]) = {
-    
+    println(s"Requesting Change!")
+    this.@->("view.replace", v)
   }
 
   // Parts
@@ -135,7 +137,7 @@ class AView[T <: SGNode[_]] extends ViewRenderer with PlaceHolder[T] with ApplyT
   //----------------
   var contentClosure: AView[T] ⇒ T = null
 
-  var renderedNode: Option[SGNode[Any]] = None
+  var renderedNode: Option[T] = None
 
   def content(cl: => T) = {
     this.contentClosure = {
@@ -151,11 +153,24 @@ class AView[T <: SGNode[_]] extends ViewRenderer with PlaceHolder[T] with ApplyT
   }*/
 
   def render: T = {
-    logFine[AView[T]](s"[RW] Rendering view: " + this.hashCode)
 
-    var node = contentClosure(this)
-    renderedNode = Some(node)
-    node
+    renderedNode match {
+      case Some(n) => n
+      case None =>
+        logFine[AView[T]](s"[RW] Rendering view: " + this.hashCode)
+        var node = contentClosure(this)
+        renderedNode = Some(node)
+        this.@->("rendered", node)
+        node
+    }
+
+    
+
+  }
+  
+  def rerender : T = {
+    this.renderedNode = None
+    this.render
   }
 
 }
@@ -229,7 +244,7 @@ abstract class AViewCompiler[T <: AView[_ <: SGNode[_]]] extends SourceCompiler[
   var fileWatcher = new FileWatcher
   fileWatcher.start
 
-  def createView(cl: Class[_ <: T]): T = {
+  def createView(cl: Class[_ <: T], listen: Boolean = true): T = {
 
     var targetFile = new File(new File("src/main/scala"), cl.getCanonicalName.replace(".", File.separator) + ".scala")
     println(s"Looking for file: " + targetFile.getAbsolutePath + "-> " + targetFile.exists())
@@ -241,8 +256,10 @@ abstract class AViewCompiler[T <: AView[_ <: SGNode[_]]] extends SourceCompiler[
         var v = this.compile(targetFile.toURI().toURL()).newInstance()
 
         // Set for change watch
-        fileWatcher.onFileChange(targetFile) {
-          v.replaceWith(this.createView(cl))
+        if (listen) {
+          fileWatcher.onFileChange(targetFile) {
+            v.replaceWith(this.createView(cl, false))
+          }
         }
 
         v.asInstanceOf[T]
@@ -268,7 +285,7 @@ abstract class AViewCompiler[T <: AView[_ <: SGNode[_]]] extends SourceCompiler[
         
       case _ => 
     }*/
-    
+
     // Class Loading
     //---------------
     //var currentCL = Thread.currentThread().getContextClassLoader

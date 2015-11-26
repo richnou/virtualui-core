@@ -12,7 +12,7 @@ import com.idyria.osi.vui.impl.html.js.JScript
 /**
  * Builder for main html elements
  */
-trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynamic {
+trait HtmlTreeBuilder extends TreeBuilder[HTMLNode[_ <: org.w3c.dom.Node]] with TableBuilder with Dynamic with HtmlFactory {
 
   /*def applyDynamic(name:String)(cl: => Any) = {
     switchToNode(new HTMLGen, cl)
@@ -33,8 +33,8 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
 
   // Dynamic handles non defined elements
   //--------------------
-  def applyDynamic(name: String)(cl: => Any): HTMLNode = {
-    println(s"---- applyDynamic DYNAMIC $name----")
+  def applyDynamic(name: String)(cl: => Any): HTMLNode[_] = {
+    //println(s"---- applyDynamic DYNAMIC $name----")
     // Create Generic
     var generic = new GenericHTMLElement(name)
 
@@ -43,16 +43,16 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
     switchToNode(generic, cl)
   }
 
-  def updateDynamic(name: String): HTMLNode = {
+  def updateDynamic(name: String): HTMLNode[_] = {
     new GenericHTMLElement(name)
   }
 
   def updateDynamic(name: String)(value: String) = {
-    println("---- UPDATE DYNAMIC----")
+    //println("---- UPDATE DYNAMIC----")
     attribute(name -> value)
   }
-  def selectDynamic(name: String): HTMLNode = {
-    println("---- Select DYNAMIC----")
+  def selectDynamic(name: String): HTMLNode[_] = {
+   // println("---- Select DYNAMIC----")
     var generic = new GenericHTMLElement(name)
     generic
   }
@@ -97,14 +97,20 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
   def $(id: String)(cl: => Any) {
     currentNode.children.find {
       case n if (n.name.toString == id) => true
-      case n: HTMLNode => n.attributes.getOrElse("id", "") == id
+      case n: HTMLNode[_] => n.attributes.getOrElse("id", "") == id
       case _ => false
     } match {
-      case Some(node: HTMLNode) => switchToNode(node, cl)
+      case Some(node: HTMLNode[_]) => switchToNode(node, cl)
       case _ => currentNode.children.foreach {
-        case n: HTMLNode => switchToNode(n, { $(id) { cl } })
+        case n: HTMLNode[_] => switchToNode(n, { $(id) { cl } })
         case _ =>
       }
+    }
+  }
+  
+  def reRender(id:String) = {
+    $(id) {
+      rebuild
     }
   }
 
@@ -165,14 +171,21 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
   //----------------
   def body(cl: => Any) = switchToNode(new Body, cl)
 
-  def div(cl: => Any) = switchToNode(new Div, cl)
-  def div(addclasses: String*)(cl: => Any) = {
-    switchToNode(new Div, {
-      attribute("class" -> addclasses.mkString(" "))
+  def div(cl: => Any) = switchToNode(createDiv, cl)
+  def div = switchToNode(createDiv, {})
+  
+  def div(txt: String)(cl: => Any) = {
+    switchToNode(createDiv, {
+     text(txt)
       cl
     })
   }
+  
+  def textDiv(str:String) = switchToNode(new Div, {text(str)})
+  
+  
   def span(cl: => Any) = switchToNode(new Span, cl)
+  def span(str:String)(cl: => Any) = switchToNode(new Span, {text(str);cl})
 
   def pre(cl: => Any) = switchToNode(new Pre, cl)
 
@@ -193,7 +206,14 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
 
   //--- Linking / Actions
   //--------------
-  def a(name: String, dest: String)(cl: => Any) = switchToNode(new A(name, dest), cl)
+  def a(name: String, dest: String)(cl: => Any) = {
+    
+    var aelt = createA
+    aelt.textContent = name
+    aelt.setDestination(dest)
+    switchToNode(aelt, cl)
+    
+  }
 
   // Lists
   //--------------------
@@ -214,7 +234,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
   //----------------
   def form(cl: => Any) = switchToNode(new Form, cl)
 
-  def inputText(name: String)(cl: => Any) = switchToNode(new InputText(name), cl)
+  def inputText(name: String)(cl: => Any) = switchToNode(createInputText(name), cl)
   def inputPassword(name: String)(cl: => Any) = switchToNode(new InputPassword(name), cl)
   def inputCheckBox(name: String)(cl: => Any) = switchToNode(new InputCheckBox(name), cl)
   def inputCheckBox(name: String, value: String)(cl: => Any) = switchToNode(new InputCheckBox(name), { cl; attr("value" -> value) })
@@ -238,7 +258,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
 
   // Table
   //---------
-  override def table[OT]: SGTable[OT, Any] = switchToNode(super.table[OT].asInstanceOf[HTMLNode], {}).asInstanceOf[SGTable[OT, Any]]
+  override def table[OT]: SGTable[OT, org.w3c.dom.html.HTMLElement] = switchToNode(super.table[OT].asInstanceOf[HTMLNode[org.w3c.dom.html.HTMLElement]], {}).asInstanceOf[SGTable[OT, org.w3c.dom.html.HTMLElement]]
 
   def thead(cl: => Any) = switchToNode(new GenericHTMLElement("thead"), cl)
   def tbody(cl: => Any) = switchToNode(new GenericHTMLElement("thead"), cl)
@@ -249,6 +269,14 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
   // Scripting
   //------------------
   def script(cl: => Any) = switchToNode(new Script, cl)
+  
+
+  def script(t:String)(txt:String) = {
+    
+     switchToNode(new Script, {attr("type"->t);text(txt)})
+   
+  }
+    
   def javaScript(path: String) = switchToNode(new Script, { attribute("src" -> path) })
   def jscript(s: String) = new JScript(s)
 
@@ -260,6 +288,21 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode] with TableBuilder with Dynam
   //-----------------------
   def nav(cl: => Any) = {
     switchToNode(new Nav, cl)
+  }
+  
+  
+  // DOM Events
+  //------------------
+  def onKeyTyped(cl: Char => Any) = {
+    currentNode.onKeyTyped {
+      c => cl(c)
+    }
+  }
+  
+  def onChanged(cl: => Any) = {
+    currentNode.onChanged {
+      cl
+    }
   }
 
 }

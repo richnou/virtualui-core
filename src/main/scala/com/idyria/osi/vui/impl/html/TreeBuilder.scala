@@ -5,6 +5,12 @@ import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import com.idyria.osi.vui.core.components.scenegraph.SGGroup
 import scala.collection.immutable.Stack
 
+trait RebuildableNode[T] extends SGGroup[T] {
+
+  var _contentClosure: Option[(() => Any)] = None
+
+}
+
 trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
 
   var nodesStack = scala.collection.mutable.Stack[SGGroup[Any]]()
@@ -19,12 +25,29 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
    */
   def add[NT <: BT](node: NT): NT = switchToNode(node, {})
 
-  def onNode[NT <: BT](node: NT)(cl: => Any) = switchToNode(node,cl)
-  
+  def onNode[NT <: BT](node: NT)(cl: => Any) = switchToNode(node, cl)
+
+  // Rebuild current node or target node
+  //-----------------
+  def rebuild = currentNode match {
+    case rn: RebuildableNode[_] if (rn._contentClosure != None) =>
+      rn.clear
+      onNode(rn.asInstanceOf[BT]) {
+        rn._contentClosure.get()
+      }
+      
+      rn.@->("rebuild")
+    case _ =>
+  }
+
   def switchToNode[NT <: BT](node: NT, cl: => Any): NT = {
 
     // Try to create node based on name
     //-------
+    node match {
+      case rn: RebuildableNode[_] if (rn._contentClosure == None) => rn._contentClosure = Some({ () => cl })
+      case _ =>
+    }
 
     currentNode = node
 
@@ -42,17 +65,17 @@ trait TreeBuilder[BT <: SGNode[Any]] extends Dynamic {
           nodesStack.headOption match {
             case Some(head) => head <= n
             case _ =>
-             // println(s"--> New top node on ${this.hashCode}")
-              //topNodes = topNodes :+ n.asInstanceOf[BT]
+            // println(s"--> New top node on ${this.hashCode}")
+            //topNodes = topNodes :+ n.asInstanceOf[BT]
           }
         }
 
         //nodesStack = nodesStack.push(n)
         nodesStack.push(n)
         cl
-        
+
         nodesStack.pop()
-       //nodesStack = nodesStack.pop
+        //nodesStack = nodesStack.pop
 
         // Switch back to top of stack
         // If no nodes, save in top nodes

@@ -118,6 +118,13 @@ trait VUIComponent[T] extends SGNode[T]  with ApplyTrait with ThreadLanguage {
   def onEnter( action : => Unit) = {}
 
   /**
+   * Programmaticaly Call the Enter key
+   */
+  def pressEnter : Unit = {
+    throw new NotImplementedException
+  }
+  
+  /**
    * Called when a key has been pressed, but not already released
    * Provided char is the pressed key
    */

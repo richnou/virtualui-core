@@ -28,6 +28,10 @@ trait VUISpinner[T] extends VUIComponent[T] with StylableTrait with ApplyTrait  
 
   type Self = VUISpinner[_]
   
+  // Default init 
+  //---------------
+  setEditable(true)
+  
   // Parameters for a Spinner
   //---------------
   def setMin(min:Double)
@@ -43,6 +47,12 @@ trait VUISpinner[T] extends VUIComponent[T] with StylableTrait with ApplyTrait  
   // Editable
   //------------------
   def setEditable(v:Boolean)
+  
+  // Change Monitors
+  //------------
+  /*this.onKeyTyped { _ => 
+    this.pressEnter
+  }*/
 
   
  }

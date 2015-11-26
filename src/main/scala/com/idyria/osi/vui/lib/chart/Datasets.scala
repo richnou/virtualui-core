@@ -33,9 +33,11 @@ trait Dataset extends ElementBuffer with ListeningSupport {
 }
 
 @xelement(name = "Value")
-class ValueTuple[X, Y] extends ElementBuffer {
+class ValueTuple[X, Y](var value: Tuple2[X, Y]) extends ElementBuffer {
 
-  var value: Tuple2[X, Y] = null
+  def this() = this(null)
+  
+ // var value: Tuple2[X, Y] = null
 
   @xattribute
   var x: XSDStringBuffer = null
@@ -132,6 +134,13 @@ class XYDataset[X: ClassTag, Y: ClassTag] extends Dataset {
     this.@->("value.added", vt)
   }
 
+  def addAll(elts : Iterable[(X,Y)])= {
+    elts.foreach {
+      t =>  this.values += new ValueTuple[X,Y](t) 
+    }
+   // this.values.appendAll()
+  }
+  
   def getXType(implicit xtag: ClassTag[X]) = xtag
 
   // def getType[T : TypeTag]

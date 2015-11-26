@@ -80,15 +80,15 @@ trait SGGroup[T] extends SGNode[T] {
    * Clear Children components
    */
   def clear: Unit = {
-
+     //super.clear
     var bk = this.sgChildren
-    this.sgChildren = this.sgChildren.filter(_ ⇒ true)
+    this.sgChildren = this.sgChildren.filter(_ ⇒ false)
 
     bk.foreach {
       c => this.@->("child.removed", c)
     }
     //this.sgChildren = this.sgChildren diff Seq(n)
-    //super.clear
+   
 
   }
 

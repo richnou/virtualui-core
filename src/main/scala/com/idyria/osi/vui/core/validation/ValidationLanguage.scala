@@ -6,7 +6,7 @@ import com.idyria.osi.vui.impl.html.components.HTMLNode
 /**
  * This trait should be mixed in a TreeBuilder to add validation language functions to the treeBuilder
  */
-trait ValidationTreeBuilderLanguage extends TreeBuilder[HTMLNode] {
+trait ValidationTreeBuilderLanguage extends TreeBuilder[HTMLNode[_ <: org.w3c.dom.Node]] {
 
   // Apply Rule to the currentNode if possible
   //---------------------
