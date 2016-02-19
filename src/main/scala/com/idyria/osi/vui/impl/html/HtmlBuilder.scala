@@ -74,9 +74,12 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode[_ <: org.w3c.dom.Node]] with 
   /**
    * Set an attribute
    */
-  def attribute(attr: (String, String)): Unit = this.currentNode(attr)
+  def attribute(attr: (String, Any)): Unit = this.currentNode(attr)
 
-  def attr(attrs: (String, String)*): Unit = {
+  def attr(attrs: (String, Any)*): Unit = {
+    attrs.foreach(this.currentNode(_))
+  }
+  def +@(attrs: (String, Any)*): Unit = {
     attrs.foreach(this.currentNode(_))
   }
 
