@@ -25,9 +25,7 @@ class HTMLTest extends FunSuite with HtmlTreeBuilder {
     //---------------
     var d = div {
 
-      var tb = table[TableObject] {
-        tb => 
-      }
+      var tb = table[TableObject]
       tb {
         t ⇒
           t.column("A") {

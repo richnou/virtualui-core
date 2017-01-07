@@ -3,27 +3,25 @@
  */
 package com.idyria.osi.vui.core.components.form
 
-import com.idyria.osi.vui.core.components.VUIComponent
-import com.idyria.osi.vui.core.styling.StylableTrait
-import com.idyria.osi.vui.core.components.model.ListModelSupport
-import com.idyria.osi.vui.core.components.model.ListModel
-import com.idyria.osi.vui.core.components.model.ComboBoxModelSupport
-import com.idyria.osi.vui.core.components.model.DefaultListModel
-import com.idyria.osi.vui.core.components.model.DefaultComboBoxModel
+import scala.reflect.ClassTag
+
 import com.idyria.osi.vui.core.VUIBuilder
-import java.util.Collection
+import com.idyria.osi.vui.core.components.VUIComponent
+import com.idyria.osi.vui.core.components.model.ComboBoxModelSupport
+import com.idyria.osi.vui.core.components.model.ListModelSupport
+import com.idyria.osi.vui.core.styling.StylableTrait
 
 
 trait ListBuilder[T] extends ListBuilderInterface[T] {
     
   def list[CT]: VUIList[CT,T] =  VUIBuilder.as[ListBuilderInterface[T]].list[CT]
-  def comboBox[CT] : VUIComboBox[CT,T] =   VUIBuilder.as[ListBuilderInterface[T]].comboBox[CT]
+  def comboBox[CT](implicit tag : ClassTag[CT]) : VUIComboBox[CT,T] =   VUIBuilder.as[ListBuilderInterface[T]].comboBox[CT]
 }
 
 trait ListBuilderInterface[T] {
   
   def list[CT] : VUIList[CT,T]
-  def comboBox[CT]: VUIComboBox[CT,T]
+  def comboBox[CT](implicit tag : ClassTag[CT]): VUIComboBox[CT,T]
   
 }
 

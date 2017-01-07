@@ -1,6 +1,6 @@
 
 package com.idyria.osi.vui.lib.view
-
+/*
 import java.net.URL
 import com.idyria.osi.aib.core.compiler.EmbeddedCompiler
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
@@ -478,4 +478,4 @@ v.contentClosure =  { view =>
     wwwview*/
 
 }
-
+*/

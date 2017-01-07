@@ -41,7 +41,7 @@ class ChartsTest extends FunSuite with DatasetsBuilder {
     
     // Test Type
     //---------------
-    expectResult(true)(any.head.isInstanceOf[TimeValuesDataset[_]])
+    assertResult(true)(any.head.isInstanceOf[TimeValuesDataset[_]])
     
     // Test Values types
     //--------------------

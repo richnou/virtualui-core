@@ -33,6 +33,7 @@ import java.util.Collection
 import javax.swing.event.ListSelectionListener
 import javax.swing.event.ListSelectionEvent
 import com.idyria.osi.vui.core.components.form.ListBuilderInterface
+import scala.reflect.ClassTag
 
 /**
  * @author rleys
@@ -103,7 +104,7 @@ trait SwingFormBuilder extends FormBuilderInterface[Component] with ListBuilderI
 
   }
   
-  def comboBox[CT] : VUIComboBox[CT,Component] = {
+  def comboBox[CT](implicit tag : ClassTag[CT]) : VUIComboBox[CT,Component] = {
     
     return new SwingJComponentCommonDelegate[JComboBox[CT]](new JComboBox[CT]()) with VUIComboBox[CT,Component] {
 

@@ -9,13 +9,13 @@ import com.idyria.osi.tea.listeners.ListeningSupport
 
 trait TableBuilderInterface[T] {
 
-  def table[CT]: SGTable[CT, T]
+  def table[CT](implicit tag : ClassTag[CT]): SGTable[CT, T]
   //def column[CT](name:String) : SGTableColumn[CT]
 }
 
 trait TableBuilder[T] extends TableBuilderInterface[T] {
 
-  def table[CT]: SGTable[CT, T] = VUIBuilder.as[TableBuilderInterface[T]].table
+  def table[CT](implicit tag : ClassTag[CT]): SGTable[CT, T] = VUIBuilder.as[TableBuilderInterface[T]].table
 
   //def column[CT](name:String) : SGTableColumn[CT] = VUIBuilder.as[TableBuilderInterface[T]].column(name)
   
@@ -108,7 +108,7 @@ trait SGTable[CT, T] extends SGGroup[T] with ApplyTrait with TableBuilder[T] {
   /**
    * Called when an object is added to the table
    */
-  def onObjectAdded(cl: CT => Unit) = {
+  def onObjectAdded(cl: CT => Unit)(implicit tag : ClassTag[CT]) = {
     this.onWith("object.added") {
       obj : CT => cl(obj)
     }

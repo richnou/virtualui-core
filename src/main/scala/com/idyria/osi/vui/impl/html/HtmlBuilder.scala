@@ -8,6 +8,7 @@ import com.idyria.osi.vui.core.components.table.SGTable
 import com.idyria.osi.vui.impl.html.components._
 import com.idyria.osi.vui.impl.html.components.HTMLNode
 import com.idyria.osi.vui.impl.html.js.JScript
+import scala.reflect.ClassTag
 
 /**
  * Builder for main html elements
@@ -258,7 +259,7 @@ trait HtmlTreeBuilder extends TreeBuilder[HTMLNode[_ <: org.w3c.dom.Node]] with 
 
   // Table
   //---------
-  override def table[OT]: SGTable[OT, org.w3c.dom.html.HTMLElement] = switchToNode(super.table[OT].asInstanceOf[HTMLNode[org.w3c.dom.html.HTMLElement]], {}).asInstanceOf[SGTable[OT, org.w3c.dom.html.HTMLElement]]
+  override def table[OT](implicit tag : ClassTag[OT]): SGTable[OT, org.w3c.dom.html.HTMLElement] = switchToNode(super.table[OT].asInstanceOf[HTMLNode[org.w3c.dom.html.HTMLElement]], {}).asInstanceOf[SGTable[OT, org.w3c.dom.html.HTMLElement]]
 
   def thead(cl: => Any) = switchToNode(new GenericHTMLElement("thead"), cl)
   def tbody(cl: => Any) = switchToNode(new GenericHTMLElement("thead"), cl)

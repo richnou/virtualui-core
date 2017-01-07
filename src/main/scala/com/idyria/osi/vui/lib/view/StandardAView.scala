@@ -1,5 +1,5 @@
 package com.idyria.osi.vui.lib.view
-
+/*
 import com.idyria.osi.vui.core.components.scenegraph.SGNode
 import java.io.File
 import com.idyria.osi.vui.core.VBuilder
@@ -67,4 +67,4 @@ object StandardAViewCompiler extends AViewCompiler[StandardAView] {
   eout.mkdirs()
   compiler.settings2.outputDirs.setSingleOutput(eout.getAbsolutePath)
 
-}
+}*/
