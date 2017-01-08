@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.odfi.vui</groupId>
 	<artifactId>vui-core</artifactId>
-	<version>1.1.2</version>
+	<version>1.1.3-SNAPSHOT</version>
 	<name>VUI Library</name>
 	<parent>
 		<groupId>org.odfi</groupId>
