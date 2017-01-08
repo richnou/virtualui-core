@@ -21,32 +21,31 @@ import org.w3c.dom.html.HTMLInputElement
  */
 trait HTMLNode[DT <: org.w3c.dom.Node] extends SGGroup[DT] with VUIComponent[DT] {
 
-  
   var htmlNodeName: String = "undefined"
 
   // DOM Base
   //--------------------
   var delegate: DT = _
   def base = delegate
-  
+
   // Parameters
   // var name: String = null
 
   override def clear = {
-    super.clear 
+    super.clear
     //println(s"Delegate is :$this.delegate")
     this.delegate match {
-      case null => 
+      case null =>
       case d =>
         d.setTextContent("")
         var cn = d.getChildNodes
         (0 until cn.getLength) foreach {
-          i => 
+          i =>
             d.removeChild(cn.item(i))
         }
     }
   }
-  
+
   //----------------------
   // General Control
   //----------------------
@@ -93,7 +92,6 @@ trait HTMLNode[DT <: org.w3c.dom.Node] extends SGGroup[DT] with VUIComponent[DT]
   //-------------------
 
   // var childrenSeq = Seq[HTMLNode]()
-
 
   /**
    * Clear Children
@@ -150,7 +148,7 @@ trait HTMLNode[DT <: org.w3c.dom.Node] extends SGGroup[DT] with VUIComponent[DT]
 
         content match {
           case node: SGNode[_] ⇒ this <= node.asInstanceOf[SGNode[DT]]
-          case nodes if (nodes.isInstanceOf[Iterable[_]]) ⇒ nodes.asInstanceOf[Iterable[_]].foreach{n => this <= n.asInstanceOf[SGNode[DT]]}
+          case nodes if (nodes.isInstanceOf[Iterable[_]]) ⇒ nodes.asInstanceOf[Iterable[_]].foreach { n => this <= n.asInstanceOf[SGNode[DT]] }
           case _ ⇒
         }
     }
@@ -189,7 +187,7 @@ trait HTMLNode[DT <: org.w3c.dom.Node] extends SGGroup[DT] with VUIComponent[DT]
 
   var textContent: String = ""
 
-  var attributes = Map[String, String]()
+  var attributes = Map[String, Any]()
 
   // ID
   //------------
@@ -199,7 +197,11 @@ trait HTMLNode[DT <: org.w3c.dom.Node] extends SGGroup[DT] with VUIComponent[DT]
 
   // Attributes
   //-----------------
-  def apply(attr: (String, String)) = {
+  def apply(attr: (String, Any)) = {
+
+    this.attributes = attributes + attr
+  }
+  def +@(attr: (String, Any)) = {
 
     this.attributes = attributes + attr
   }
@@ -224,18 +226,29 @@ trait HTMLNode[DT <: org.w3c.dom.Node] extends SGGroup[DT] with VUIComponent[DT]
     apply("class" -> ("" + attributes.getOrElse("class", "") + " " + cl))
     this.asInstanceOf[Self]
   }
-  
+
   // Left assign of ID
   //-----------------------
   def #:(id: String): Self = {
     this("id" -> id)
+    this.id = id
     this.asInstanceOf[Self]
   }
-  
+
   // Left Attributes assignment
   //----------------
-  def @:(id: String): Self = {
-    
+  def @:(attr: String): Self = {
+
+    attr.split(" ").map(_.split("=")).foreach {
+      case one if (one.size == 1) => this(one(0) -> "")
+      case two => this(two(0) -> two(1).replace("\"", "").replace("'", ""))
+    }
+    this.asInstanceOf[Self]
+  }
+  def @:(attrs: (String, Any)*): Self = {
+    attrs.foreach {
+      attr => this(attr)
+    }
     this.asInstanceOf[Self]
   }
 
@@ -280,14 +293,14 @@ ${indentString.mkString}</$htmlNodeName>
   def onChanged(cl: => Any): Unit = {
 
   }
-  
-  def onLoad(cl: Any => Any) : Unit = {
-    
+
+  def onLoad(cl: Any => Any): Unit = {
+
   }
 
 }
 
-class DefaultHTMLNode(nodeName:String) extends HTMLNode[org.w3c.dom.html.HTMLElement] {
+class DefaultHTMLNode(nodeName: String) extends HTMLNode[org.w3c.dom.html.HTMLElement] {
   this.htmlNodeName = nodeName
 }
 
@@ -296,7 +309,7 @@ class DefaultHTMLNode(nodeName:String) extends HTMLNode[org.w3c.dom.html.HTMLEle
 class DummyNode extends HTMLNode[org.w3c.dom.html.HTMLElement] {
 
   this.htmlNodeName = "dummy"
-  
+
   override def toString: String = {
 
     var indentString = this.indentCount(this) match {
@@ -314,15 +327,16 @@ class DummyNode extends HTMLNode[org.w3c.dom.html.HTMLElement] {
 //--------------------
 class GenericHTMLElement(nodeName: String, textC: String = "") extends HTMLNode[org.w3c.dom.html.HTMLElement] {
 
-    this.htmlNodeName = nodeName
-  
+  this.htmlNodeName = nodeName
+
   this.textContent = textC
+
+  type Self = GenericHTMLElement
 }
 
 // Common Stuff
 //------------------
 class HTMLTextNode(var content: String) extends HTMLNode[org.w3c.dom.html.HTMLElement] {
-
 
   /*def base: Any = this
   def revalidate: Unit = {
@@ -346,7 +360,7 @@ class HTMLTextNode(var content: String) extends HTMLNode[org.w3c.dom.html.HTMLEl
  * Automatically gets a head and body
  */
 class Html extends DefaultHTMLNode("html") {
-  
+
 }
 
 class Body extends DefaultHTMLNode("body") {
@@ -365,13 +379,13 @@ class Meta extends DefaultHTMLNode("meta") {
 //---------------
 
 class Div extends DefaultHTMLNode("div") with ListeningSupport {
-
+ 
 }
 
 class Span extends DefaultHTMLNode("span") {
 
-  type Self = Span 
-  
+  type Self = Span
+
 }
 
 class Paragraph extends DefaultHTMLNode("p") {
@@ -403,12 +417,12 @@ class H6(text: String = "") extends Htitle(6, text)
 // Linking / Actions
 //------------
 
-class A( text: String,  destination: String) extends DefaultHTMLNode("a") {
+class A(text: String, destination: String) extends DefaultHTMLNode("a") {
 
   this("href" -> destination)
   this.textContent = text
 
-  def setDestination(txt:String) = {
+  def setDestination(txt: String) = {
     this("href" -> destination)
   }
   def toBlank: A = {
@@ -419,8 +433,6 @@ class A( text: String,  destination: String) extends DefaultHTMLNode("a") {
 
 class Button(n: String = "button") extends DefaultHTMLNode("button") with VUIButton[org.w3c.dom.html.HTMLElement] {
 
-  
-  
   this.textContent = n
 
   // Clicks
@@ -512,12 +524,12 @@ abstract class FormInputNode(lname: String) extends HTMLNode[org.w3c.dom.html.HT
   this.htmlNodeName = "input"
   this.setName(lname)
   this("name" -> lname)
-  
-  def getValue : String = base.asInstanceOf[HTMLInputElement].getValue
-  def setValue(str:String) : String = {
+
+  def getValue: String = base.asInstanceOf[HTMLInputElement].getValue
+  def setValue(str: String): String = {
     base.asInstanceOf[HTMLInputElement].setValue(str)
     str
-    
+
   }
 }
 
@@ -532,18 +544,14 @@ class FormParameter(p: (String, String)) extends FormInputNode(p._1) {
 /**
  * input type text
  */
-class InputText(lname: String) extends FormInputNode(lname) with FormInput  {
+class InputText(lname: String) extends FormInputNode(lname) with FormInput {
 
   override type Self = InputText
-  
-  //override def base : org.w3c.dom.html.HTMLElement = super.base.asInstanceOf[org.w3c.dom.html.HTMLInputElement]
-  
-  this("type" -> "text")
-  
-  
 
-  
-  
+  //override def base : org.w3c.dom.html.HTMLElement = super.base.asInstanceOf[org.w3c.dom.html.HTMLInputElement]
+
+  this("type" -> "text")
+
 }
 
 /**
@@ -594,7 +602,7 @@ class FormSubmit(value: String) extends Button("") {
 
 // Table
 //--------------------
-class Table[OT] extends DefaultHTMLNode("table") with SGTable[OT, org.w3c.dom.html.HTMLElement]  {
+class Table[OT] extends DefaultHTMLNode("table") with SGTable[OT, org.w3c.dom.html.HTMLElement] {
 
   // Init with head and body
   //-----------------
@@ -637,9 +645,9 @@ class Table[OT] extends DefaultHTMLNode("table") with SGTable[OT, org.w3c.dom.ht
   this.onWith("column.added") {
     c: SGTableColumn[OT] ⇒
 
-      // Add Column header
-      //--------------
-      /*theadElement <= th {
+    // Add Column header
+    //--------------
+    /*theadElement <= th {
 
         // Special Attributes
         if (c.colSpan > 1) {
@@ -656,9 +664,9 @@ class Table[OT] extends DefaultHTMLNode("table") with SGTable[OT, org.w3c.dom.ht
   this.onWith("row.added") {
     c: List[Any] ⇒
 
-      // Add Data row
-      //--------------
-      /*tbodyElement <= tr {
+    // Add Data row
+    //--------------
+    /*tbodyElement <= tr {
 
         // Add Data Cell
         //-----------
